@@ -4,8 +4,8 @@ import json
 import os
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
-MAIN_SITEMAP = "https://htn.co.uk/wp-sitemap.xml"
-SOURCE_NAME = "HTN_CO"
+MAIN_SITEMAP = "https://www.digitalhealth.net/sitemap_index.xml"
+SOURCE_NAME = "DIGITAL_HEALTH"
 
 headers = {"User-Agent": "Mozilla/5.0"}
 
@@ -17,38 +17,65 @@ def scrape_article(url):
     resp = requests.get(url, headers=headers)
     soup = BeautifulSoup(resp.text, "html.parser")
 
-    title_tag = soup.find("h1", class_="entry-title")
-    date_tag = soup.find("time", class_="entry-date")
-    content_div = soup.find("div", class_="entry-content")
+    # -----------------------------
+    # TITLE
+    # -----------------------------
+    title_tag = soup.select_one(".single_post_heading1 h1")
+    title = title_tag.get_text(strip=True) if title_tag else ""
 
+    # -----------------------------
+    # DATE (inside .page_comments)
+    # -----------------------------
+    date_tag = soup.select_one(".page_comments li")
+    date = date_tag.get_text(strip=True) if date_tag else ""
+
+    # -----------------------------
+    # CATEGORIES (Digital Transformation, News, Smart Health)
+    # -----------------------------
+    category_nodes = soup.select(".page_category h4 a")
+    categories = [c.get_text(strip=True) for c in category_nodes]
+
+    # -----------------------------
+    # TAGS (3D printing, NBT, etc.)
+    # -----------------------------
+    tag_nodes = soup.select(".tags ul li a")
+    tags = [t.get_text(strip=True) for t in tag_nodes]
+
+    # -----------------------------
+    # MAIN ARTICLE CONTENT
+    # -----------------------------
+    content_div = soup.select_one("div.content")
     if not content_div:
         return None
 
-    # -----------------------------
-    # CATEGORIES
-    # -----------------------------
-    cat_links = soup.find("span", class_="cat-links")
-    categories = []
-    if cat_links:
-        categories = [a.get_text(strip=True) for a in cat_links.find_all("a")]
-
-    # Remove irrelevant sections
-    for sel in [".crp_related", ".adv_content", ".addthis_tool"]:
+    # Remove irrelevant / noisy sections
+    cleanup_selectors = [
+        ".summarising-content",
+        "script",
+        ".elementor",
+        ".news_letter",
+        ".mc4wp-form",
+        "form",
+    ]
+    for sel in cleanup_selectors:
         for tag in content_div.select(sel):
             tag.decompose()
 
-    paragraphs = [p.get_text(strip=True) for p in content_div.find_all("p")]
+    # Extract paragraphs
+    paragraphs = [p.get_text(" ", strip=True) for p in content_div.find_all("p")]
     text = "\n\n".join(paragraphs)
 
     return {
         "source": SOURCE_NAME,
         "group_name": "1",
         "url": url,
-        "date": date_tag.get_text(strip=True) if date_tag else "",
-        "title": title_tag.get_text(strip=True) if title_tag else "",
+        "date": date,
+        "title": title,
         "categories": categories,
+        "tags": tags,
         "text": text,
     }
+
 
 
 # ----------------------------------------------------------
@@ -59,16 +86,29 @@ def get_latest_post_sitemap():
     soup = BeautifulSoup(resp.text, "xml")
 
     links = []
-    for loc in soup.find_all("loc"):
-        link = loc.text.strip()
-        if "wp-sitemap-posts-post-" in link:
-            links.append(link)
+    for sitemap in soup.find_all("sitemap"):
+        loc = sitemap.find("loc")
+        if loc:
+            link = loc.text.strip()
+            if "post-sitemap" in link:
+                links.append(link)
 
     if not links:
         raise Exception("No post sitemap links found.")
 
-    links.sort(key=lambda x: int(x.split("-post-")[1].split(".")[0]))
-    return links[-1]
+    # Extract number from URLs like "post-sitemap2.xml" or "post-sitemap.xml" (no number = 1)
+    def get_sitemap_number(url):
+        if "post-sitemap.xml" in url and "post-sitemap2" not in url:
+            return 1  # First sitemap has no number
+        try:
+            # Extract number between "post-sitemap" and ".xml"
+            num = url.split("post-sitemap")[1].split(".xml")[0]
+            return int(num) if num else 1
+        except:
+            return 0
+
+    links.sort(key=get_sitemap_number)
+    return links[-1]  # Return the one with highest number
 
 
 # ----------------------------------------------------------
