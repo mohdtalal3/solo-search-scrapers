@@ -162,189 +162,112 @@ def download_xml(session: requests.Session, filename="contracts_finder_results.x
 
 def parse_xml_and_extract_contracts(xml_content):
     """
-    Parse XML content and extract contract information.
+    Parse XML content and extract contract information dynamically.
+    Captures all fields without hardcoding specific field names.
     Returns a list of contract dictionaries with all required fields.
     """
     root = ET.fromstring(xml_content)
-    
-    # Define namespace
-    ns = {'': 'http://www.w3.org/2001/XMLSchema-instance'}
-    
     contracts = []
+    
+    def element_to_dict(element, skip_nil=True):
+        """
+        Recursively convert XML element to dictionary.
+        Captures all fields dynamically.
+        """
+        result = {}
+        
+        # Check if element is nil
+        if skip_nil and element.get('{http://www.w3.org/2001/XMLSchema-instance}nil') == 'true':
+            return None
+        
+        # If element has no children, return its text
+        if len(element) == 0:
+            return element.text.strip() if element.text else ""
+        
+        # Process all child elements
+        for child in element:
+            tag = child.tag
+            value = element_to_dict(child, skip_nil)
+            
+            # Handle multiple children with same tag (like CPV codes)
+            if tag in result:
+                # Convert to list if not already
+                if not isinstance(result[tag], list):
+                    result[tag] = [result[tag]]
+                if value is not None:
+                    result[tag].append(value)
+            else:
+                if value is not None:
+                    result[tag] = value
+        
+        return result
+    
+    def dict_to_text(data, indent=0, parent_key=""):
+        """
+        Convert dictionary to formatted text with proper indentation.
+        """
+        lines = []
+        indent_str = "  " * indent
+        
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if isinstance(value, dict):
+                    lines.append(f"{indent_str}{key}:")
+                    lines.extend(dict_to_text(value, indent + 1, key))
+                elif isinstance(value, list):
+                    lines.append(f"{indent_str}{key}:")
+                    for i, item in enumerate(value):
+                        if isinstance(item, dict):
+                            lines.append(f"{indent_str}  [{i+1}]:")
+                            lines.extend(dict_to_text(item, indent + 2, key))
+                        else:
+                            lines.append(f"{indent_str}  - {item}")
+                else:
+                    lines.append(f"{indent_str}{key}: {value}")
+        elif isinstance(data, list):
+            for i, item in enumerate(data):
+                if isinstance(item, dict):
+                    lines.append(f"{indent_str}[{i+1}]:")
+                    lines.extend(dict_to_text(item, indent + 1, parent_key))
+                else:
+                    lines.append(f"{indent_str}- {item}")
+        else:
+            lines.append(f"{indent_str}{data}")
+        
+        return lines
     
     for full_notice in root.findall('FullNotice'):
         try:
-            notice = full_notice.find('Notice')
-            if notice is None:
+            # Convert entire FullNotice to dictionary
+            notice_data = element_to_dict(full_notice)
+            
+            if not notice_data:
                 continue
             
-            # Extract basic information
-            notice_id = notice.findtext('Id', '').strip()
-            title = notice.findtext('Title', '').strip()
-            description = notice.findtext('Description', '').strip()
-            published_date = notice.findtext('PublishedDate', '').strip()
-            last_update = notice.findtext('LastNotifiableUpdate', '').strip()
-            identifier = notice.findtext('Identifier', '').strip()
+            # Extract key fields for database (with fallbacks)
+            notice = notice_data.get('Notice', {})
             
-            # Extract contact details
-            contact = notice.find('ContactDetails')
-            contact_name = contact.findtext('Name', '') if contact is not None else ''
-            contact_email = contact.findtext('Email', '') if contact is not None else ''
-            contact_address = ''
-            if contact is not None:
-                addr1 = contact.findtext('Address1', '')
-                town = contact.findtext('Town', '')
-                postcode = contact.findtext('Postcode', '')
-                country = contact.findtext('Country', '')
-                contact_address = f"{addr1}, {town}, {postcode}, {country}".strip(', ')
+            notice_id = notice.get('Id', '')
+            title = notice.get('Title', '')
+            published_date = notice.get('PublishedDate', '')
+            last_update = notice.get('LastNotifiableUpdate', published_date)
             
-            # Extract values
-            value_low = notice.findtext('ValueLow', '')
-            value_high = notice.findtext('ValueHigh', '')
+            if not notice_id or not title:
+                continue
             
-            # Extract dates
-            start_date = notice.findtext('Start', '')
-            end_date = notice.findtext('End', '')
-            deadline_date = notice.findtext('DeadlineDate', '')
-            
-            # Extract CPV codes
-            cpv_codes_elem = notice.find('CpvCodes')
-            cpv_codes = []
-            if cpv_codes_elem is not None:
-                cpv_codes = [code.text for code in cpv_codes_elem.findall('string') if code.text]
-            
-            # Extract status and type
-            status = notice.findtext('Status', '')
-            contract_type = notice.findtext('Type', '')
-            ojeu_type = notice.findtext('OjeuContractType', '')
-            procedure_type = notice.findtext('ProcedureType', '')
-            
-            # Extract organization
-            org_name = notice.findtext('OrganisationName', '')
-            
-            # Extract location
-            location_elem = notice.find('Location')
-            latitude = location_elem.findtext('Lat', '') if location_elem is not None else ''
-            longitude = location_elem.findtext('Lon', '') if location_elem is not None else ''
-            region = notice.findtext('Region', '')
-            postcode_loc = notice.findtext('Postcode', '')
-            
-            # Extract SME and VCO suitability
-            suitable_sme = notice.findtext('IsSuitableForSme', '')
-            suitable_vco = notice.findtext('IsSuitableForVco', '')
-            
-            # Extract award details
-            awards_info = []
-            awards = full_notice.find('Awards')
-            if awards is not None:
-                for award in awards.findall('AwardDetail'):
-                    award_value = award.findtext('Value', '')
-                    supplier_name = award.findtext('SupplierName', '')
-                    supplier_address = award.findtext('SupplierAddress', '')
-                    awarded_date = award.findtext('AwardedDate', '')
-                    award_start = award.findtext('StartDate', '')
-                    award_end = award.findtext('EndDate', '')
-                    awarded_to_sme = award.findtext('AwardedToSME', '')
-                    
-                    awards_info.append({
-                        'supplier_name': supplier_name,
-                        'supplier_address': supplier_address,
-                        'value': award_value,
-                        'awarded_date': awarded_date,
-                        'start_date': award_start,
-                        'end_date': award_end,
-                        'awarded_to_sme': awarded_to_sme
-                    })
-            
-            # Build comprehensive text field
+            # Build comprehensive text field with ALL data
             text_parts = []
             
-            # Title
+            # Start with title
             text_parts.append(f"TITLE: {title}")
             text_parts.append("")
-            
-            # Description
-            text_parts.append(f"DESCRIPTION:\n{description}")
+            text_parts.append("=" * 80)
+            text_parts.append("COMPLETE NOTICE DETAILS")
+            text_parts.append("=" * 80)
             text_parts.append("")
             
-            # Contract Details
-            text_parts.append("CONTRACT DETAILS:")
-            text_parts.append(f"Identifier: {identifier}")
-            text_parts.append(f"Notice ID: {notice_id}")
-            text_parts.append(f"Status: {status}")
-            text_parts.append(f"Type: {contract_type}")
-            text_parts.append(f"OJEU Contract Type: {ojeu_type}")
-            if procedure_type:
-                text_parts.append(f"Procedure Type: {procedure_type}")
-            text_parts.append("")
-            
-            # Financial Information
-            text_parts.append("FINANCIAL INFORMATION:")
-            if value_low:
-                text_parts.append(f"Value (Low): £{value_low}")
-            if value_high:
-                text_parts.append(f"Value (High): £{value_high}")
-            text_parts.append("")
-            
-            # Dates
-            text_parts.append("IMPORTANT DATES:")
-            text_parts.append(f"Published: {published_date}")
-            if deadline_date:
-                text_parts.append(f"Deadline: {deadline_date}")
-            if start_date:
-                text_parts.append(f"Contract Start: {start_date}")
-            if end_date:
-                text_parts.append(f"Contract End: {end_date}")
-            text_parts.append("")
-            
-            # Organization
-            text_parts.append("ORGANIZATION:")
-            text_parts.append(f"Name: {org_name}")
-            text_parts.append("")
-            
-            # Contact Information
-            text_parts.append("CONTACT INFORMATION:")
-            text_parts.append(f"Name: {contact_name}")
-            text_parts.append(f"Email: {contact_email}")
-            text_parts.append(f"Address: {contact_address}")
-            text_parts.append("")
-            
-            # Location
-            text_parts.append("LOCATION:")
-            if region:
-                text_parts.append(f"Region: {region}")
-            if postcode_loc:
-                text_parts.append(f"Postcode: {postcode_loc}")
-            if latitude and longitude:
-                text_parts.append(f"Coordinates: {latitude}, {longitude}")
-            text_parts.append("")
-            
-            # CPV Codes
-            if cpv_codes:
-                text_parts.append("CPV CODES:")
-                for code in cpv_codes:
-                    text_parts.append(f"- {code}")
-                text_parts.append("")
-            
-            # Suitability
-            text_parts.append("SUITABILITY:")
-            text_parts.append(f"Suitable for SME: {suitable_sme}")
-            text_parts.append(f"Suitable for VCO: {suitable_vco}")
-            text_parts.append("")
-            
-            # Award Information
-            if awards_info:
-                text_parts.append("AWARD INFORMATION:")
-                for i, award in enumerate(awards_info, 1):
-                    text_parts.append(f"\nAward #{i}:")
-                    text_parts.append(f"  Supplier: {award['supplier_name']}")
-                    text_parts.append(f"  Address: {award['supplier_address']}")
-                    text_parts.append(f"  Value: £{award['value']}")
-                    text_parts.append(f"  Awarded Date: {award['awarded_date']}")
-                    text_parts.append(f"  Start Date: {award['start_date']}")
-                    text_parts.append(f"  End Date: {award['end_date']}")
-                    text_parts.append(f"  Awarded to SME: {award['awarded_to_sme']}")
-                text_parts.append("")
+            # Add all notice data dynamically
+            text_parts.extend(dict_to_text(notice_data))
             
             # Create contract URL
             contract_url = f"{BASE_URL}/Notice/{notice_id}"
@@ -364,6 +287,8 @@ def parse_xml_and_extract_contracts(xml_content):
             
         except Exception as e:
             print(f"Error parsing contract: {e}")
+            import traceback
+            traceback.print_exc()
             continue
     
     return contracts
