@@ -15,6 +15,11 @@ import digital_health
 import contract_finder
 import find_tender
 import htn_co
+import startups_co
+import ukri
+import eu_startups
+import businesscloud
+import htworld
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -59,6 +64,21 @@ def run_all_scrapers():
     time.sleep(5)
     
     run_scraper("HTN.co", htn_co.main)
+    time.sleep(5)
+    
+    run_scraper("Startups.co", startups_co.main)
+    time.sleep(5)
+    
+    run_scraper("UKRI", ukri.main)
+    time.sleep(5)
+    
+    run_scraper("EU-Startups", eu_startups.main)
+    time.sleep(5)
+    
+    run_scraper("BusinessCloud", businesscloud.main)
+    time.sleep(5)
+    
+    run_scraper("HT World", htworld.main)
     
     # Calculate total time
     elapsed_time = time.time() - start_time
@@ -89,7 +109,7 @@ def main():
     run_all_scrapers()
     
     # Schedule to run every hour
-    schedule.every(1).hours.do(run_all_scrapers)
+    schedule.every(5).hours.do(run_all_scrapers)
     
     # Keep running
     try:
