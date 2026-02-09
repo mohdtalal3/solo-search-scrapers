@@ -84,8 +84,8 @@ def insert_articles(articles):
                 article["created_at"] = current_time
             article["updated_at"] = current_time
         
-        # Use upsert: insert or update on conflict with url
-        result = supabase.table("articles").upsert(articles, on_conflict="url",ignore_duplicates=True ).execute()
+        # Use upsert: insert or update on conflict with company_id and url
+        result = supabase.table("articles").upsert(articles, on_conflict="company_id,url",ignore_duplicates=True ).execute()
         return len(result.data) if result.data else 0
     except Exception as e:
         print(f"Error upserting articles: {e}")
@@ -93,15 +93,16 @@ def insert_articles(articles):
 
 
 # ----------------------------------------------------------
-# Check if article already exists (by URL)
+# Check if article already exists (by company_id and URL)
 # ----------------------------------------------------------
-def article_exists(url):
+def article_exists(company_id, url):
     """
-    Check if an article with the given URL already exists.
+    Check if an article with the given company_id and URL already exists.
     """
     try:
         result = supabase.table("articles")\
             .select("url")\
+            .eq("company_id", company_id)\
             .eq("url", url)\
             .execute()
         

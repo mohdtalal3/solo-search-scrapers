@@ -48,6 +48,7 @@ def scrape_article(url):
         "title": title_tag.get_text(strip=True) if title_tag else "",
         "categories": categories,
         "text": text,
+        "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
     }
 
 

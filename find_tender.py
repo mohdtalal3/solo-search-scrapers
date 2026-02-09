@@ -366,7 +366,8 @@ def main():
             "date": notice["publication_date"],
             "title": notice["title"],
             "text": "\n".join(text_parts),
-            "lastmod": notice["publication_date"]
+            "lastmod": notice["publication_date"],
+            "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
         }
         
         contracts.append(contract)

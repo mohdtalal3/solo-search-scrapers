@@ -74,6 +74,7 @@ def scrape_article(url):
         "date": date,
         "title": title,
         "text": text,
+        "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
     }
 
 

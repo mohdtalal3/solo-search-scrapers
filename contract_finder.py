@@ -280,7 +280,8 @@ def parse_xml_and_extract_contracts(xml_content):
                 "date": published_date,
                 "title": title,
                 "text": "\n".join(text_parts),
-                "lastmod": last_update or published_date
+                "lastmod": last_update or published_date,
+                "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
             }
             
             contracts.append(contract)
