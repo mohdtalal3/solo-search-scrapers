@@ -86,13 +86,13 @@ def main():
         
         article = {
             "source": SOURCE_NAME,
-            "group_name": "2",
             "url": post["link"],
             "date": timestamp,
             "title": title,
             "text": text,
             "lastmod": timestamp,
             "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
+            "scraper_id": 11
         }
         
         all_articles.append(article)

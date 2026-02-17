@@ -275,13 +275,13 @@ def parse_xml_and_extract_contracts(xml_content):
             # Create contract dictionary
             contract = {
                 "source": SOURCE_NAME,
-                "group_name": "1",
                 "url": contract_url,
                 "date": published_date,
                 "title": title,
                 "text": "\n".join(text_parts),
                 "lastmod": last_update or published_date,
                 "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
+                "scraper_id": 8
             }
             
             contracts.append(contract)

@@ -361,13 +361,13 @@ def main():
         
         contract = {
             "source": SOURCE_NAME,
-            "group_name": "1",
             "url": full_url,
             "date": notice["publication_date"],
             "title": notice["title"],
             "text": "\n".join(text_parts),
             "lastmod": notice["publication_date"],
             "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
+            "scraper_id": 6
         }
         
         contracts.append(contract)

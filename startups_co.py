@@ -70,12 +70,12 @@ def scrape_article(url):
 
     return {
         "source": SOURCE_NAME,
-        "group_name": "2",
         "url": url,
         "date": date,
         "title": title,
         "text": text,
         "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
+        "scraper_id": 9
     }
 
 

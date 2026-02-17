@@ -67,7 +67,6 @@ def scrape_article(url):
 
     return {
         "source": SOURCE_NAME,
-        "group_name": "1",
         "url": url,
         "date": date,
         "title": title,
@@ -75,6 +74,7 @@ def scrape_article(url):
         "tags": tags,
         "text": text,
         "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
+        "scraper_id": 1
     }
 
 

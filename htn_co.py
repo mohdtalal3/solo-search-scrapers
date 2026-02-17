@@ -42,8 +42,8 @@ def scrape_article(url):
 
     return {
         "source": SOURCE_NAME,
-        "group_name": "1",
         "url": url,
+        "scraper_id": 2,
         "date": date_tag.get_text(strip=True) if date_tag else "",
         "title": title_tag.get_text(strip=True) if title_tag else "",
         "categories": categories,

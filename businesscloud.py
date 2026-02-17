@@ -87,8 +87,8 @@ def main():
             
             article = {
                 "source": SOURCE_NAME,
-                "group_name": "3",
                 "url": post["link"],
+                "scraper_id": 12,
                 "date": timestamp,
                 "title": title,
                 "text": text,
