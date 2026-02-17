@@ -41,7 +41,6 @@ def scrape_article(url):
     text = "\n\n".join(paragraphs)
 
     return {
-        "source": SOURCE_NAME,
         "url": url,
         "scraper_id": 2,
         "date": date_tag.get_text(strip=True) if date_tag else "",

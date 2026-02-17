@@ -86,7 +86,6 @@ def main():
             text = clean_html_content(html_content)
             
             article = {
-                "source": SOURCE_NAME,
                 "url": post["link"],
                 "scraper_id": 12,
                 "date": timestamp,

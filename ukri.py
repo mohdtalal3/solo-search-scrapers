@@ -68,7 +68,6 @@ def scrape_article(url):
     text = " ".join(text.split())
 
     return {
-        "source": SOURCE_NAME,
         "url": url,
         "scraper_id": 10,
         "date": date,

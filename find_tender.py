@@ -360,7 +360,6 @@ def main():
         full_url = f"{BASE_URL}{notice['url']}" if notice['url'].startswith("/") else notice['url']
         
         contract = {
-            "source": SOURCE_NAME,
             "url": full_url,
             "date": notice["publication_date"],
             "title": notice["title"],

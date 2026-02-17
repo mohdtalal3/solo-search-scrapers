@@ -66,7 +66,6 @@ def scrape_article(url):
     text = "\n\n".join(paragraphs)
 
     return {
-        "source": SOURCE_NAME,
         "url": url,
         "date": date,
         "title": title,

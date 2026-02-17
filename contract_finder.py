@@ -274,7 +274,6 @@ def parse_xml_and_extract_contracts(xml_content):
             
             # Create contract dictionary
             contract = {
-                "source": SOURCE_NAME,
                 "url": contract_url,
                 "date": published_date,
                 "title": title,
