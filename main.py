@@ -20,7 +20,7 @@ import ukri
 import eu_startups
 import businesscloud
 import htworld
-import ukdefencejournal
+#import ukdefencejournal
 
 
 def run_scraper(scraper_name, scraper_function):
