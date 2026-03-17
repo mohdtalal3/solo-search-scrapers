@@ -20,6 +20,7 @@ import ukri
 import eu_startups
 import businesscloud
 import htworld
+import ukdefencejournal
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -72,13 +73,16 @@ def run_all_scrapers():
     run_scraper("UKRI", ukri.main)
     time.sleep(5)
     
-    run_scraper("EU-Startups", eu_startups.main)
-    time.sleep(5)
+    # run_scraper("EU-Startups", eu_startups.main)
+    # time.sleep(5)
     
     run_scraper("BusinessCloud", businesscloud.main)
     time.sleep(5)
     
     run_scraper("HT World", htworld.main)
+    time.sleep(5)
+
+    #run_scraper("UK Defence Journal", ukdefencejournal.main)
     
     # Calculate total time
     elapsed_time = time.time() - start_time
