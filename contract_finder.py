@@ -85,7 +85,7 @@ HEADERS = {
 }
 
 def get_form_token(session: requests.Session) -> str:
-    r = session.get(SEARCH_URL, headers=HEADERS, timeout=30)
+    r = session.get(SEARCH_URL, headers=HEADERS, timeout=200)
     r.raise_for_status()
 
     soup = BeautifulSoup(r.text, "html.parser")
@@ -167,9 +167,9 @@ def submit_search(session: requests.Session, form_token: str, keywords: str, cpv
         SEARCH_URL,
         headers=headers,
         data=data,
-        timeout=30
+        timeout=200
     )
-
+    print()
     r.raise_for_status()
     return r.text
 
@@ -194,7 +194,7 @@ def submit_sort(session: requests.Session, sort_token: str) -> str:
         SEARCH_URL,
         headers=headers,
         data=payload,
-        timeout=30
+        timeout=200
     )
 
     r.raise_for_status()
@@ -208,7 +208,7 @@ def download_xml(session: requests.Session, filename="contracts_finder_results.x
         "referer": SEARCH_URL,
     }
 
-    r = session.get(xml_url, headers=headers, timeout=30)
+    r = session.get(xml_url, headers=headers, timeout=200)
     r.raise_for_status()
 
     if not r.text.strip().startswith("<?xml"):

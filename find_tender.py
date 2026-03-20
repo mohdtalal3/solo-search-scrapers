@@ -1,6 +1,8 @@
 import time
 import os
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
@@ -16,11 +18,63 @@ HEADERS = {
     "user-agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/142.0.0.0 Safari/537.36"
+        "Chrome/123.0.0.0 Safari/537.36"
     ),
-    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "accept-language": "en-US,en;q=0.9",
+    "accept": (
+        "text/html,application/xhtml+xml,application/xml;"
+        "q=0.9,image/avif,image/webp,image/apng,*/*;"
+        "q=0.8,application/signed-exchange;v=b3;q=0.7"
+    ),
+    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+    "accept-encoding": "gzip, deflate, br",
+    "cache-control": "max-age=0",
+    "sec-ch-ua": '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "connection": "keep-alive",
 }
+
+POST_HEADERS_EXTRA = {
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "origin": BASE_URL,
+    "referer": SEARCH_URL,
+    "content-type": "application/x-www-form-urlencoded",
+}
+
+
+def build_session() -> requests.Session:
+    """Create a session with automatic transport-level retries."""
+    retry = Retry(
+        total=4,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504, 403],
+        allowed_methods=["GET", "POST"],
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    s = requests.Session()
+    s.mount("https://", adapter)
+    s.mount("http://", adapter)
+    return s
+
+
+def with_retry(fn, *args, max_attempts: int = 3, backoff: int = 4, **kwargs):
+    """Call fn(*args, **kwargs), retrying up to max_attempts times on any exception."""
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            if attempt == max_attempts:
+                raise
+            wait = backoff * attempt
+            print(f"  ⚠️  Attempt {attempt}/{max_attempts} failed: {e}. Retrying in {wait}s...")
+            time.sleep(wait)
 
 def get_form_token(session: requests.Session) -> str:
     r = session.get(SEARCH_URL, headers=HEADERS, timeout=30)
@@ -118,11 +172,7 @@ def submit_search(session: requests.Session, form_token: str) -> str:
     ("adv_search", "")
 ]
    # print(data)
-    headers = HEADERS | {
-        "origin": BASE_URL,
-        "referer": SEARCH_URL,
-        "content-type": "application/x-www-form-urlencoded",
-    }
+    headers = HEADERS | POST_HEADERS_EXTRA
 
     r = session.post(
         SEARCH_URL,
@@ -140,14 +190,7 @@ def submit_sort(session: requests.Session, sort_token: str) -> str:
         ("form_token", sort_token),
     ]
 
-    headers = {
-        "user-agent": HEADERS["user-agent"],
-        "accept": HEADERS["accept"],
-        "accept-language": HEADERS["accept-language"],
-        "origin": BASE_URL,
-        "referer": SEARCH_URL,
-        "content-type": "application/x-www-form-urlencoded",
-    }
+    headers = HEADERS | POST_HEADERS_EXTRA
 
     r = session.post(
         SEARCH_URL,
@@ -265,15 +308,15 @@ def extract_notices_from_page(session, page_url):
 def main():
     saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
 
-    session = requests.Session()
+    session = build_session()
 
     time.sleep(2)
     print("Step 1: Load search page")
-    initial_token = get_form_token(session)
+    initial_token = with_retry(get_form_token, session)
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token)
+    search_html = with_retry(submit_search, session, initial_token)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")
@@ -284,7 +327,7 @@ def main():
 
     time.sleep(2)
     print("Step 4: Submit sort")
-    sorted_html = submit_sort(session, sort_token)
+    sorted_html = with_retry(submit_sort, session, sort_token)
 
     if "Something went wrong" in sorted_html:
         raise RuntimeError("Sort failed")
