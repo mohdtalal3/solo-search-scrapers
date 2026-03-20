@@ -1,4 +1,5 @@
 from seleniumbase import SB
+import os
 from bs4 import BeautifulSoup
 import time
 import json
@@ -6,6 +7,8 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
 API_URL = "https://www.htworld.co.uk/wp-json/wp/v2/posts"
 SOURCE_NAME = "HT_WORLD"
+SCRAPER_ID = 6
+COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
 
 def clean_html_content(html_content):
@@ -57,7 +60,7 @@ def fetch_posts_with_retry(sb, page_num, max_retries=3):
 
 
 def main():
-    saved_timestamp = get_latest_timestamp(SOURCE_NAME)
+    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
     
     all_articles = []
     newest_timestamp = None
@@ -96,8 +99,8 @@ def main():
                     "title": title,
                     "text": text,
                     "lastmod": timestamp,
-                    "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
-                    "scraper_id": 13
+                    "company_id": COMPANY_ID,
+                    "scraper_id": SCRAPER_ID
                 }
                 
                 all_articles.append(article)
@@ -114,7 +117,7 @@ def main():
         print("🟢 First run detected — NOT saving any articles.")
         if newest_timestamp:
             print("Saving latest timestamp:", newest_timestamp)
-            update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+            update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
         return
     
     # ----------------------------
@@ -135,7 +138,7 @@ def main():
     
     # Update timestamp
     if newest_timestamp:
-        update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
         print("🕒 New latest timestamp saved:", newest_timestamp)
 
 

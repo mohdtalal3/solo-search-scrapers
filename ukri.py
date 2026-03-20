@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -5,6 +6,8 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
 MAIN_SITEMAP = "https://www.ukri.org/sitemap.xml"
 SOURCE_NAME = "UKRI"
+SCRAPER_ID = 11
+COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
 headers = {"User-Agent": "Mozilla/5.0"}
 
@@ -69,11 +72,11 @@ def scrape_article(url):
 
     return {
         "url": url,
-        "scraper_id": 10,
+        "scraper_id": SCRAPER_ID,
         "date": date,
         "title": title,
         "text": text,
-        "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
+        "company_id": COMPANY_ID,
     }
 
 
@@ -158,7 +161,7 @@ def get_articles_from_sitemap(sitemap_url):
 # MAIN LOGIC
 # ----------------------------------------------------------
 def main():
-    saved_timestamp = get_latest_timestamp(SOURCE_NAME)
+    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
 
     print("🔍 Fetching main sitemap...")
     latest_sitemap = get_latest_news_sitemap()
@@ -175,7 +178,7 @@ def main():
     if saved_timestamp is None:
         print("🟢 First run detected — NOT scraping any articles.")
         print("Saving latest timestamp:", newest_timestamp)
-        update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
         return
 
     # ----------------------------
@@ -205,7 +208,7 @@ def main():
         print(f"✅ Inserted {inserted_count} articles into database")
 
     # Update timestamp
-    update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+    update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
     print("🕒 New latest timestamp saved:", newest_timestamp)
 
 

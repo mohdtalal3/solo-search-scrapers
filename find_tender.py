@@ -1,4 +1,5 @@
 import time
+import os
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
@@ -8,6 +9,8 @@ import re
 BASE_URL = "https://www.find-tender.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
 SOURCE_NAME = "FIND_TENDER"
+SCRAPER_ID = 5
+COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
 HEADERS = {
     "user-agent": (
@@ -260,7 +263,7 @@ def extract_notices_from_page(session, page_url):
 
 
 def main():
-    saved_timestamp = get_latest_timestamp(SOURCE_NAME)
+    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
 
     session = requests.Session()
 
@@ -325,7 +328,7 @@ def main():
     if saved_timestamp is None:
         print("🟢 First run detected — NOT saving any notices to database.")
         print("Saving latest timestamp:", newest_timestamp)
-        update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
         return
     
     # ----------------------------
@@ -365,8 +368,8 @@ def main():
             "title": notice["title"],
             "text": "\n".join(text_parts),
             "lastmod": notice["publication_date"],
-            "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
-            "scraper_id": 6
+            "company_id": COMPANY_ID,
+            "scraper_id": SCRAPER_ID
         }
         
         contracts.append(contract)
@@ -377,7 +380,7 @@ def main():
     print(f"✅ Inserted {inserted_count} notices into database")
     
     # Update timestamp
-    update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+    update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
     print("🕒 New latest timestamp saved:", newest_timestamp)
     print("✅ ALL DONE")
 

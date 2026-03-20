@@ -7,6 +7,8 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
 MAIN_SITEMAP = "https://startups.co.uk/sitemap_index.xml"
 SOURCE_NAME = "STARTUPS_CO"
+SCRAPER_ID = 8
+COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
 headers = {"User-Agent": "Mozilla/5.0"}
 
@@ -73,8 +75,8 @@ def scrape_article(url):
         "date": date,
         "title": title,
         "text": text,
-        "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
-        "scraper_id": 9
+        "company_id": COMPANY_ID,
+        "scraper_id": SCRAPER_ID
     }
 
 
@@ -158,7 +160,7 @@ def get_articles_from_sitemap(sitemap_url):
 # MAIN LOGIC
 # ----------------------------------------------------------
 def main():
-    saved_timestamp = get_latest_timestamp(SOURCE_NAME)
+    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
 
     print("🔍 Fetching main sitemap...")
     latest_sitemap = get_latest_post_sitemap()
@@ -176,7 +178,7 @@ def main():
         print("🟢 First run detected — NOT scraping any articles.")
         print("Saving latest timestamp:", newest_timestamp)
 
-        update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
         return
 
     # ----------------------------
@@ -206,7 +208,7 @@ def main():
         print(f"✅ Inserted {inserted_count} articles into database")
 
     # Update timestamp
-    update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+    update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
     print("🕒 New latest timestamp saved:", newest_timestamp)
 
 

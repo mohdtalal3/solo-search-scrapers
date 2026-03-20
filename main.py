@@ -9,6 +9,7 @@ import schedule
 from datetime import datetime
 import sys
 import traceback
+import notifier
 
 # Import all scraper modules
 import digital_health
@@ -20,7 +21,11 @@ import ukri
 import eu_startups
 import businesscloud
 import htworld
-#import ukdefencejournal
+import energyvoice
+import marineindustrynews
+import themanufacturer
+import prnewswire
+import ukdefencejournal
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -39,6 +44,7 @@ def run_scraper(scraper_name, scraper_function):
         print(f"❌ {scraper_name} failed with error:")
         print(f"Error: {str(e)}")
         traceback.print_exc()
+        notifier.notify_error(scraper_name, e)
         print(f"Continuing with next scraper...")
     
     print("=" * 80)
@@ -53,7 +59,10 @@ def run_all_scrapers():
     print("🔄" * 40 + "\n")
     
     start_time = time.time()
-    
+    run_scraper("UK Defence Journal", ukdefencejournal.main)
+    time.sleep(5)
+
+    input("Press Enter to continue with the next scraper...")  # Wait for user input before next scraper
     # Run each scraper
     run_scraper("Digital Health", digital_health.main)
     time.sleep(5)  # Small delay between scrapers
@@ -73,8 +82,8 @@ def run_all_scrapers():
     run_scraper("UKRI", ukri.main)
     time.sleep(5)
     
-    # run_scraper("EU-Startups", eu_startups.main)
-    # time.sleep(5)
+    run_scraper("EU-Startups", eu_startups.main)
+    time.sleep(5)
     
     run_scraper("BusinessCloud", businesscloud.main)
     time.sleep(5)
@@ -82,7 +91,19 @@ def run_all_scrapers():
     run_scraper("HT World", htworld.main)
     time.sleep(5)
 
-    #run_scraper("UK Defence Journal", ukdefencejournal.main)
+    run_scraper("Energy Voice", energyvoice.main)
+    time.sleep(5)
+
+    run_scraper("Marine Industry News", marineindustrynews.main)
+    time.sleep(5)
+
+    run_scraper("The Manufacturer", themanufacturer.main)
+    time.sleep(5)
+
+    run_scraper("PR Newswire UK", prnewswire.main)
+    time.sleep(5)
+
+
     
     # Calculate total time
     elapsed_time = time.time() - start_time

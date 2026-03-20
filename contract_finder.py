@@ -1,4 +1,5 @@
 import time
+import os
 import requests
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
@@ -8,6 +9,70 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 BASE_URL = "https://www.contractsfinder.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
 SOURCE_NAME = "CONTRACT_FINDER"
+SCRAPER_ID = 2
+
+# ----------------------------------------------------------
+# Company configs — each runs a separate search with its own
+# CPV codes, keywords, min value, and company_id.
+# ----------------------------------------------------------
+COMPANY_CONFIGS = [
+    {
+        "label": "Solo Search (Digital Health / IT)",
+        "company_id": os.getenv("SOLO_SEARCH_COMPANY_ID"),
+        "keywords": "Integrated Care Board NHS England Trust Digital Software EPR Platform Interoperability Cloud Cyber AI Data",
+        "value_low": "250000",
+        "cpv_codes": [
+            "72000000",
+            "72200000",
+            "72500000",
+            "72600000",
+            "51600000",
+            "48000000",
+            "48180000",
+            "72300000",
+            "75123000",
+        ],
+    },
+    {
+        "label": "Arden Executive (Defence / Aerospace / Marine / Energy)",
+        "company_id": os.getenv("ARDEN_EXEC_COMPANY_ID"),
+        "keywords": "defence MOD aerospace aircraft naval marine shipbuilding offshore subsea oil gas energy power plant engineering manufacturing industrial automation framework programme program contract upgrade capability systems integration infrastructure",
+        "value_low": "500000",
+        "cpv_codes": [
+            "35300000",
+            "35310000",
+            "35320000",
+            "35600000",
+            "35610000",
+            "35620000",
+            "35630000",
+            "35700000",
+
+            "34700000",
+            "34710000",
+            "34720000",
+            "34730000",
+
+            "34500000",
+            "34510000",
+            "34520000",
+            "34530000",
+            "34540000",
+
+            "45251000",
+            "45251100",
+            "45251200",
+            "45252000",
+            "45262300",
+
+            "71300000",
+            "71320000",
+            "71330000",
+
+            "42900000"
+        ],
+    },
+]
 
 HEADERS = {
     "user-agent": (
@@ -38,66 +103,60 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: requests.Session, form_token: str) -> str:
+def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str) -> str:
     # Calculate date 2 days ago from today
     two_days_ago = datetime.now() - timedelta(days=2)
     day = two_days_ago.strftime("%d")
     month = two_days_ago.strftime("%m")
     year = two_days_ago.strftime("%Y")
-    
+
     # 🔴 IMPORTANT: payload as list of tuples (NOT dict)
     data = [
-    # ("sort_select", " Latest publication date"),
-    # ("sort", "last_publication:DESC"),
-    ("keywords", "Integrated Care Board NHS England Trust Digital Software EPR Platform Interoperability Cloud Cyber AI Data"),
-    ("awarded", "1"),
-    ("open", "1"),
-    ("public_notice", "1"),
-    ("supplychain_notice", "1"),
-    ("location", "all_locations"),
-    ("postcode", ""),
-    ("postcode_distance_select", "5 miles"),
-    ("postcode_distance", "5"),
-    ("value_low", "250000"),
-    ("value_high", ""),
-    ("cpv_code_selections[]", "72000000"),
-    ("cpv_code_selections[]", "72200000"),
-    ("cpv_code_selections[]", "72500000"),
-    ("cpv_code_selections[]", "72600000"),
-    ("cpv_code_selections[]", "51600000"),
-    ("cpv_code_selections[]", "48000000"),
-    ("cpv_code_selections[]", "48180000"),
-    ("cpv_code_selections[]", "72300000"),
-    ("cpv_code_selections[]", "75123000"),
-    ("published_from[day]", day),
-    ("published_from[month]", month),
-    ("published_from[year]", year),
-    ("published_to[day]", ""),
-    ("published_to[month]", ""),
-    ("published_to[year]", ""),
-    ("closed_from[day]", ""),
-    ("closed_from[month]", ""),
-    ("closed_from[year]", ""),
-    ("closed_to[day]", ""),
-    ("closed_to[month]", ""),
-    ("closed_to[year]", ""),
-    ("atm_from[day]", ""),
-    ("atm_from[month]", ""),
-    ("atm_from[year]", ""),
-    ("atm_to[day]", ""),
-    ("atm_to[month]", ""),
-    ("atm_to[year]", ""),
-    ("awarded_from[day]", ""),
-    ("awarded_from[month]", ""),
-    ("awarded_from[year]", ""),
-    ("awarded_to[day]", ""),
-    ("awarded_to[month]", ""),
-    ("awarded_to[year]", ""),
-    ("reload_triggered_by", ""),
-    ("form_token", f"{form_token}"),
-    ("adv_search", "")
-]
-    print(data)
+        ("keywords", keywords),
+        ("awarded", "1"),
+        ("open", "1"),
+        ("public_notice", "1"),
+        ("supplychain_notice", "1"),
+        ("location", "all_locations"),
+        ("postcode", ""),
+        ("postcode_distance_select", "5 miles"),
+        ("postcode_distance", "5"),
+        ("value_low", value_low),
+        ("value_high", ""),
+    ]
+
+    for cpv in cpv_codes:
+        data.append(("cpv_code_selections[]", cpv))
+
+    data += [
+        ("published_from[day]", day),
+        ("published_from[month]", month),
+        ("published_from[year]", year),
+        ("published_to[day]", ""),
+        ("published_to[month]", ""),
+        ("published_to[year]", ""),
+        ("closed_from[day]", ""),
+        ("closed_from[month]", ""),
+        ("closed_from[year]", ""),
+        ("closed_to[day]", ""),
+        ("closed_to[month]", ""),
+        ("closed_to[year]", ""),
+        ("atm_from[day]", ""),
+        ("atm_from[month]", ""),
+        ("atm_from[year]", ""),
+        ("atm_to[day]", ""),
+        ("atm_to[month]", ""),
+        ("atm_to[year]", ""),
+        ("awarded_from[day]", ""),
+        ("awarded_from[month]", ""),
+        ("awarded_from[year]", ""),
+        ("awarded_to[day]", ""),
+        ("awarded_to[month]", ""),
+        ("awarded_to[year]", ""),
+        ("reload_triggered_by", ""),
+        ("form_token", form_token),
+        ("adv_search", ""),
+    ]
     headers = HEADERS | {
         "origin": BASE_URL,
         "referer": SEARCH_URL,
@@ -113,6 +172,8 @@ def submit_search(session: requests.Session, form_token: str) -> str:
 
     r.raise_for_status()
     return r.text
+
+
 def submit_sort(session: requests.Session, sort_token: str) -> str:
     payload = [
         ("sort_select", " Latest publication date"),
@@ -279,8 +340,8 @@ def parse_xml_and_extract_contracts(xml_content):
                 "title": title,
                 "text": "\n".join(text_parts),
                 "lastmod": last_update or published_date,
-                "company_id": "234f37eb-1147-43fb-89c1-9812e0824e1f",
-                "scraper_id": 8
+                "company_id": None,  # set per-run by run_for_company()
+                "scraper_id": SCRAPER_ID
             }
             
             contracts.append(contract)
@@ -294,8 +355,19 @@ def parse_xml_and_extract_contracts(xml_content):
     return contracts
 
 
-def main():
-    saved_timestamp = get_latest_timestamp(SOURCE_NAME)
+def run_for_company(config: dict):
+    """Run the full contract-finder flow for a single company config."""
+    company_id = config["company_id"]
+    label = config["label"]
+    keywords = config["keywords"]
+    cpv_codes = config["cpv_codes"]
+    value_low = config["value_low"]
+
+    print(f"\n{'='*60}")
+    print(f"🏢 Running for: {label}")
+    print(f"{'='*60}")
+
+    saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 
     session = requests.Session()
 
@@ -305,15 +377,11 @@ def main():
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token)
+    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")
 
-    # with open("01_results_unsorted.html", "w", encoding="utf-8") as f:
-    #     f.write(search_html)
-
-    # Extract sort token from results page
     sort_token = extract_sort_token(search_html)
     print("Step 3: Sort token extracted")
 
@@ -324,58 +392,61 @@ def main():
     if "Something went wrong" in sorted_html:
         raise RuntimeError("Sort failed")
 
-    # with open("02_results_sorted.html", "w", encoding="utf-8") as f:
-    #     f.write(sorted_html)
-
-    # Download XML
     time.sleep(2)
     print("Step 5: Download XML")
-    xml_content = download_xml(session, "contracts_finder_sorted.xml")
-    
-    # Parse XML and extract contracts
+    xml_filename = f"contracts_finder_{company_id[:8]}.xml"
+    xml_content = download_xml(session, xml_filename)
+
     print("Step 6: Parsing XML and extracting contracts")
     contracts = parse_xml_and_extract_contracts(xml_content)
-    
+
+    # Stamp each contract with this company's id
+    for c in contracts:
+        c["company_id"] = company_id
+
     if not contracts:
         print("⛔ No contracts found in XML")
         return
-    
+
     print(f"📊 Found {len(contracts)} contracts")
-    
-    # Sort by lastmod (newest first)
+
     contracts.sort(key=lambda x: x["lastmod"], reverse=True)
     newest_timestamp = contracts[0]["lastmod"]
-    
+
     # ----------------------------
     # FIRST RUN — NO SCRAPING
     # ----------------------------
     if saved_timestamp is None:
         print("🟢 First run detected — NOT saving any contracts to database.")
         print("Saving latest timestamp:", newest_timestamp)
-        update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+        update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
         return
-    
+
     # ----------------------------
     # SUBSEQUENT RUNS — save new contracts
     # ----------------------------
     print("Previously saved timestamp:", saved_timestamp)
-    
+
     new_contracts = [c for c in contracts if c["lastmod"] > saved_timestamp]
-    
+
     if not new_contracts:
         print("⛔ No new contracts found.")
         return
-    
+
     print(f"🆕 Found {len(new_contracts)} new contracts.")
-    
-    # Insert contracts into database
+
     inserted_count = insert_articles(new_contracts)
     print(f"✅ Inserted {inserted_count} contracts into database")
-    
-    # Update timestamp
-    update_latest_timestamp(SOURCE_NAME, newest_timestamp)
+
+    update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
     print("🕒 New latest timestamp saved:", newest_timestamp)
-    print("✅ ALL DONE")
+    print("✅ DONE")
+
+
+def main():
+    for config in COMPANY_CONFIGS:
+        run_for_company(config)
+        time.sleep(5)  # brief pause between company runs
 
 
 

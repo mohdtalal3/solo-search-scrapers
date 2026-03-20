@@ -1,0 +1,15 @@
+- Scrappey base API: https://publisher.scrappey.com/api/v1 with API key passed as query param `?key=...`.
+- Core request pattern: POST JSON with `cmd` like `request.get`, `request.post`, `request.put`, `request.delete`, `request.patch`, `request.publish` and target `url`.
+- Success responses return `data: "success"` and `solution.verified: true`; failures can still return HTTP 200 with `data: "error"` and `solution.verified: false` plus `error` text.
+- Session lifecycle: `sessions.create` and `sessions.destroy`; sessions retain cookies/browser state and reduce repeated challenge solving.
+- Persistent profiles: pass `profileId` to keep stable fingerprint, cookies, localStorage, and remembered proxy/IP across requests; `forceNewProxy: true` refreshes stored proxy.
+- Screenshots: `screenshot: true` returns base64 in `solution.screenshot`; `screenshotUpload: true` adds `solution.screenshotUrl`; viewport controlled via `screenshotWidth`/`screenshotHeight`.
+- Browser automation uses `browserActions` with top-level `when` phases: `beforelaunch`, `beforeload`, `afterload` (default), `after_captcha`.
+- Common browserActions include `click`, `type`, `goto`, `wait`, `wait_for_selector`, `wait_for_function`, `wait_for_load_state`, `wait_for_cookie`, `execute_js`, `scroll`, `hover`, `keyboard`, `dropdown`, `switch_iframe`, `set_viewport`, `if`, `while`, `solve_captcha`, `discord_login`, `remove_iframes`.
+- `execute_js` return values are stored in `javascriptReturn` and can be referenced later as `{javascriptReturn[index]}`.
+- Regex extraction supports single regex string or array of regex strings; include `filter: ["regex"]` to return matches in `solution.regex`.
+- Balance endpoint: GET https://publisher.scrappey.com/api/v1/balance?key=API_KEY returns `{ "balance": number }`.
+- Concurrency defaults: up to 200 threads for new users, auto-scale up to 1000 if success rate stays above 50%.
+- Error codes cover overload, Cloudflare/proxy/captcha/browser failures; selector misses include CODE-0027.
+- Useful parameters seen in docs: `customHeaders`, `cookies`, `proxy`, `premiumProxy`, `mobileProxy`, `datacenter`, `proxyCountry`, `autoparse`, `structure`, `filter`, `abortOnDetection`, `alwaysLoad`, `whitelistedDomains`, `mouseMovements`, `retries`.
+- For this repo, prefer documenting and using the official request format from docs pages over the less-consistent example snippets at the bottom of the dataset.
