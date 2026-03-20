@@ -59,10 +59,7 @@ def run_all_scrapers():
     print("🔄" * 40 + "\n")
     
     start_time = time.time()
-    run_scraper("UK Defence Journal", ukdefencejournal.main)
-    time.sleep(5)
 
-    input("Press Enter to continue with the next scraper...")  # Wait for user input before next scraper
     # Run each scraper
     run_scraper("Digital Health", digital_health.main)
     time.sleep(5)  # Small delay between scrapers
@@ -102,7 +99,9 @@ def run_all_scrapers():
 
     run_scraper("PR Newswire UK", prnewswire.main)
     time.sleep(5)
-
+    
+    run_scraper("UK Defence Journal", ukdefencejournal.main)
+    time.sleep(5)
 
     
     # Calculate total time
