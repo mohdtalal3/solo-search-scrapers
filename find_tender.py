@@ -1,8 +1,6 @@
 import time
 import os
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
@@ -15,66 +13,23 @@ SCRAPER_ID = 5
 COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
 HEADERS = {
-    "user-agent": (
+    "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/123.0.0.0 Safari/537.36"
     ),
-    "accept": (
-        "text/html,application/xhtml+xml,application/xml;"
-        "q=0.9,image/avif,image/webp,image/apng,*/*;"
-        "q=0.8,application/signed-exchange;v=b3;q=0.7"
-    ),
-    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
-    "accept-encoding": "gzip, deflate, br",
-    "cache-control": "max-age=0",
-    "sec-ch-ua": '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"macOS"',
-    "sec-fetch-dest": "document",
-    "sec-fetch-mode": "navigate",
-    "sec-fetch-site": "none",
-    "sec-fetch-user": "?1",
-    "upgrade-insecure-requests": "1",
-    "connection": "keep-alive",
-}
-
-POST_HEADERS_EXTRA = {
-    "sec-fetch-site": "same-origin",
-    "sec-fetch-user": "?1",
-    "origin": BASE_URL,
-    "referer": SEARCH_URL,
-    "content-type": "application/x-www-form-urlencoded",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
 }
 
 
 def build_session() -> requests.Session:
-    """Create a session with automatic transport-level retries."""
-    retry = Retry(
-        total=4,
-        backoff_factor=2,
-        status_forcelist=[429, 500, 502, 503, 504, 403],
-        allowed_methods=["GET", "POST"],
-        raise_on_status=False,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
     s = requests.Session()
-    s.mount("https://", adapter)
-    s.mount("http://", adapter)
+    proxy_url = os.getenv("FIND_TENDER_PROXY")
+    if proxy_url:
+        s.proxies = {"http": proxy_url, "https": proxy_url}
+        print(f"  🔒 Proxy active: {proxy_url.split('@')[-1]}")
     return s
-
-
-def with_retry(fn, *args, max_attempts: int = 3, backoff: int = 4, **kwargs):
-    """Call fn(*args, **kwargs), retrying up to max_attempts times on any exception."""
-    for attempt in range(1, max_attempts + 1):
-        try:
-            return fn(*args, **kwargs)
-        except Exception as e:
-            if attempt == max_attempts:
-                raise
-            wait = backoff * attempt
-            print(f"  ⚠️  Attempt {attempt}/{max_attempts} failed: {e}. Retrying in {wait}s...")
-            time.sleep(wait)
 
 def get_form_token(session: requests.Session) -> str:
     r = session.get(SEARCH_URL, headers=HEADERS, timeout=30)
@@ -172,7 +127,11 @@ def submit_search(session: requests.Session, form_token: str) -> str:
     ("adv_search", "")
 ]
    # print(data)
-    headers = HEADERS | POST_HEADERS_EXTRA
+    headers = HEADERS | {
+        "origin": BASE_URL,
+        "referer": SEARCH_URL,
+        "content-type": "application/x-www-form-urlencoded",
+    }
 
     r = session.post(
         SEARCH_URL,
@@ -190,7 +149,11 @@ def submit_sort(session: requests.Session, sort_token: str) -> str:
         ("form_token", sort_token),
     ]
 
-    headers = HEADERS | POST_HEADERS_EXTRA
+    headers = HEADERS | {
+        "origin": BASE_URL,
+        "referer": SEARCH_URL,
+        "content-type": "application/x-www-form-urlencoded",
+    }
 
     r = session.post(
         SEARCH_URL,
@@ -235,30 +198,47 @@ def get_last_page(soup):
     return max(pages) if pages else 1
 
 
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
+
+
 def scrape_notice_details(session, notice_url):
     """
-    Scrape the full details of a notice from its detail page.
-    Returns the complete text content.
+    Fetch notice detail page via Scrappey (bypasses bot protection).
+    Falls back to plain requests if Scrappey key is not set.
     """
+    full_url = f"{BASE_URL}{notice_url}" if notice_url.startswith("/") else notice_url
+
     try:
-        full_url = f"{BASE_URL}{notice_url}" if notice_url.startswith("/") else notice_url
-        
-        resp = session.get(full_url, headers=HEADERS, timeout=30)
-        resp.raise_for_status()
-        
-        soup = BeautifulSoup(resp.text, "html.parser")
-        
-        # Get the main content
+        scrappey_key = os.getenv("SCRAPPEY_API_KEY")
+        if scrappey_key:
+            payload = {
+                "cmd": "request.get",
+                "requestType": "request",
+                "retries":2,
+                #"cmd": "request.get",
+                "url": full_url,
+                "premiumProxy": True,
+                "proxyCountry": "UnitedKingdom",
+            }
+            resp = requests.post(
+                f"{SCRAPPEY_API_URL}?key={scrappey_key}",
+                json=payload,
+                timeout=60,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            html = data.get("solution", {}).get("response", "")
+        else:
+            r = session.get(full_url, headers=HEADERS, timeout=30)
+            r.raise_for_status()
+            html = r.text
+
+        soup = BeautifulSoup(html, "html.parser")
         content_div = soup.select_one(".notice-view.govuk-main-wrapper.app-main-class")
-        
         if not content_div:
             return ""
-        
-        # Extract all text content
-        text = content_div.get_text("\n", strip=True)
-        
-        return text
-        
+        return content_div.get_text("\n", strip=True)
+
     except Exception as e:
         print(f"Error scraping notice {notice_url}: {e}")
         return ""
@@ -312,11 +292,11 @@ def main():
 
     time.sleep(2)
     print("Step 1: Load search page")
-    initial_token = with_retry(get_form_token, session)
+    initial_token = get_form_token(session)
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = with_retry(submit_search, session, initial_token)
+    search_html = submit_search(session, initial_token)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")
@@ -327,7 +307,7 @@ def main():
 
     time.sleep(2)
     print("Step 4: Submit sort")
-    sorted_html = with_retry(submit_sort, session, sort_token)
+    sorted_html = submit_sort(session, sort_token)
 
     if "Something went wrong" in sorted_html:
         raise RuntimeError("Sort failed")
