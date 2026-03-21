@@ -99,7 +99,7 @@ def run_all_scrapers():
 
     run_scraper("PR Newswire UK", prnewswire.main)
     time.sleep(5)
-    
+
     run_scraper("UK Defence Journal", ukdefencejournal.main)
     time.sleep(5)
 
@@ -124,7 +124,7 @@ def main():
     print("📊 SCRAPER SCHEDULER STARTED")
     print("=" * 80)
     print(f"Current time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("Schedule: Every 1 hour")
+    print("Schedule: Every 2 hour")
     print("Press Ctrl+C to stop")
     print("=" * 80 + "\n")
     
@@ -139,7 +139,7 @@ def main():
     try:
         while True:
             schedule.run_pending()
-            time.sleep(60)  # Check every minute
+            time.sleep(120)  # Check every minute
     except KeyboardInterrupt:
         print("\n\n" + "=" * 80)
         print("🛑 Scheduler stopped by user")
