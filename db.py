@@ -115,7 +115,7 @@ def update_latest_timestamp(scraper_ref, company_id, timestamp):
 # ----------------------------------------------------------
 # Insert articles into database
 # ----------------------------------------------------------
-BATCH_SIZE = 25
+BATCH_SIZE = 20
 
 
 def _insert_articles_batch(normalized, now_iso):
