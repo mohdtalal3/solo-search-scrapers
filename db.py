@@ -115,6 +115,82 @@ def update_latest_timestamp(scraper_ref, company_id, timestamp):
 # ----------------------------------------------------------
 # Insert articles into database
 # ----------------------------------------------------------
+BATCH_SIZE = 25
+
+
+def _insert_articles_batch(normalized, now_iso):
+    """Process a single batch of normalized articles. Returns inserted company_articles count."""
+    urls = list({a["url"] for a in normalized})
+
+    existing_res = (
+        supabase.table("articles")
+        .select("id,url")
+        .in_("url", urls)
+        .execute()
+    )
+    url_to_id = {row["url"]: row["id"] for row in (existing_res.data or [])}
+
+    missing_articles = []
+    for a in normalized:
+        if a["url"] not in url_to_id:
+            missing_articles.append(
+                {
+                    "scraper_id": a["scraper_id"],
+                    "url": a["url"],
+                    "date": a["date"],
+                    "title": a["title"],
+                    "text": a["text"],
+                    "categories": a["categories"],
+                    "tags": a["tags"],
+                    "lastmod": a["lastmod"],
+                    "created_at": now_iso,
+                    "updated_at": now_iso,
+                }
+            )
+
+    if missing_articles:
+        supabase.table("articles").upsert(
+            missing_articles,
+            on_conflict="url",
+            ignore_duplicates=True,
+        ).execute()
+
+        refreshed_res = (
+            supabase.table("articles")
+            .select("id,url")
+            .in_("url", urls)
+            .execute()
+        )
+        url_to_id = {row["url"]: row["id"] for row in (refreshed_res.data or [])}
+
+    company_links = []
+    for a in normalized:
+        article_id = url_to_id.get(a["url"])
+        if not article_id:
+            continue
+
+        company_links.append(
+            {
+                "company_id": a["company_id"],
+                "article_id": article_id,
+                "scraper_id": a["scraper_id"],
+                "discovered_at": now_iso,
+                "status": "queued",
+            }
+        )
+
+    if not company_links:
+        return 0
+
+    link_result = supabase.table("company_articles").upsert(
+        company_links,
+        on_conflict="company_id,article_id",
+        ignore_duplicates=True,
+    ).execute()
+
+    return len(link_result.data) if link_result.data else 0
+
+
 def insert_articles(articles, company_id=None, scraper_id=None):
     """
     Insert articles into global articles table and link them in company_articles.
@@ -123,6 +199,7 @@ def insert_articles(articles, company_id=None, scraper_id=None):
     - Global dedupe is by URL in articles.
     - Company-specific access is stored in company_articles.
     - If URL already exists globally but company link is missing, it is created.
+    - Articles are processed in batches of BATCH_SIZE to avoid URI-too-long errors.
 
     Returns the number of company_articles rows inserted for this call.
     """
@@ -154,77 +231,12 @@ def insert_articles(articles, company_id=None, scraper_id=None):
                 }
             )
 
-        urls = list({a["url"] for a in normalized})
+        total_inserted = 0
+        for i in range(0, len(normalized), BATCH_SIZE):
+            batch = normalized[i : i + BATCH_SIZE]
+            total_inserted += _insert_articles_batch(batch, now_iso)
 
-        existing_res = (
-            supabase.table("articles")
-            .select("id,url")
-            .in_("url", urls)
-            .execute()
-        )
-        url_to_id = {row["url"]: row["id"] for row in (existing_res.data or [])}
-
-        missing_articles = []
-        for a in normalized:
-            if a["url"] not in url_to_id:
-                missing_articles.append(
-                    {
-                        "scraper_id": a["scraper_id"],
-                        "url": a["url"],
-                        "date": a["date"],
-                        "title": a["title"],
-                        "text": a["text"],
-                        "categories": a["categories"],
-                        "tags": a["tags"],
-                        "lastmod": a["lastmod"],
-                        "created_at": now_iso,
-                        "updated_at": now_iso,
-                    }
-                )
-
-        if missing_articles:
-            # ignore_duplicates handles race conditions on articles.url
-            supabase.table("articles").upsert(
-                missing_articles,
-                on_conflict="url",
-                ignore_duplicates=True,
-            ).execute()
-
-            # Refresh IDs for any newly inserted URLs
-            refreshed_res = (
-                supabase.table("articles")
-                .select("id,url")
-                .in_("url", urls)
-                .execute()
-            )
-            url_to_id = {row["url"]: row["id"] for row in (refreshed_res.data or [])}
-
-        company_links = []
-        for a in normalized:
-            article_id = url_to_id.get(a["url"])
-            if not article_id:
-                continue
-
-            company_links.append(
-                {
-                    "company_id": a["company_id"],
-                    "article_id": article_id,
-                    "scraper_id": a["scraper_id"],
-                    "discovered_at": now_iso,
-                    "status": "queued",
-                }
-            )
-
-        if not company_links:
-            return 0
-
-        link_result = supabase.table("company_articles").upsert(
-            company_links,
-            on_conflict="company_id,article_id",
-            ignore_duplicates=True,
-        ).execute()
-
-        return len(link_result.data) if link_result.data else 0
+        return total_inserted
     except Exception as e:
         print(f"Error inserting articles: {e}")
         raise
