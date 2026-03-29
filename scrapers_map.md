@@ -44,6 +44,7 @@ Quick reference for which scraper belongs to which company.
 | 15 | `consultancy_eu.py` | https://www.consultancy.eu |
 | 16 | `consultancy_uk.py` | https://www.consultancy.uk |
 | 17 | `erp_today.py` | https://erp.today |
+| 18 | `computable_nl.py` | https://computable.nl |
 
 ---
 

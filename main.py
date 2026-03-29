@@ -29,6 +29,7 @@ import ukdefencejournal
 import consultancy_eu
 import consultancy_uk
 import erp_today
+import computable_nl
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -113,6 +114,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("ERP Today", erp_today.main)
+    time.sleep(5)
+
+    run_scraper("Computable NL", computable_nl.main)
     time.sleep(5)
 
     
