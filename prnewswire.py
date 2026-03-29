@@ -7,17 +7,31 @@ from dotenv import load_dotenv
 
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
+load_dotenv()
+
 SITEMAP_URL = "https://www.prnewswire.co.uk/sitemap-news.xml?page=1"
 SOURCE_NAME = "PR_NEWSWIRE_UK"
 SCRAPER_ID = 14
-COMPANY_ID = os.getenv("ARDEN_EXEC_COMPANY_ID")
+
+# ----------------------------------------------------------
+# All companies that receive PR Newswire articles.
+# No per-company filters — every company gets all articles.
+# ----------------------------------------------------------
+COMPANY_CONFIGS = [
+    {
+        "label": "Arden Executive",
+        "company_id": os.getenv("ARDEN_EXEC_COMPANY_ID"),
+    },
+    {
+        "label": "ERP Recruit",
+        "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
+    },
+]
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Accept-Language": "en-GB,en;q=0.9",
 }
-
-load_dotenv()
 
 
 # ----------------------------------------------------------
@@ -109,7 +123,6 @@ def scrape_article(url, date, title):
         "title": page_title,
         "text": text,
         "lastmod": date,
-        "company_id": COMPANY_ID,
         "scraper_id": SCRAPER_ID,
     }
 
@@ -118,7 +131,11 @@ def scrape_article(url, date, title):
 # MAIN LOGIC
 # ----------------------------------------------------------
 def main():
-    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
+    # Collect saved timestamps for every company
+    company_timestamps = {
+        config["company_id"]: get_latest_timestamp(SCRAPER_ID, config["company_id"])
+        for config in COMPANY_CONFIGS
+    }
 
     print("🔍 Fetching PR Newswire UK sitemap (page 1)...")
     article_entries = get_articles_from_sitemap()
@@ -132,40 +149,71 @@ def main():
     newest_timestamp = article_entries[0]["date"]
 
     # ----------------------------
-    # FIRST RUN — NO SCRAPING
+    # Determine which URLs need scraping (union across all non-first-run companies)
     # ----------------------------
-    if saved_timestamp is None:
-        print("🟢 First run detected — NOT scraping any articles.")
-        print("Saving latest timestamp:", newest_timestamp)
-        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
-        return
+    urls_to_scrape = set()
+    for config in COMPANY_CONFIGS:
+        ts = company_timestamps[config["company_id"]]
+        if ts is not None:
+            for entry in article_entries:
+                if entry["date"] > ts:
+                    urls_to_scrape.add(entry["url"])
+
+    # Scrape each article exactly once and cache the result
+    scraped_cache = {}
+    if urls_to_scrape:
+        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s)...")
+        for entry in article_entries:
+            if entry["url"] in urls_to_scrape:
+                print("Scraping:", entry["url"])
+                result = scrape_article(entry["url"], entry["date"], entry["title"])
+                if result:
+                    scraped_cache[entry["url"]] = result
 
     # ----------------------------
-    # SUBSEQUENT RUNS — scrape new
+    # Process each company independently
     # ----------------------------
-    print("Previously saved timestamp:", saved_timestamp)
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        label = config["label"]
+        ts = company_timestamps[company_id]
 
-    new_articles = [a for a in article_entries if a["date"] > saved_timestamp]
+        print(f"\n{'='*60}")
+        print(f"🏢 Processing: {label}")
+        print(f"{'='*60}")
 
-    if not new_articles:
-        print("⛔ No new articles found.")
-        return
+        # FIRST RUN — just save timestamp, no articles
+        if ts is None:
+            print("🟢 First run detected — NOT scraping any articles.")
+            print("Saving latest timestamp:", newest_timestamp)
+            update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+            continue
 
-    print(f"🆕 Found {len(new_articles)} new articles.")
+        print("Previously saved timestamp:", ts)
 
-    scraped_articles = []
-    for entry in new_articles:
-        print("Scraping:", entry["url"])
-        scraped = scrape_article(entry["url"], entry["date"], entry["title"])
-        if scraped:
-            scraped_articles.append(scraped)
+        new_entries = [e for e in article_entries if e["date"] > ts]
 
-    if scraped_articles:
-        inserted_count = insert_articles(scraped_articles)
-        print(f"✅ Inserted {inserted_count} articles into database")
+        if not new_entries:
+            print("⛔ No new articles found.")
+            continue
 
-    update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
-    print("🕒 New latest timestamp saved:", newest_timestamp)
+        print(f"🆕 Found {len(new_entries)} new article(s).")
+
+        # Build article list for this company, reusing cached scrape results
+        company_articles = []
+        for entry in new_entries:
+            cached = scraped_cache.get(entry["url"])
+            if cached:
+                article = dict(cached)
+                article["company_id"] = company_id
+                company_articles.append(article)
+
+        if company_articles:
+            inserted_count = insert_articles(company_articles)
+            print(f"✅ Inserted {inserted_count} articles for {label}")
+
+        update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+        print(f"🕒 New latest timestamp saved for {label}: {newest_timestamp}")
 
 
 if __name__ == "__main__":

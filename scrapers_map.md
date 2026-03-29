@@ -35,6 +35,16 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## ERP Recruit
+
+> ERP and consulting industry news
+
+| ID | File | Source |
+|----|------|--------|
+| 15 | `consultancy_eu.py` | https://www.consultancy.eu |
+
+---
+
 ## Both Companies
 
 > Runs twice — once per company with different CPV codes and keywords
@@ -59,3 +69,4 @@ Quick reference for which scraper belongs to which company.
 |---------|------|
 | Solo Search | `234f37eb-1147-43fb-89c1-9812e0824e1f` |
 | Arden Executive | `c5d7d2eb-189d-49dc-89e1-2af375d0b3ce` |
+| ERP Recruit | `81ef7ff7-c548-42d8-8b22-b339b26d08ac` |

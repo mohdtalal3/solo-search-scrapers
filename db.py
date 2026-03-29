@@ -243,6 +243,29 @@ def insert_articles(articles, company_id=None, scraper_id=None):
 
 
 # ----------------------------------------------------------
+# Get recent article URLs for a given scraper
+# ----------------------------------------------------------
+def get_recent_article_urls(scraper_id, limit=32):
+    """
+    Return a set of the most recently inserted article URLs for a scraper.
+    Used for fast duplicate detection when a source has no timestamps.
+    """
+    try:
+        result = (
+            supabase.table("articles")
+            .select("url")
+            .eq("scraper_id", scraper_id)
+            .order("created_at", desc=True)
+            .limit(limit)
+            .execute()
+        )
+        return {row["url"] for row in (result.data or [])}
+    except Exception as e:
+        print(f"Error fetching recent article URLs: {e}")
+        return set()
+
+
+# ----------------------------------------------------------
 # Check if a company already has access to an article URL
 # ----------------------------------------------------------
 def article_exists(company_id, url):

@@ -26,6 +26,7 @@ import marineindustrynews
 import themanufacturer
 import prnewswire
 import ukdefencejournal
+import consultancy_eu
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -101,6 +102,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("UK Defence Journal", ukdefencejournal.main)
+    time.sleep(5)
+
+    run_scraper("Consultancy EU", consultancy_eu.main)
     time.sleep(5)
 
     
