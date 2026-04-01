@@ -41,10 +41,15 @@ Quick reference for which scraper belongs to which company.
 
 | ID | File | Source |
 |----|------|--------|
+| 5 | `find_tender.py` | https://www.find-tender.service.gov.uk |
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
 | 15 | `consultancy_eu.py` | https://www.consultancy.eu |
 | 16 | `consultancy_uk.py` | https://www.consultancy.uk |
 | 17 | `erp_today.py` | https://erp.today |
 | 18 | `computable_nl.py` | https://computable.nl |
+| 19 | `capgemini.py` | https://www.capgemini.com (UK/IE/BE/LU/NL) |
+| 20 | `oracle.py` | https://www.oracle.com/nl/news/ |
+| 21 | `deloitte.py` | https://www.deloitte.com (UK/NL/BE/IE/LU) |
 
 ---
 

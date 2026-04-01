@@ -102,7 +102,7 @@ def scrape_article(url, date, title):
 
     # Article body — paragraphs inside the release body column
     body_col = soup.select_one("section.release-body div.col-lg-10")
-    if not body_col:
+    if not body_col or not body_col.get_text(strip=True):
         # Wider fallback
         body_col = soup.select_one("section.release-body")
 

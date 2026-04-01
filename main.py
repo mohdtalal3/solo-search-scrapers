@@ -30,6 +30,9 @@ import consultancy_eu
 import consultancy_uk
 import erp_today
 import computable_nl
+import capgemini
+import oracle
+import deloitte
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -98,8 +101,8 @@ def run_all_scrapers():
     run_scraper("Marine Industry News", marineindustrynews.main)
     time.sleep(5)
 
-    run_scraper("The Manufacturer", themanufacturer.main)
-    time.sleep(5)
+    # run_scraper("The Manufacturer", themanufacturer.main)
+    # time.sleep(5)
 
     run_scraper("PR Newswire UK", prnewswire.main)
     time.sleep(5)
@@ -119,7 +122,15 @@ def run_all_scrapers():
     run_scraper("Computable NL", computable_nl.main)
     time.sleep(5)
 
-    
+    run_scraper("Capgemini", capgemini.main)
+    time.sleep(5)
+
+    run_scraper("Oracle", oracle.main)
+    time.sleep(5)
+
+    run_scraper("Deloitte", deloitte.main)
+    time.sleep(5)
+
     # Calculate total time
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)

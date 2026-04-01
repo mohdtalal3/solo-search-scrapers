@@ -10,7 +10,38 @@ BASE_URL = "https://www.find-tender.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
 SOURCE_NAME = "FIND_TENDER"
 SCRAPER_ID = 5
-COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
+
+# ----------------------------------------------------------
+# Company configs — each runs a separate search with its own
+# CPV codes, keywords, min value, and company_id.
+# ----------------------------------------------------------
+COMPANY_CONFIGS = [
+    {
+        "label": "Solo Search (Digital Health / IT)",
+        "company_id": os.getenv("SOLO_SEARCH_COMPANY_ID"),
+        "keywords": "Integrated Care Board NHS England Trust Digital Software EPR Platform Interoperability Cloud Cyber AI Data",
+        "value_low": "250000",
+        "cpv_codes": [
+            "72000000",
+            "72200000",
+            "72500000",
+            "72600000",
+            "51600000",
+            "48000000",
+            "48180000",
+            "72300000",
+            "75123000",
+        ],
+    },
+    {
+        "label": "ERP Recruit (Oracle / ERP)",
+        "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
+        "keywords": "Oracle ERP",
+        "value_low": "50000",
+        "cpv_codes": [
+        ],
+    },
+]
 
 HEADERS = {
     "User-Agent": (
@@ -32,7 +63,7 @@ def build_session() -> requests.Session:
     return s
 
 def get_form_token(session: requests.Session) -> str:
-    r = session.get(SEARCH_URL, headers=HEADERS, timeout=30)
+    r = session.get(SEARCH_URL, headers=HEADERS, timeout=120)
     r.raise_for_status()
 
     soup = BeautifulSoup(r.text, "html.parser")
@@ -50,96 +81,86 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: requests.Session, form_token: str) -> str:
-    # Calculate date 2 days ago from today
+def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str) -> str:
     two_days_ago = datetime.now() - timedelta(days=2)
     day = two_days_ago.strftime("%d")
     month = two_days_ago.strftime("%m")
     year = two_days_ago.strftime("%Y")
-    
-    # 🔴 IMPORTANT: payload as list of tuples (NOT dict)
+
     data = [
-    ("keywords", "Integrated Care Board NHS England Trust Digital Software EPR Platform Interoperability Cloud Cyber AI Data"),
-    ("stage[5]", "1"),
-    ("form_type[28]", "1"),
-    ("form_type[30]", "1"),
-    ("form_type[31]", "1"),
-    ("form_type[29]", "1"),
-    ("form_type[32]", "1"),
-    ("form_type[33]", "1"),
-    ("form_type[34]", "1"),
-    ("form_type[37]", "1"),
-    ("form_type[38]", "1"),
-    ("form_type[39]", "1"),
-    ("form_type[35]", "1"),
-    ("form_type[41]", "1"),
-    ("form_type[42]", "1"),
-    ("form_type[43]", "1"),
-    ("form_type[1]", "1"),
-    ("form_type[2]", "1"),
-    ("form_type[3]", "1"),
-    ("form_type[4]", "1"),
-    ("form_type[5]", "1"),
-    ("form_type[6]", "1"),
-    ("form_type[7]", "1"),
-    ("form_type[8]", "1"),
-    ("form_type[12]", "1"),
-    ("form_type[13]", "1"),
-    ("form_type[14]", "1"),
-    ("form_type[15]", "1"),
-    ("form_type[16]", "1"),
-    ("form_type[17]", "1"),
-    ("form_type[18]", "1"),
-    ("form_type[19]", "1"),
-    ("form_type[20]", "1"),
-    ("form_type[21]", "1"),
-    ("form_type[22]", "1"),
-    ("form_type[23]", "1"),
-    ("form_type[24]", "1"),
-    ("form_type[25]", "1"),
-    ("form_type[26]", "1"),
-    ("form_type[27]", "1"),
-    ("cpv_code_selections[]", "72000000"),
-    ("cpv_code_selections[]", "72200000"),
-    ("cpv_code_selections[]", "72500000"),
-    ("cpv_code_selections[]", "72600000"),
-    ("cpv_code_selections[]", "51600000"),
-    ("cpv_code_selections[]", "48000000"),
-    ("cpv_code_selections[]", "48180000"),
-    ("cpv_code_selections[]", "72300000"),
-    ("cpv_code_selections[]", "75123000"),
-    ("minimum_value", "250000"),
-    ("maximum_value", ""),
-    ("published_from[day]", day),
-    ("published_from[month]", month),
-    ("published_from[year]", year),
-    ("published_to[day]", ""),
-    ("published_to[month]", ""),
-    ("published_to[year]", ""),
-    ("closed_from[day]", ""),
-    ("closed_from[month]", ""),
-    ("closed_from[year]", ""),
-    ("closed_to[day]", ""),
-    ("closed_to[month]", ""),
-    ("closed_to[year]", ""),
-    ("reload_triggered_by", ""),
-    ("form_token", f"{form_token}"),
-    ("adv_search", "")
-]
-   # print(data)
+        ("keywords", keywords),
+        ("stage[5]", "1"),
+        ("form_type[28]", "1"),
+        ("form_type[30]", "1"),
+        ("form_type[31]", "1"),
+        ("form_type[29]", "1"),
+        ("form_type[32]", "1"),
+        ("form_type[33]", "1"),
+        ("form_type[34]", "1"),
+        ("form_type[37]", "1"),
+        ("form_type[38]", "1"),
+        ("form_type[39]", "1"),
+        ("form_type[35]", "1"),
+        ("form_type[41]", "1"),
+        ("form_type[42]", "1"),
+        ("form_type[43]", "1"),
+        ("form_type[1]", "1"),
+        ("form_type[2]", "1"),
+        ("form_type[3]", "1"),
+        ("form_type[4]", "1"),
+        ("form_type[5]", "1"),
+        ("form_type[6]", "1"),
+        ("form_type[7]", "1"),
+        ("form_type[8]", "1"),
+        ("form_type[12]", "1"),
+        ("form_type[13]", "1"),
+        ("form_type[14]", "1"),
+        ("form_type[15]", "1"),
+        ("form_type[16]", "1"),
+        ("form_type[17]", "1"),
+        ("form_type[18]", "1"),
+        ("form_type[19]", "1"),
+        ("form_type[20]", "1"),
+        ("form_type[21]", "1"),
+        ("form_type[22]", "1"),
+        ("form_type[23]", "1"),
+        ("form_type[24]", "1"),
+        ("form_type[25]", "1"),
+        ("form_type[26]", "1"),
+        ("form_type[27]", "1"),
+    ]
+
+    if cpv_codes:
+        for cpv in cpv_codes:
+            data.append(("cpv_code_selections[]", cpv))
+
+    data += [
+        ("minimum_value", value_low),
+        ("maximum_value", ""),
+        ("published_from[day]", day),
+        ("published_from[month]", month),
+        ("published_from[year]", year),
+        ("published_to[day]", ""),
+        ("published_to[month]", ""),
+        ("published_to[year]", ""),
+        ("closed_from[day]", ""),
+        ("closed_from[month]", ""),
+        ("closed_from[year]", ""),
+        ("closed_to[day]", ""),
+        ("closed_to[month]", ""),
+        ("closed_to[year]", ""),
+        ("reload_triggered_by", ""),
+        ("form_token", form_token),
+        ("adv_search", ""),
+    ]
+
     headers = HEADERS | {
         "origin": BASE_URL,
         "referer": SEARCH_URL,
         "content-type": "application/x-www-form-urlencoded",
     }
 
-    r = session.post(
-        SEARCH_URL,
-        headers=headers,
-        data=data,
-        timeout=30
-    )
-
+    r = session.post(SEARCH_URL, headers=headers, data=data, timeout=120)
     r.raise_for_status()
     return r.text
 def submit_sort(session: requests.Session, sort_token: str) -> str:
@@ -159,7 +180,7 @@ def submit_sort(session: requests.Session, sort_token: str) -> str:
         SEARCH_URL,
         headers=headers,
         data=payload,
-        timeout=30
+        timeout=120
     )
 
     r.raise_for_status()
@@ -223,13 +244,13 @@ def scrape_notice_details(session, notice_url):
             resp = requests.post(
                 f"{SCRAPPEY_API_URL}?key={scrappey_key}",
                 json=payload,
-                timeout=60,
+                timeout=120,
             )
             resp.raise_for_status()
             data = resp.json()
             html = data.get("solution", {}).get("response", "")
         else:
-            r = session.get(full_url, headers=HEADERS, timeout=30)
+            r = session.get(full_url, headers=HEADERS, timeout=120  )
             r.raise_for_status()
             html = r.text
 
@@ -252,7 +273,7 @@ def extract_notices_from_page(session, page_url):
     notices = []
     
     try:
-        resp = session.get(page_url, headers=HEADERS, timeout=30)
+        resp = session.get(page_url, headers=HEADERS, timeout=120)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
 
@@ -285,8 +306,18 @@ def extract_notices_from_page(session, page_url):
     return notices
 
 
-def main():
-    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
+def run_for_company(config: dict):
+    company_id = config["company_id"]
+    label = config["label"]
+    keywords = config["keywords"]
+    cpv_codes = config["cpv_codes"]
+    value_low = config["value_low"]
+
+    print(f"\n{'='*60}")
+    print(f"🏢 Running for: {label}")
+    print(f"{'='*60}")
+
+    saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 
     session = build_session()
 
@@ -296,12 +327,11 @@ def main():
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token)
+    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")
 
-    # Extract sort token from results page
     sort_token = extract_sort_token(search_html)
     print("Step 3: Sort token extracted")
 
@@ -312,102 +342,87 @@ def main():
     if "Something went wrong" in sorted_html:
         raise RuntimeError("Sort failed")
 
-    # # Save sorted results to file for debugging
-    # with open("find_tender_results.html", "w", encoding="utf-8") as f:
-    #     f.write(sorted_html)
-    
-    # Parse the sorted results to get the search results URL
     soup = BeautifulSoup(sorted_html, "html.parser")
-    
-    # Get last page number
     last_page = get_last_page(soup)
     print(f"Step 5: Last page detected: {last_page}")
-    
-    # Extract all notices from all pages
+
     all_notices = []
-    
     for page in range(1, last_page + 1):
         page_url = f"{SEARCH_URL}?page={page}"
         print(f"\nFetching page {page}/{last_page}: {page_url}")
-        
         notices = extract_notices_from_page(session, page_url)
         all_notices.extend(notices)
-        
-        time.sleep(1)  # Be nice to the server
-    
+        time.sleep(1)
+
     print(f"\n📊 Found {len(all_notices)} total notices across {last_page} pages")
-    
+
     if not all_notices:
         print("⛔ No notices found")
         return
-    
-    # Sort by publication date (newest first)
+
     all_notices.sort(key=lambda x: x["publication_date"], reverse=True)
     newest_timestamp = all_notices[0]["publication_date"]
-    
+
     # ----------------------------
     # FIRST RUN — NO SCRAPING
     # ----------------------------
     if saved_timestamp is None:
         print("🟢 First run detected — NOT saving any notices to database.")
         print("Saving latest timestamp:", newest_timestamp)
-        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
+        update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
         return
-    
+
     # ----------------------------
     # SUBSEQUENT RUNS — save new notices
     # ----------------------------
     print("Previously saved timestamp:", saved_timestamp)
-    
+
     new_notices = [n for n in all_notices if n["publication_date"] > saved_timestamp]
-    
+
     if not new_notices:
         print("⛔ No new notices found.")
         return
-    
+
     print(f"🆕 Found {len(new_notices)} new notices.")
-    
-    # Scrape full details for each new notice
+
     contracts = []
     for i, notice in enumerate(new_notices, 1):
         print(f"Scraping notice {i}/{len(new_notices)}: {notice['title']}")
-        
-        # Get full notice details
+
         full_text = scrape_notice_details(session, notice["url"])
-        
-        # Build comprehensive text field with title first
-        text_parts = []
-        text_parts.append(f"TITLE: {notice['title']}")
-        text_parts.append("")
-        text_parts.append("FULL NOTICE DETAILS:")
-        text_parts.append(full_text)
-        
-        # Create full URL
-        full_url = f"{BASE_URL}{notice['url']}" if notice['url'].startswith("/") else notice['url']
-        
-        contract = {
+
+        text_parts = [
+            f"TITLE: {notice['title']}",
+            "",
+            "FULL NOTICE DETAILS:",
+            full_text,
+        ]
+
+        full_url = f"{BASE_URL}{notice['url']}" if notice["url"].startswith("/") else notice["url"]
+
+        contracts.append({
             "url": full_url,
             "date": notice["publication_date"],
             "title": notice["title"],
             "text": "\n".join(text_parts),
             "lastmod": notice["publication_date"],
-            "company_id": COMPANY_ID,
-            "scraper_id": SCRAPER_ID
-        }
-        
-        contracts.append(contract)
-        time.sleep(1)  # Be nice to the server
-    
-    # Insert contracts into database
+            "company_id": company_id,
+            "scraper_id": SCRAPER_ID,
+        })
+        time.sleep(1)
+
     inserted_count = insert_articles(contracts)
     print(f"✅ Inserted {inserted_count} notices into database")
-    
-    # Update timestamp
-    update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
+
+    update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
     print("🕒 New latest timestamp saved:", newest_timestamp)
-    print("✅ ALL DONE")
+    print("✅ DONE")
 
 
+def main():
+    for config in COMPANY_CONFIGS:
+        run_for_company(config)
+        time.sleep(5)
 
 
 if __name__ == "__main__":
