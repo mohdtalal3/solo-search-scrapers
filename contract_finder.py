@@ -15,12 +15,15 @@ SCRAPER_ID = 2
 # Company configs — each runs a separate search with its own
 # CPV codes, keywords, min value, and company_id.
 # ----------------------------------------------------------
+DEFAULT_NOTICE_TYPES = ["awarded", "open", "public_notice", "supplychain_notice"]
+
 COMPANY_CONFIGS = [
     {
         "label": "Solo Search (Digital Health / IT)",
         "company_id": os.getenv("SOLO_SEARCH_COMPANY_ID"),
         "keywords": "Integrated Care Board NHS England Trust Digital Software EPR Platform Interoperability Cloud Cyber AI Data",
         "value_low": "250000",
+        "notice_types": DEFAULT_NOTICE_TYPES,
         "cpv_codes": [
             "72000000",
             "72200000",
@@ -38,6 +41,7 @@ COMPANY_CONFIGS = [
         "company_id": os.getenv("ARDEN_EXEC_COMPANY_ID"),
         "keywords": "defence MOD aerospace aircraft naval marine shipbuilding offshore subsea oil gas energy power plant engineering manufacturing industrial automation framework programme program contract upgrade capability systems integration infrastructure",
         "value_low": "500000",
+        "notice_types": DEFAULT_NOTICE_TYPES,
         "cpv_codes": [
             "35300000",
             "35310000",
@@ -72,6 +76,14 @@ COMPANY_CONFIGS = [
             "42900000"
         ],
     },
+    {
+        "label": "PLEA (Landscape Architecture)",
+        "company_id": os.getenv("PLEA_COMPANY_ID"),
+        "keywords": '"landscape architect" "landscape design" "public realm" "biodiversity net gain" "green infrastructure" "planting scheme"',
+        "value_low": "",
+        "notice_types": ["speculative", "planning", "tender", "awarded", "open", "public_notice", "supplychain_notice"],
+        "cpv_codes": [],
+    },
 ]
 
 HEADERS = {
@@ -103,7 +115,10 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str) -> str:
+def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, notice_types: list = None) -> str:
+    if notice_types is None:
+        notice_types = DEFAULT_NOTICE_TYPES
+
     # Calculate date 2 days ago from today
     two_days_ago = datetime.now() - timedelta(days=2)
     day = two_days_ago.strftime("%d")
@@ -111,12 +126,12 @@ def submit_search(session: requests.Session, form_token: str, keywords: str, cpv
     year = two_days_ago.strftime("%Y")
 
     # 🔴 IMPORTANT: payload as list of tuples (NOT dict)
-    data = [
-        ("keywords", keywords),
-        ("awarded", "1"),
-        ("open", "1"),
-        ("public_notice", "1"),
-        ("supplychain_notice", "1"),
+    data = [("keywords", keywords)]
+
+    for nt in notice_types:
+        data.append((nt, "1"))
+
+    data += [
         ("location", "all_locations"),
         ("postcode", ""),
         ("postcode_distance_select", "5 miles"),
@@ -125,8 +140,9 @@ def submit_search(session: requests.Session, form_token: str, keywords: str, cpv
         ("value_high", ""),
     ]
 
-    for cpv in cpv_codes:
-        data.append(("cpv_code_selections[]", cpv))
+    if cpv_codes:
+        for cpv in cpv_codes:
+            data.append(("cpv_code_selections[]", cpv))
 
     data += [
         ("published_from[day]", day),
@@ -311,7 +327,10 @@ def parse_xml_and_extract_contracts(xml_content):
             notice_id = notice.get('Id', '')
             title = notice.get('Title', '')
             published_date = notice.get('PublishedDate', '')
+            # Strip Z / timezone offset to get plain ISO datetime
+            published_date = published_date[:19] if published_date else ''
             last_update = notice.get('LastNotifiableUpdate', published_date)
+            last_update = last_update[:19] if last_update else ''
             
             if not notice_id or not title:
                 continue
@@ -362,6 +381,7 @@ def run_for_company(config: dict):
     keywords = config["keywords"]
     cpv_codes = config["cpv_codes"]
     value_low = config["value_low"]
+    notice_types = config.get("notice_types", DEFAULT_NOTICE_TYPES)
 
     print(f"\n{'='*60}")
     print(f"🏢 Running for: {label}")
@@ -377,7 +397,7 @@ def run_for_company(config: dict):
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low)
+    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, notice_types)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")
@@ -447,9 +467,6 @@ def main():
     for config in COMPANY_CONFIGS:
         run_for_company(config)
         time.sleep(5)  # brief pause between company runs
-
-
-
 
 if __name__ == "__main__":
     main()

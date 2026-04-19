@@ -74,7 +74,7 @@ def get_articles_from_sitemap():
 
         articles.append({
             "url": loc.get_text(strip=True),
-            "date": pub_date.get_text(strip=True),
+            "date": pub_date.get_text(strip=True)[:19],
             "title": news_title.get_text(strip=True) if news_title else "",
         })
 

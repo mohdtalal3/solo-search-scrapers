@@ -41,7 +41,9 @@ def scrape_article(url):
     date = ""
     date_tag = soup.select_one("time")
     if date_tag:
-        date = date_tag.get("datetime", "") or date_tag.get_text(strip=True)
+        raw = date_tag.get("datetime", "") or date_tag.get_text(strip=True)
+        # Pad date-only values (e.g. '2026-04-16') to full ISO datetime
+        date = raw + "T00:00:00" if raw and len(raw) == 10 else raw
     
     # Get the entry-content div which contains the article text
     content_div = soup.select_one(".entry-content")

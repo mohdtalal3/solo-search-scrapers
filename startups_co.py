@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import os
 import time
+from datetime import datetime
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
 MAIN_SITEMAP = "https://startups.co.uk/sitemap_index.xml"
@@ -45,7 +46,11 @@ def scrape_article(url):
 
     # Extract date
     date_tag = article_tag.select_one(".article-date-info .meta-value")
-    date = date_tag.get_text(strip=True) if date_tag else ""
+    _raw_date = date_tag.get_text(strip=True) if date_tag else ""
+    try:
+        date = datetime.strptime(_raw_date, "%d %B %Y").strftime("%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        date = _raw_date
 
     # Remove unwanted elements from article
     cleanup_selectors = [

@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import os
+from datetime import datetime
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 
 MAIN_SITEMAP = "https://htn.co.uk/wp-sitemap.xml"
@@ -10,6 +11,14 @@ SCRAPER_ID = 7
 COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
 headers = {"User-Agent": "Mozilla/5.0"}
+
+
+def _parse_htn_date(raw: str) -> str:
+    try:
+        s = raw.replace(" am", " AM").replace(" pm", " PM")
+        return datetime.strptime(s, "%B %d, %Y %I:%M %p").strftime("%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return raw
 
 
 # ----------------------------------------------------------
@@ -45,7 +54,7 @@ def scrape_article(url):
     return {
         "url": url,
         "scraper_id": SCRAPER_ID,
-        "date": date_tag.get_text(strip=True) if date_tag else "",
+        "date": _parse_htn_date(date_tag.get_text(strip=True)) if date_tag else "",
         "title": title_tag.get_text(strip=True) if title_tag else "",
         "categories": categories,
         "text": text,

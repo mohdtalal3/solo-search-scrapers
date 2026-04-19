@@ -111,6 +111,8 @@ def fetch_region(label, cc, known_urls, seen_slugs):
         title = src.get("title", "").strip()
         body = (src.get("body") or "").strip()
         date_published = src.get("date-published", "")
+        # Strip timezone suffix to get plain ISO datetime
+        date_published = date_published[:19] if date_published else ""
 
         if not title:
             continue

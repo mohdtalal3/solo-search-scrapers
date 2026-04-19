@@ -50,12 +50,31 @@ Quick reference for which scraper belongs to which company.
 | 19 | `capgemini.py` | https://www.capgemini.com (UK/IE/BE/LU/NL) |
 | 20 | `oracle.py` | https://www.oracle.com/nl/news/ |
 | 21 | `deloitte.py` | https://www.deloitte.com (UK/NL/BE/IE/LU) |
+| 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
+
+---
+
+## PLEA (Landscape Architecture)
+
+> Landscape design, public realm, biodiversity, grounds maintenance procurement
+
+| ID | File | Source |
+|----|------|--------|
+| 2 | `contract_finder.py` | https://www.contractsfinder.service.gov.uk |
+| 5 | `find_tender.py` | https://www.find-tender.service.gov.uk |
+| 22 | `homes_england.py` | https://www.gov.uk/search/all (housing news) |
+| 23 | `bidstats.py` | https://bidstats.uk (landscape/grounds tenders, current month) |
+| 24 | `huntingdonshire.py` | https://publicaccess.huntingdonshire.gov.uk (planning applications) |
+| 25 | `planning_inspectorate.py` | https://www.gov.uk (Planning Inspectorate appeals) |
+| 26 | `eastcambs.py` | https://eastcambs.gov.uk (planning applications) |
+| 27 | `greater_cambridge.py` | https://applications.greatercambridgeplanning.org (planning applications) |
+| 28 | `cambridge_news.py` | https://cambridge-news.co.uk (planning/property news via Mantis API) |
 
 ---
 
 ## Both Companies
 
-> Runs twice — once per company with different CPV codes and keywords
+> Runs for multiple companies with different keywords/stages
 
 | ID | File | Source |
 |----|------|--------|
@@ -78,3 +97,4 @@ Quick reference for which scraper belongs to which company.
 | Solo Search | `234f37eb-1147-43fb-89c1-9812e0824e1f` |
 | Arden Executive | `c5d7d2eb-189d-49dc-89e1-2af375d0b3ce` |
 | ERP Recruit | `81ef7ff7-c548-42d8-8b22-b339b26d08ac` |
+| PLEA | *(add UUID here)* |

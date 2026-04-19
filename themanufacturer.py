@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
@@ -87,7 +88,11 @@ def scrape_article(url):
     # DATE
     # -----------------------------
     date_tag = soup.select_one("#single-article-date")
-    date = date_tag.get_text(strip=True) if date_tag else ""
+    _raw_date = date_tag.get_text(strip=True) if date_tag else ""
+    try:
+        date = datetime.strptime(_raw_date, "%d %b %Y").strftime("%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        date = _raw_date
 
     # -----------------------------
     # CATEGORIES

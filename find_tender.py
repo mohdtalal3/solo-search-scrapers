@@ -21,6 +21,8 @@ COMPANY_CONFIGS = [
         "company_id": os.getenv("SOLO_SEARCH_COMPANY_ID"),
         "keywords": "Integrated Care Board NHS England Trust Digital Software EPR Platform Interoperability Cloud Cyber AI Data",
         "value_low": "250000",
+        "stages": ["5"],
+        "form_type_ids": [28,30,31,29,32,33,34,37,38,39,35,41,42,43,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
         "cpv_codes": [
             "72000000",
             "72200000",
@@ -38,8 +40,18 @@ COMPANY_CONFIGS = [
         "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
         "keywords": "Oracle ERP",
         "value_low": "50000",
-        "cpv_codes": [
-        ],
+        "stages": ["5"],
+        "form_type_ids": [28,30,31,29,32,33,34,37,38,39,35,41,42,43,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+        "cpv_codes": [],
+    },
+    {
+        "label": "PLEA (Landscape Architecture)",
+        "company_id": os.getenv("PLEA_COMPANY_ID"),
+        "keywords": '"landscape architect" "landscape architecture" "landscape design" "external works design" "public realm" "planting scheme" "soft landscaping" "hard landscaping" "biodiversity net gain" BNG "green infrastructure" "ecological enhancement" "grounds maintenance" "grounds management"',
+        "value_low": "",
+        "stages": ["1", "2", "3", "4", "5"],
+        "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+        "cpv_codes": [],
     },
 ]
 
@@ -81,54 +93,24 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str) -> str:
+def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, stages: list = None, form_type_ids: list = None) -> str:
+    if stages is None:
+        stages = ["5"]
+    if form_type_ids is None:
+        form_type_ids = [28,30,31,29,32,33,34,37,38,39,35,41,42,43,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]
+
     two_days_ago = datetime.now() - timedelta(days=2)
     day = two_days_ago.strftime("%d")
     month = two_days_ago.strftime("%m")
     year = two_days_ago.strftime("%Y")
 
-    data = [
-        ("keywords", keywords),
-        ("stage[5]", "1"),
-        ("form_type[28]", "1"),
-        ("form_type[30]", "1"),
-        ("form_type[31]", "1"),
-        ("form_type[29]", "1"),
-        ("form_type[32]", "1"),
-        ("form_type[33]", "1"),
-        ("form_type[34]", "1"),
-        ("form_type[37]", "1"),
-        ("form_type[38]", "1"),
-        ("form_type[39]", "1"),
-        ("form_type[35]", "1"),
-        ("form_type[41]", "1"),
-        ("form_type[42]", "1"),
-        ("form_type[43]", "1"),
-        ("form_type[1]", "1"),
-        ("form_type[2]", "1"),
-        ("form_type[3]", "1"),
-        ("form_type[4]", "1"),
-        ("form_type[5]", "1"),
-        ("form_type[6]", "1"),
-        ("form_type[7]", "1"),
-        ("form_type[8]", "1"),
-        ("form_type[12]", "1"),
-        ("form_type[13]", "1"),
-        ("form_type[14]", "1"),
-        ("form_type[15]", "1"),
-        ("form_type[16]", "1"),
-        ("form_type[17]", "1"),
-        ("form_type[18]", "1"),
-        ("form_type[19]", "1"),
-        ("form_type[20]", "1"),
-        ("form_type[21]", "1"),
-        ("form_type[22]", "1"),
-        ("form_type[23]", "1"),
-        ("form_type[24]", "1"),
-        ("form_type[25]", "1"),
-        ("form_type[26]", "1"),
-        ("form_type[27]", "1"),
-    ]
+    data = [("keywords", keywords)]
+
+    for s in stages:
+        data.append((f"stage[{s}]", "1"))
+
+    for ft in form_type_ids:
+        data.append((f"form_type[{ft}]", "1"))
 
     if cpv_codes:
         for cpv in cpv_codes:
@@ -312,6 +294,8 @@ def run_for_company(config: dict):
     keywords = config["keywords"]
     cpv_codes = config["cpv_codes"]
     value_low = config["value_low"]
+    stages = config.get("stages")
+    form_type_ids = config.get("form_type_ids")
 
     print(f"\n{'='*60}")
     print(f"🏢 Running for: {label}")
@@ -327,7 +311,7 @@ def run_for_company(config: dict):
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low)
+    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, stages, form_type_ids)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")

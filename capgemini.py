@@ -35,13 +35,32 @@ def url_slug(url):
     return url.rstrip("/").rsplit("/", 1)[-1]
 
 
-def parse_date(date_str):
-    """Convert 'Mar 16, 2026' to ISO format '2026-03-16T00:00:00Z'."""
+_DUTCH_MONTHS = {
+    "jan.": "Jan", "feb.": "Feb", "mrt.": "Mar", "apr.": "Apr",
+    "mei":  "May", "jun.": "Jun", "jul.": "Jul", "aug.": "Aug",
+    "sep.": "Sep", "okt.": "Oct", "nov.": "Nov", "dec.": "Dec",
+}
+
+
+def _normalise_capgemini_date(date_str: str) -> str:
+    """Normalise Dutch abbreviated months and strip timezone/Z suffix."""
+    s = date_str.strip()
+    # Already ISO — just strip trailing Z or timezone offset
+    if len(s) >= 19 and s[10] == "T":
+        return s[:19]
+    # Dutch month → English, then parse 'Apr 17, 2026'
+    first_word = s.split()[0].lower() if s else ""
+    if first_word in _DUTCH_MONTHS:
+        s = _DUTCH_MONTHS[first_word] + s[len(first_word):]
     try:
-        dt = datetime.strptime(date_str.strip(), "%b %d, %Y")
-        return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        return datetime.strptime(s, "%b %d, %Y").strftime("%Y-%m-%dT%H:%M:%S")
     except ValueError:
         return date_str.strip()
+
+
+def parse_date(date_str):
+    """Convert date strings to plain ISO datetime '2026-03-16T00:00:00'."""
+    return _normalise_capgemini_date(date_str)
 
 
 def fetch_region_entries(cc):

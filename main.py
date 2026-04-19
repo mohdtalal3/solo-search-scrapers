@@ -33,6 +33,9 @@ import computable_nl
 import capgemini
 import oracle
 import deloitte
+import homes_england
+import bidstats
+import huntingdonshire
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -129,6 +132,15 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Deloitte", deloitte.main)
+    time.sleep(5)
+
+    run_scraper("Homes England", homes_england.main)
+    time.sleep(5)
+
+    run_scraper("Bidstats", bidstats.main)
+    time.sleep(5)
+
+    run_scraper("Huntingdonshire", huntingdonshire.main)
     time.sleep(5)
 
     # Calculate total time

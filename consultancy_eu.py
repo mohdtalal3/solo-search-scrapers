@@ -52,7 +52,7 @@ def fetch_url(url, max_retries=3):
 def parse_date(date_text):
     """Convert '27 March 2026' → '2026-03-27'."""
     try:
-        return datetime.strptime(date_text.strip(), "%d %B %Y").strftime("%Y-%m-%d")
+        return datetime.strptime(date_text.strip(), "%d %B %Y").strftime("%Y-%m-%dT%H:%M:%S")
     except ValueError:
         return date_text.strip()
 
