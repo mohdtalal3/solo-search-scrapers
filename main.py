@@ -36,6 +36,11 @@ import deloitte
 import homes_england
 import bidstats
 import huntingdonshire
+import planning_inspectorate
+import eastcambs
+import greater_cambridge
+import cambridge_news
+import companies_house
 
 
 def run_scraper(scraper_name, scraper_function):
@@ -143,7 +148,20 @@ def run_all_scrapers():
     run_scraper("Huntingdonshire", huntingdonshire.main)
     time.sleep(5)
 
-    # Calculate total time
+    run_scraper("Planning Inspectorate", planning_inspectorate.main)
+    time.sleep(5)
+
+    run_scraper("East Cambs", eastcambs.main)
+    time.sleep(5)
+
+    run_scraper("Greater Cambridge", greater_cambridge.main)
+    time.sleep(5)
+
+    run_scraper("Cambridge News", cambridge_news.main)
+    time.sleep(5)
+
+    run_scraper("Companies House", companies_house.main)
+    time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
     seconds = int(elapsed_time % 60)
