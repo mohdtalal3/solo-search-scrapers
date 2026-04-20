@@ -77,6 +77,8 @@ def fetch_listing():
                 if not href:
                     continue
                 full_url = BASE_URL + href if href.startswith("/") else href
+                if "/publications/" in full_url:
+                    continue
                 title = a.get_text(strip=True)
                 time_el = li.select_one("ul.gem-c-document-list__item-metadata time")
                 date = normalize_date(time_el.get("datetime", "")) if time_el else ""

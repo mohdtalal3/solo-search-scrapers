@@ -70,6 +70,7 @@ def main():
         res = (
             supabase.table("articles")
             .select("id,date")
+            .order("id")
             .range(offset, offset + BATCH_SIZE - 1)
             .execute()
         )
@@ -87,12 +88,9 @@ def main():
         total_checked += len(rows)
 
         if updates:
-            # Update each row individually (update, not upsert, to avoid not-null violations)
             for row in updates:
                 supabase.table("articles").update({"date": row["date"]}).eq("id", row["id"]).execute()
-                
             total_updated += len(updates)
-                
             print(f"  Rows {offset}–{offset + len(rows) - 1}: {len(updates)} date(s) fixed.")
         else:
             print(f"  Rows {offset}–{offset + len(rows) - 1}: all OK.")
