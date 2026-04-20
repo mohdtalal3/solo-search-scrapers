@@ -133,7 +133,6 @@ def scrape_article(url):
 # ----------------------------------------------------------
 def get_latest_articles_sitemap():
     html = fetch_with_scrappey(MAIN_SITEMAP)
-    print(html)
     if not html:
         raise Exception("Failed to fetch main sitemap via Scrappey.")
     soup = BeautifulSoup(html, "xml")
