@@ -109,8 +109,8 @@ def run_all_scrapers():
     run_scraper("Marine Industry News", marineindustrynews.main)
     time.sleep(5)
 
-    # run_scraper("The Manufacturer", themanufacturer.main)
-    # time.sleep(5)
+    run_scraper("The Manufacturer", themanufacturer.main)
+    time.sleep(5)
 
     run_scraper("PR Newswire UK", prnewswire.main)
     time.sleep(5)
