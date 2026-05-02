@@ -9,6 +9,9 @@ import schedule
 from datetime import datetime
 import sys
 import traceback
+import io
+import os
+from pathlib import Path
 import notifier
 import db
 
@@ -49,6 +52,32 @@ import prolificnorth
 import thegrocer
 
 
+class TeeStream:
+    """Mirrors writes to both an original stream and a log file."""
+    def __init__(self, original_stream, log_file):
+        self.original = original_stream
+        self.log_file = log_file
+
+    def write(self, data):
+        self.original.write(data)
+        self.log_file.write(data)
+        self.log_file.flush()
+
+    def flush(self):
+        self.original.flush()
+        self.log_file.flush()
+
+    def fileno(self):
+        return self.original.fileno()
+
+    def isatty(self):
+        return False
+
+
+# Tracks (name, status) for every scraper in the current run
+_run_results: list = []
+
+
 def run_scraper(scraper_name, scraper_function, scraper_module=None):
     """
     Run a single scraper with error handling and logging.
@@ -62,6 +91,7 @@ def run_scraper(scraper_name, scraper_function, scraper_module=None):
         if scraper_id is not None and company_id is not None:
             if not db.is_subscription_active(scraper_id, company_id):
                 print(f"\n⏭️  Skipping {scraper_name} — subscription is inactive")
+                _run_results.append((scraper_name, "skipped"))
                 return
 
     print("\n" + "=" * 80)
@@ -72,12 +102,14 @@ def run_scraper(scraper_name, scraper_function, scraper_module=None):
     try:
         scraper_function()
         print(f"✅ {scraper_name} completed successfully")
+        _run_results.append((scraper_name, "success"))
     except Exception as e:
         print(f"❌ {scraper_name} failed with error:")
         print(f"Error: {str(e)}")
         traceback.print_exc()
         notifier.notify_error(scraper_name, e)
         print(f"Continuing with next scraper...")
+        _run_results.append((scraper_name, "failed"))
 
     print("=" * 80)
 
@@ -86,8 +118,25 @@ def run_all_scrapers():
     """
     Run all scrapers sequentially.
     """
+    global _run_results
+    _run_results = []
+
+    # ── Set up log file ───────────────────────────────────────────────────────
+    logs_dir = Path(__file__).parent / "logs"
+    logs_dir.mkdir(exist_ok=True)
+    run_ts = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    log_path = logs_dir / f"run_{run_ts}.log"
+
+    log_file = open(log_path, 'w', encoding='utf-8')
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    sys.stdout = TeeStream(original_stdout, log_file)
+    sys.stderr = TeeStream(original_stderr, log_file)
+    # ─────────────────────────────────────────────────────────────────────────
+
     print("\n" + "🔄" * 40)
     print(f"Starting scraper run at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Log file: {log_path}")
     print("🔄" * 40 + "\n")
 
     start_time = time.time()
@@ -97,117 +146,125 @@ def run_all_scrapers():
     db.load_active_subscriptions()
     print()
 
-    # Run each scraper
-    run_scraper("Digital Health", digital_health.main, digital_health)
-    time.sleep(5)  # Small delay between scrapers
+    # # Run each scraper
+    # run_scraper("Digital Health", digital_health.main, digital_health)
+    # time.sleep(5)  # Small delay between scrapers
     
-    run_scraper("Contract Finder", contract_finder.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Contract Finder", contract_finder.main)  # multi-company: checked internally
+    # time.sleep(5)
 
-    run_scraper("Find Tender", find_tender.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Find Tender", find_tender.main)  # multi-company: checked internally
+    # time.sleep(5)
 
-    run_scraper("HTN.co", htn_co.main, htn_co)
-    time.sleep(5)
+    # run_scraper("HTN.co", htn_co.main, htn_co)
+    # time.sleep(5)
 
-    run_scraper("Startups.co", startups_co.main, startups_co)
-    time.sleep(5)
+    # run_scraper("Startups.co", startups_co.main, startups_co)
+    # time.sleep(5)
 
-    run_scraper("UKRI", ukri.main, ukri)
-    time.sleep(5)
+    # run_scraper("UKRI", ukri.main, ukri)
+    # time.sleep(5)
 
-    run_scraper("EU-Startups", eu_startups.main, eu_startups)
-    time.sleep(5)
+    # run_scraper("EU-Startups", eu_startups.main, eu_startups)
+    # time.sleep(5)
 
-    run_scraper("BusinessCloud", businesscloud.main, businesscloud)
-    time.sleep(5)
+    # run_scraper("BusinessCloud", businesscloud.main, businesscloud)
+    # time.sleep(5)
 
-    run_scraper("HT World", htworld.main, htworld)
-    time.sleep(5)
+    # run_scraper("HT World", htworld.main, htworld)
+    # time.sleep(5)
 
-    run_scraper("Energy Voice", energyvoice.main, energyvoice)
-    time.sleep(5)
+    # run_scraper("Energy Voice", energyvoice.main, energyvoice)
+    # time.sleep(5)
 
-    run_scraper("Marine Industry News", marineindustrynews.main, marineindustrynews)
-    time.sleep(5)
+    # run_scraper("Marine Industry News", marineindustrynews.main, marineindustrynews)
+    # time.sleep(5)
 
-    run_scraper("The Manufacturer", themanufacturer.main, themanufacturer)
-    time.sleep(5)
+    # run_scraper("The Manufacturer", themanufacturer.main, themanufacturer)
+    # time.sleep(5)
 
-    run_scraper("PR Newswire UK", prnewswire.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("PR Newswire UK", prnewswire.main)  # multi-company: checked internally
+    # time.sleep(5)
 
-    run_scraper("UK Defence Journal", ukdefencejournal.main, ukdefencejournal)
-    time.sleep(5)
+    # run_scraper("UK Defence Journal", ukdefencejournal.main, ukdefencejournal)
+    # time.sleep(5)
 
-    run_scraper("Consultancy EU", consultancy_eu.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Consultancy EU", consultancy_eu.main)  # multi-company: checked internally
+    # time.sleep(5)
 
-    run_scraper("Consultancy UK", consultancy_uk.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Consultancy UK", consultancy_uk.main)  # multi-company: checked internally
+    # time.sleep(5)
 
-    run_scraper("ERP Today", erp_today.main, erp_today)
-    time.sleep(5)
+    # run_scraper("ERP Today", erp_today.main, erp_today)
+    # time.sleep(5)
 
-    run_scraper("Computable NL", computable_nl.main, computable_nl)
-    time.sleep(5)
+    # run_scraper("Computable NL", computable_nl.main, computable_nl)
+    # time.sleep(5)
 
-    run_scraper("Capgemini", capgemini.main, capgemini)
-    time.sleep(5)
+    # run_scraper("Capgemini", capgemini.main, capgemini)
+    # time.sleep(5)
 
-    run_scraper("Oracle", oracle.main, oracle)
-    time.sleep(5)
+    # run_scraper("Oracle", oracle.main, oracle)
+    # time.sleep(5)
 
-    run_scraper("Deloitte", deloitte.main, deloitte)
-    time.sleep(5)
+    # run_scraper("Deloitte", deloitte.main, deloitte)
+    # time.sleep(5)
 
-    run_scraper("Homes England", homes_england.main, homes_england)
-    time.sleep(5)
+    # run_scraper("Homes England", homes_england.main, homes_england)
+    # time.sleep(5)
 
-    run_scraper("Bidstats", bidstats.main, bidstats)
-    time.sleep(5)
+    # run_scraper("Bidstats", bidstats.main, bidstats)
+    # time.sleep(5)
 
-    run_scraper("Huntingdonshire", huntingdonshire.main, huntingdonshire)
-    time.sleep(5)
+    # run_scraper("Huntingdonshire", huntingdonshire.main, huntingdonshire)
+    # time.sleep(5)
 
-    run_scraper("Planning Inspectorate", planning_inspectorate.main, planning_inspectorate)
-    time.sleep(5)
+    # run_scraper("Planning Inspectorate", planning_inspectorate.main, planning_inspectorate)
+    # time.sleep(5)
 
-    run_scraper("East Cambs", eastcambs.main, eastcambs)
-    time.sleep(5)
+    # run_scraper("East Cambs", eastcambs.main, eastcambs)
+    # time.sleep(5)
 
-    run_scraper("Greater Cambridge", greater_cambridge.main, greater_cambridge)
-    time.sleep(5)
+    # run_scraper("Greater Cambridge", greater_cambridge.main, greater_cambridge)
+    # time.sleep(5)
 
-    run_scraper("Cambridge News", cambridge_news.main, cambridge_news)
-    time.sleep(5)
+    # run_scraper("Cambridge News", cambridge_news.main, cambridge_news)
+    # time.sleep(5)
 
-    run_scraper("Companies House", companies_house.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Companies House", companies_house.main)  # multi-company: checked internally
+    # time.sleep(5)
 
     run_scraper("The Drum", thedrum.main, thedrum)
     time.sleep(5)
 
-    run_scraper("Business Wire", businesswire.main, businesswire)
-    time.sleep(5)
+    # run_scraper("Business Wire", businesswire.main, businesswire)
+    # time.sleep(5)
 
-    run_scraper("Marketing Week", marketingweek.main, marketingweek)
-    time.sleep(5)
+    # run_scraper("Marketing Week", marketingweek.main, marketingweek)
+    # time.sleep(5)
 
-    run_scraper("Prolific North", prolificnorth.main, prolificnorth)
-    time.sleep(5)
+    # run_scraper("Prolific North", prolificnorth.main, prolificnorth)
+    # time.sleep(5)
 
-    run_scraper("The Grocer", thegrocer.main, thegrocer)
-    time.sleep(5)
+    # run_scraper("The Grocer", thegrocer.main, thegrocer)
+    # time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
     seconds = int(elapsed_time % 60)
-    
+
     print("\n" + "🎉" * 40)
     print(f"All scrapers completed!")
     print(f"Total time: {minutes}m {seconds}s")
     print(f"Next run scheduled in 1 hour")
     print("🎉" * 40 + "\n")
+
+    # ── Flush + restore streams, then send log to Slack ──────────────────────
+    sys.stdout = original_stdout
+    sys.stderr = original_stderr
+    log_file.flush()
+    log_file.close()
+    notifier.send_run_log(str(log_path), _run_results, elapsed_time)
+    # ─────────────────────────────────────────────────────────────────────────
 
 
 def main():

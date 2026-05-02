@@ -142,9 +142,8 @@ def refresh_session(session: requests.Session) -> None:
         pass
 
 
-PROXY = "http://1677e38a529d4fcc0b48__cr.gb:a4c1331f36d47bdf@gw.dataimpulse.com:823"
-_proxy = os.getenv("SCRAPER_PROXY", PROXY)
-PROXIES = {"http": _proxy, "https": _proxy}
+_proxy = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 
 
 def scrape_print_preview(key_val: str, max_retries: int = 3):
