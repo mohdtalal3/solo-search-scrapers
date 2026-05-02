@@ -5,3 +5,11 @@ lxml
 python-dotenv
 schedule
 
+[21/04/2026, 4:08:33 PM] Anas: 16adda91-be84-461a-b6e2-dc81e76cc2c6
+[21/04/2026, 4:08:38 PM] Anas: Headliners
+[21/04/2026, 4:08:45 PM] Anas: a63088a1-6828-42ad-be8a-b5b47aa79793
+[21/04/2026, 4:08:51 PM] Anas: net-zero-search
+[21/04/2026, 4:12:14 PM] Anas: 136c22f0-c170-48d6-80c8-a479a1022c7b
+[21/04/2026, 4:12:20 PM] Anas: W6 Resources
+[21/04/2026, 4:12:32 PM] Anas: b9b7e8e2-4646-4ee0-9344-39b09407e708
+[21/04/2026, 4:12:35 PM] Anas: Middlesex Partnership

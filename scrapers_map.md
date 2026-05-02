@@ -72,6 +72,38 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## Headliners
+
+> Marketing, communications, PR, brand and creative industry news
+
+| ID | File | Source |
+|----|------|--------|
+| 2 | `contract_finder.py` | https://www.contractsfinder.service.gov.uk (marketing/comms/PR, £50k+) |
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
+| 30 | `thedrum.py` | https://www.thedrum.com |
+| 31 | `businesswire.py` | https://www.businesswire.com |
+| 32 | `marketingweek.py` | https://www.marketingweek.com |
+| 33 | `prolificnorth.py` | https://www.prolificnorth.co.uk |
+| 34 | `thegrocer.py` | https://www.thegrocer.co.uk |
+
+---
+
+
+{
+  "companies_house": "Leadership Hire",
+  "the_drum": "Contract Wins",
+  "business_wire_uk": "Funding & Investment",
+  "pr_week": "Leadership Hire",
+  "campaign": "Leadership Hire",
+  "marketing_week": "Leadership Hire",
+  "contract_finder": "Contract Wins",
+  "prolific_north": "Leadership Hire",
+  "the_grocer": "Product Launches",
+  "pr_newswire_uk": "Funding & Investment"
+}
+
+
 ## Both Companies
 
 > Runs for multiple companies with different keywords/stages
@@ -98,3 +130,4 @@ Quick reference for which scraper belongs to which company.
 | Arden Executive | `c5d7d2eb-189d-49dc-89e1-2af375d0b3ce` |
 | ERP Recruit | `81ef7ff7-c548-42d8-8b22-b339b26d08ac` |
 | PLEA | *(add UUID here)* |
+| Headliners | `16adda91-be84-461a-b6e2-dc81e76cc2c6` |

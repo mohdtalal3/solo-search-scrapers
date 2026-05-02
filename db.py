@@ -296,3 +296,48 @@ def article_exists(company_id, url):
     except Exception as e:
         print(f"Error checking article existence: {e}")
         return False
+
+
+# ----------------------------------------------------------
+# Active subscription cache
+# ----------------------------------------------------------
+
+_active_subscriptions: dict = {}  # {(company_id, scraper_id): is_active}
+
+
+def load_active_subscriptions() -> None:
+    """
+    Fetch all company_scrapers rows and cache is_active per (company_id, scraper_id).
+    Call once at the start of each scheduler run before any scrapers execute.
+    """
+    global _active_subscriptions
+    try:
+        result = (
+            supabase.table("company_scrapers")
+            .select("company_id,scraper_id,is_active")
+            .execute()
+        )
+        _active_subscriptions = {
+            (row["company_id"], row["scraper_id"]): row["is_active"]
+            for row in (result.data or [])
+        }
+        active_count = sum(1 for v in _active_subscriptions.values() if v)
+        total = len(_active_subscriptions)
+        print(
+            f"📋 Loaded {total} company-scraper subscriptions "
+            f"({active_count} active, {total - active_count} inactive)"
+        )
+    except Exception as e:
+        print(f"⚠️  Failed to load active subscriptions: {e} — defaulting to allow all")
+        _active_subscriptions = {}
+
+
+def is_subscription_active(scraper_id: int, company_id: str) -> bool:
+    """
+    Return True if the company-scraper subscription is active.
+    Falls back to True when the cache is empty or the pair is not yet registered,
+    so first-run scrapers are never blocked.
+    """
+    if not _active_subscriptions:
+        return True
+    return _active_subscriptions.get((company_id, scraper_id), True)

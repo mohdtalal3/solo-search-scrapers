@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
 load_dotenv()
 
@@ -25,6 +25,10 @@ COMPANY_CONFIGS = [
     {
         "label": "ERP Recruit",
         "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
+    },
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
     },
 ]
 
@@ -149,10 +153,12 @@ def main():
     newest_timestamp = article_entries[0]["date"]
 
     # ----------------------------
-    # Determine which URLs need scraping (union across all non-first-run companies)
+    # Determine which URLs need scraping (union across all active, non-first-run companies)
     # ----------------------------
     urls_to_scrape = set()
     for config in COMPANY_CONFIGS:
+        if not is_subscription_active(SCRAPER_ID, config["company_id"]):
+            continue
         ts = company_timestamps[config["company_id"]]
         if ts is not None:
             for entry in article_entries:
@@ -177,6 +183,10 @@ def main():
         company_id = config["company_id"]
         label = config["label"]
         ts = company_timestamps[company_id]
+
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"\n⏭️  Skipping {label} — subscription is inactive")
+            continue
 
         print(f"\n{'='*60}")
         print(f"🏢 Processing: {label}")

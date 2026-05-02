@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from db import get_recent_article_urls, insert_articles
 
+
 load_dotenv()
 
 SOURCE_NAME = "CAMBRIDGE_NEWS"

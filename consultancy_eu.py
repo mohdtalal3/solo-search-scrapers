@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_recent_article_urls, insert_articles
+from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
@@ -176,6 +176,10 @@ def main():
         company_id = config["company_id"]
         label = config["label"]
 
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"\n⏭️  Skipping {label} — subscription is inactive")
+            continue
+
         print(f"\n{'='*60}")
         print(f"🏢 Inserting for: {label}")
         print(f"{'='*60}")
@@ -183,7 +187,3 @@ def main():
         company_articles = [dict(a, company_id=company_id) for a in scraped]
         inserted_count = insert_articles(company_articles)
         print(f"✅ Inserted {inserted_count} articles for {label}")
-
-
-if __name__ == "__main__":
-    main()

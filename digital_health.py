@@ -1,24 +1,95 @@
-import requests
-from bs4 import BeautifulSoup
-import json
 import os
+import time
 from datetime import datetime
+from bs4 import BeautifulSoup
+import requests as std_requests
+from curl_cffi import requests
+from dotenv import load_dotenv
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+
+load_dotenv()
 
 MAIN_SITEMAP = "https://www.digitalhealth.net/sitemap_index.xml"
 SOURCE_NAME = "DIGITAL_HEALTH"
 SCRAPER_ID = 3
 COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 
-headers = {"User-Agent": "Mozilla/5.0"}
+
+def get_proxies():
+    proxy = os.getenv("SCRAPER_PROXY")
+    return {"http": proxy, "https": proxy} if proxy else None
+
+
+def fetch(url):
+    """Fetch article pages via curl_cffi (chrome131 impersonation + proxy)."""
+    proxies = get_proxies()
+    resp = requests.get(
+        url,
+        impersonate="chrome131",
+        proxies=proxies,
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.text
+
+
+def fetch_sitemap(url, max_retries=3):
+    """Fetch sitemap XML via Scrappey to bypass bot detection."""
+    api_key = os.getenv("SCRAPPEY_API_KEY")
+    if not api_key:
+        raise RuntimeError("SCRAPPEY_API_KEY not set")
+
+    payload = {
+        "cmd": "request.get",
+        "url": url,
+        "premiumProxy": True,
+        "proxyCountry": "UnitedKingdom",
+        "retries": 1,
+        "automaticallySolveCaptcha": True,
+        "browserActions": [
+            {
+                "type": "wait_for_load_state",
+                "waitForLoadState": "networkidle"
+            },
+            {
+                "type": "wait",
+                "wait": 1500,
+                "when": "after_captcha"
+            }
+        ]
+    }
+
+    for attempt in range(max_retries):
+        try:
+            time.sleep(2)
+            resp = std_requests.post(
+                f"{SCRAPPEY_API_URL}?key={api_key}",
+                json=payload,
+                timeout=90,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            solution = data.get("solution", {})
+            if data.get("data") == "error" or not solution.get("verified", False):
+                raise RuntimeError(data.get("error", "Unknown Scrappey error"))
+            html = solution.get("response", "")
+            if not html:
+                raise RuntimeError("Scrappey returned empty response")
+            return html
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"⚠️  Sitemap retry {attempt + 1}/{max_retries}: {e}")
+                time.sleep(2)
+            else:
+                raise
 
 
 # ----------------------------------------------------------
 # Scrape a single article
 # ----------------------------------------------------------
 def scrape_article(url):
-    resp = requests.get(url, headers=headers)
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(fetch(url), "html.parser")
 
     # -----------------------------
     # TITLE
@@ -89,8 +160,7 @@ def scrape_article(url):
 # Get the latest "post" sitemap
 # ----------------------------------------------------------
 def get_latest_post_sitemap():
-    resp = requests.get(MAIN_SITEMAP, headers=headers)
-    soup = BeautifulSoup(resp.text, "xml")
+    soup = BeautifulSoup(fetch_sitemap(MAIN_SITEMAP), "xml")
 
     links = []
     for sitemap in soup.find_all("sitemap"):
@@ -122,8 +192,7 @@ def get_latest_post_sitemap():
 # Read article URLs + lastmod timestamps
 # ----------------------------------------------------------
 def get_articles_from_sitemap(sitemap_url):
-    resp = requests.get(sitemap_url, headers=headers)
-    soup = BeautifulSoup(resp.text, "xml")
+    soup = BeautifulSoup(fetch_sitemap(sitemap_url), "xml")
 
     articles = []
     for url_tag in soup.find_all("url"):

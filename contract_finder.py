@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
-from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
 BASE_URL = "https://www.contractsfinder.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
@@ -82,6 +82,14 @@ COMPANY_CONFIGS = [
         "keywords": '"landscape architect" "landscape design" "public realm" "biodiversity net gain" "green infrastructure" "planting scheme"',
         "value_low": "",
         "notice_types": ["speculative", "planning", "tender", "awarded", "open", "public_notice", "supplychain_notice"],
+        "cpv_codes": [],
+    },
+    {
+        "label": "Headliners (Marketing / Comms / PR)",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+        "keywords": 'marketing OR communications OR PR OR "public relations" OR brand OR content OR digital OR campaign OR media OR creative OR advertising OR "social media"',
+        "value_low": "50000",
+        "notice_types": ["awarded", "open", "public_notice", "supplychain_notice"],
         "cpv_codes": [],
     },
 ]
@@ -378,6 +386,11 @@ def run_for_company(config: dict):
     """Run the full contract-finder flow for a single company config."""
     company_id = config["company_id"]
     label = config["label"]
+
+    if not is_subscription_active(SCRAPER_ID, company_id):
+        print(f"\n⏭️  Skipping {label} — subscription is inactive")
+        return
+
     keywords = config["keywords"]
     cpv_codes = config["cpv_codes"]
     value_low = config["value_low"]

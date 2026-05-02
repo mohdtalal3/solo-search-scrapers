@@ -7,13 +7,22 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_recent_article_urls, insert_articles
+from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
 SOURCE_NAME = "COMPANIES_HOUSE"
 SCRAPER_ID = 29
-COMPANY_ID = os.getenv("ERP_RECRUIT_COMPANY_ID")
+COMPANY_CONFIGS = [
+    {
+        "label": "ERP Recruit",
+        "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
+    },
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+    },
+]
 
 BASE_URL = "https://www.gov.uk"
 SEARCH_ENDPOINT = "https://www.gov.uk/search/all"
@@ -164,29 +173,33 @@ def main():
 
     print(f"  🆕 {len(new_items)} new article(s) to scrape.")
 
-    articles = []
+    scraped = []
     for full_url, fallback_title, listing_date in new_items:
         print(f"  Scraping: {full_url}")
         title, date, body = scrape_article(full_url, fallback_title, listing_date=listing_date)
         if title is None:
             continue
-        articles.append({
+        scraped.append({
             "url": full_url,
             "date": date,
             "title": title,
             "text": body,
-            "company_id": COMPANY_ID,
             "scraper_id": SCRAPER_ID,
         })
         print(f"  ✅ {title[:60]}...")
 
-    if not articles:
+    if not scraped:
         print("\n⛔ No articles scraped successfully.")
         return
 
-    print(f"\n🆕 Found {len(articles)} new article(s) in total.")
-    inserted_count = insert_articles(articles)
-    print(f"✅ Inserted {inserted_count} articles into database")
+    print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
+    for config in COMPANY_CONFIGS:
+        if not is_subscription_active(SCRAPER_ID, config["company_id"]):
+            print(f"⏭️  Skipping {config['label']} — subscription is inactive")
+            continue
+        articles = [{**a, "company_id": config["company_id"]} for a in scraped]
+        inserted_count = insert_articles(articles)
+        print(f"✅ Inserted {inserted_count} articles for {config['label']}")
 
 
 if __name__ == "__main__":

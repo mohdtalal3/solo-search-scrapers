@@ -3,7 +3,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 import re
 
 BASE_URL = "https://www.find-tender.service.gov.uk"
@@ -38,7 +38,7 @@ COMPANY_CONFIGS = [
     {
         "label": "ERP Recruit (Oracle / ERP)",
         "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
-        "keywords": "Oracle ERP",
+        "keywords": "Oracle ERP Oracle E-Business Suite Oracle EBS",
         "value_low": "50000",
         "stages": ["5"],
         "form_type_ids": [28,30,31,29,32,33,34,37,38,39,35,41,42,43,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
@@ -291,6 +291,11 @@ def extract_notices_from_page(session, page_url):
 def run_for_company(config: dict):
     company_id = config["company_id"]
     label = config["label"]
+
+    if not is_subscription_active(SCRAPER_ID, company_id):
+        print(f"\n⏭️  Skipping {label} — subscription is inactive")
+        return
+
     keywords = config["keywords"]
     cpv_codes = config["cpv_codes"]
     value_low = config["value_low"]
