@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 
 import requests
+from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
@@ -52,6 +53,11 @@ HEADERS = {
 
 
 
+def get_proxies():
+    proxy = os.getenv("SCRAPER_PROXY")
+    return {"http": proxy, "https": proxy} if proxy else None
+
+
 def normalize_date(raw: str) -> str:
     """Convert '2026-04-15T11:02:11.000Z' to '2026-04-15T11:02:11'."""
     if not raw:
@@ -97,7 +103,13 @@ def scrape_article(url: str, max_retries: int = 3):
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp = cffi_requests.get(
+                url,
+                headers=HEADERS,
+                proxies=get_proxies(),
+                impersonate="chrome131",
+                timeout=30,
+            )
             resp.raise_for_status()
             soup = BeautifulSoup(resp.text, "html.parser")
 
