@@ -17,6 +17,7 @@ SCRAPER_ID = 28
 COMPANY_ID = os.getenv("PLEA_COMPANY_ID")
 
 API_URL = "https://api.mantis-intelligence.com/reach/search"
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 
 KEYWORDS = [
     "planning permission",
@@ -99,19 +100,36 @@ def fetch_keyword_results(keyword: str) -> tuple[int, list[dict]]:
 
 
 def scrape_article(url: str, max_retries: int = 3):
-    """Scrape body text from a cambridge-news.co.uk article page."""
+    """Scrape body text from a cambridge-news.co.uk article page via Scrappey."""
+    api_key = os.getenv("SCRAPPEY_API_KEY")
+    if not api_key:
+        raise RuntimeError("SCRAPPEY_API_KEY not set")
+
+    payload = {
+        "cmd": "request.get",
+        "requestType": "request",
+        "url": url,
+        "premiumProxy": True,
+        "proxyCountry": "UnitedKingdom",
+        "retries": 1,
+        "automaticallySolveCaptcha": True
+    }
+
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            resp = cffi_requests.get(
-                url,
-                headers=HEADERS,
-                proxies=get_proxies(),
-                impersonate="chrome131",
-                timeout=30,
+            resp = requests.post(
+                f"{SCRAPPEY_API_URL}?key={api_key}",
+                json=payload,
+                timeout=90,
             )
             resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, "html.parser")
+            data = resp.json()
+            html = data.get("solution", {}).get("response", "")
+            if not html:
+                raise RuntimeError("Empty Scrappey response")
+
+            soup = BeautifulSoup(html, "html.parser")
 
             # Selecting only content paragraphs naturally excludes all ad boxes
             paragraphs = soup.find_all(
