@@ -50,6 +50,7 @@ import businesswire
 import marketingweek
 import prolificnorth
 import thegrocer
+import fca_news
 
 
 class TeeStream:
@@ -146,108 +147,111 @@ def run_all_scrapers():
     db.load_active_subscriptions()
     print()
 
-    # # Run each scraper
-    # run_scraper("Digital Health", digital_health.main, digital_health)
-    # time.sleep(5)  # Small delay between scrapers
+    # Run each scraper
+    run_scraper("Digital Health", digital_health.main, digital_health)
+    time.sleep(5)  # Small delay between scrapers
     
-    # run_scraper("Contract Finder", contract_finder.main)  # multi-company: checked internally
-    # time.sleep(5)
+    run_scraper("Contract Finder", contract_finder.main)  # multi-company: checked internally
+    time.sleep(5)
 
-    # run_scraper("Find Tender", find_tender.main)  # multi-company: checked internally
-    # time.sleep(5)
+    run_scraper("Find Tender", find_tender.main)  # multi-company: checked internally
+    time.sleep(5)
 
-    # run_scraper("HTN.co", htn_co.main, htn_co)
-    # time.sleep(5)
+    run_scraper("HTN.co", htn_co.main, htn_co)
+    time.sleep(5)
 
-    # run_scraper("Startups.co", startups_co.main, startups_co)
-    # time.sleep(5)
+    run_scraper("Startups.co", startups_co.main, startups_co)
+    time.sleep(5)
 
-    # run_scraper("UKRI", ukri.main, ukri)
-    # time.sleep(5)
+    run_scraper("UKRI", ukri.main, ukri)
+    time.sleep(5)
 
-    # run_scraper("EU-Startups", eu_startups.main, eu_startups)
-    # time.sleep(5)
+    run_scraper("EU-Startups", eu_startups.main, eu_startups)
+    time.sleep(5)
 
-    # run_scraper("BusinessCloud", businesscloud.main, businesscloud)
-    # time.sleep(5)
+    run_scraper("BusinessCloud", businesscloud.main, businesscloud)
+    time.sleep(5)
 
-    # run_scraper("HT World", htworld.main, htworld)
-    # time.sleep(5)
+    run_scraper("HT World", htworld.main, htworld)
+    time.sleep(5)
 
-    # run_scraper("Energy Voice", energyvoice.main, energyvoice)
-    # time.sleep(5)
+    run_scraper("Energy Voice", energyvoice.main, energyvoice)
+    time.sleep(5)
 
-    # run_scraper("Marine Industry News", marineindustrynews.main, marineindustrynews)
-    # time.sleep(5)
+    run_scraper("Marine Industry News", marineindustrynews.main, marineindustrynews)
+    time.sleep(5)
 
-    # run_scraper("The Manufacturer", themanufacturer.main, themanufacturer)
-    # time.sleep(5)
+    run_scraper("The Manufacturer", themanufacturer.main, themanufacturer)
+    time.sleep(5)
 
-    # run_scraper("PR Newswire UK", prnewswire.main)  # multi-company: checked internally
-    # time.sleep(5)
+    run_scraper("PR Newswire UK", prnewswire.main)  # multi-company: checked internally
+    time.sleep(5)
 
-    # run_scraper("UK Defence Journal", ukdefencejournal.main, ukdefencejournal)
-    # time.sleep(5)
+    run_scraper("UK Defence Journal", ukdefencejournal.main, ukdefencejournal)
+    time.sleep(5)
 
-    # run_scraper("Consultancy EU", consultancy_eu.main)  # multi-company: checked internally
-    # time.sleep(5)
+    run_scraper("Consultancy EU", consultancy_eu.main)  # multi-company: checked internally
+    time.sleep(5)
 
-    # run_scraper("Consultancy UK", consultancy_uk.main)  # multi-company: checked internally
-    # time.sleep(5)
+    run_scraper("Consultancy UK", consultancy_uk.main)  # multi-company: checked internally
+    time.sleep(5)
 
-    # run_scraper("ERP Today", erp_today.main, erp_today)
-    # time.sleep(5)
+    run_scraper("ERP Today", erp_today.main, erp_today)
+    time.sleep(5)
 
-    # run_scraper("Computable NL", computable_nl.main, computable_nl)
-    # time.sleep(5)
+    run_scraper("Computable NL", computable_nl.main, computable_nl)
+    time.sleep(5)
 
-    # run_scraper("Capgemini", capgemini.main, capgemini)
-    # time.sleep(5)
+    run_scraper("Capgemini", capgemini.main, capgemini)
+    time.sleep(5)
 
-    # run_scraper("Oracle", oracle.main, oracle)
-    # time.sleep(5)
+    run_scraper("Oracle", oracle.main, oracle)
+    time.sleep(5)
 
-    # run_scraper("Deloitte", deloitte.main, deloitte)
-    # time.sleep(5)
+    run_scraper("Deloitte", deloitte.main, deloitte)
+    time.sleep(5)
 
-    # run_scraper("Homes England", homes_england.main, homes_england)
-    # time.sleep(5)
+    run_scraper("Homes England", homes_england.main, homes_england)
+    time.sleep(5)
 
-    # run_scraper("Bidstats", bidstats.main, bidstats)
-    # time.sleep(5)
+    run_scraper("Bidstats", bidstats.main, bidstats)
+    time.sleep(5)
 
-    # run_scraper("Huntingdonshire", huntingdonshire.main, huntingdonshire)
-    # time.sleep(5)
+    run_scraper("Huntingdonshire", huntingdonshire.main, huntingdonshire)
+    time.sleep(5)
 
-    # run_scraper("Planning Inspectorate", planning_inspectorate.main, planning_inspectorate)
-    # time.sleep(5)
+    run_scraper("Planning Inspectorate", planning_inspectorate.main, planning_inspectorate)
+    time.sleep(5)
 
-    # run_scraper("East Cambs", eastcambs.main, eastcambs)
-    # time.sleep(5)
+    run_scraper("East Cambs", eastcambs.main, eastcambs)
+    time.sleep(5)
 
-    # run_scraper("Greater Cambridge", greater_cambridge.main, greater_cambridge)
-    # time.sleep(5)
+    run_scraper("Greater Cambridge", greater_cambridge.main, greater_cambridge)
+    time.sleep(5)
 
-    # run_scraper("Cambridge News", cambridge_news.main, cambridge_news)
-    # time.sleep(5)
+    run_scraper("Cambridge News", cambridge_news.main, cambridge_news)
+    time.sleep(5)
 
-    # run_scraper("Companies House", companies_house.main)  # multi-company: checked internally
-    # time.sleep(5)
+    run_scraper("Companies House", companies_house.main)  # multi-company: checked internally
+    time.sleep(5)
 
     run_scraper("The Drum", thedrum.main, thedrum)
     time.sleep(5)
 
-    # run_scraper("Business Wire", businesswire.main, businesswire)
-    # time.sleep(5)
+    run_scraper("Business Wire", businesswire.main)  # multi-company: checked internally
+    time.sleep(5)
 
-    # run_scraper("Marketing Week", marketingweek.main, marketingweek)
-    # time.sleep(5)
+    run_scraper("Marketing Week", marketingweek.main, marketingweek)
+    time.sleep(5)
 
-    # run_scraper("Prolific North", prolificnorth.main, prolificnorth)
-    # time.sleep(5)
+    run_scraper("Prolific North", prolificnorth.main, prolificnorth)
+    time.sleep(5)
 
-    # run_scraper("The Grocer", thegrocer.main, thegrocer)
-    # time.sleep(5)
+    run_scraper("The Grocer", thegrocer.main, thegrocer)
+    time.sleep(5)
+
+    run_scraper("FCA News", fca_news.main, fca_news)
+    time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
     seconds = int(elapsed_time % 60)

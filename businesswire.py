@@ -8,7 +8,7 @@ from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_recent_article_urls, insert_articles
+from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
@@ -22,7 +22,16 @@ NEWSROOM_URL = (
 )
 SOURCE_NAME = "BUSINESS_WIRE"
 SCRAPER_ID = 31
-COMPANY_ID = os.getenv("HEADLINERS_COMPANY_ID")
+COMPANY_CONFIGS = [
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+    },
+    {
+        "label": "Middlesex Partnership",
+        "company_id": os.getenv("MIDDLESEX_PARTNERSHIP_COMPANY_ID"),
+    },
+]
 MAX_PAGES = 6
 
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
@@ -231,7 +240,6 @@ def scrape_article(url, fallback_title=""):
         "text": text,
         "date": date,
         "scraper_id": SCRAPER_ID,
-        "company_id": COMPANY_ID,
     }
 
 
@@ -253,7 +261,6 @@ def main():
     seen_slugs = {url_slug(u) for u in known_urls}
 
     all_items = fetch_all_listings()
-    #all_items = all_items[:2]  # limit for testing
     print(f"\n🔗 Total articles found across all pages: {len(all_items)}")
 
     # Deduplicate listing results
@@ -283,22 +290,29 @@ def main():
 
     print(f"  🆕 {len(new_items)} new article(s) to scrape.")
 
-    articles = []
+    scraped = []
     for full_url, fallback_title in new_items:
         print(f"  Scraping: {full_url}")
         article = scrape_article(full_url, fallback_title)
         if not article:
             continue
-        articles.append(article)
+        scraped.append(article)
         print(f"  ✅ {article['title'][:60]}...")
 
-    if not articles:
+    if not scraped:
         print("\n⛔ No articles scraped successfully.")
         return
 
-    print(f"\n🆕 Found {len(articles)} new article(s) in total.")
-    inserted_count = insert_articles(articles)
-    print(f"✅ Inserted {inserted_count} articles into database")
+    print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
+
+    # Insert once per active company
+    for config in COMPANY_CONFIGS:
+        if not is_subscription_active(SCRAPER_ID, config["company_id"]):
+            print(f"⏭️  Skipping {config['label']} — subscription inactive")
+            continue
+        articles = [{**a, "company_id": config["company_id"]} for a in scraped]
+        inserted_count = insert_articles(articles)
+        print(f"✅ Inserted {inserted_count} articles for {config['label']}")
 
 
 if __name__ == "__main__":

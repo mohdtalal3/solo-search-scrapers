@@ -22,6 +22,10 @@ COMPANY_CONFIGS = [
         "label": "Headliners",
         "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
     },
+    {
+        "label": "Middlesex Partnership",
+        "company_id": os.getenv("MIDDLESEX_PARTNERSHIP_COMPANY_ID"),
+    },
 ]
 
 BASE_URL = "https://www.gov.uk"
