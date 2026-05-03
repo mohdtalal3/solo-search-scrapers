@@ -8,6 +8,7 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles
 load_dotenv()
 
 API_URL = "https://erp.today/wp-json/wp/v2/posts"
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SOURCE_NAME = "ERP_TODAY"
 SCRAPER_ID = 17
 COMPANY_ID = os.getenv("ERP_RECRUIT_COMPANY_ID")
@@ -28,18 +29,38 @@ def clean_html_content(html_content):
 
 
 def fetch_posts_with_retry(page_num, max_retries=3):
-    """Fetch posts with retry logic"""
+    """Fetch posts via Scrappey request.get (non-browser)"""
     url = f"{API_URL}?per_page=100&page={page_num}&orderby=date&order=desc"
-    headers = {"User-Agent": "Mozilla/5.0"}
+    api_key = os.getenv("SCRAPPEY_API_KEY")
+    if not api_key:
+        raise RuntimeError("SCRAPPEY_API_KEY not set")
+    payload = {
+        "cmd": "request.get",
+        "requestType": "request",
+        "url": url,
+        "premiumProxy": True,
+        "proxyCountry": "UnitedKingdom",
+        "retries": 1,
+        "automaticallySolveCaptcha": True
+    }
+
 
     for attempt in range(max_retries):
         try:
-            time.sleep(2)  # Sleep 2 seconds before request
-            response = requests.get(url, headers=headers, timeout=30)
-            response.raise_for_status()
-            posts = response.json()
+            time.sleep(2)
+            resp = requests.post(
+                f"{SCRAPPEY_API_URL}?key={api_key}",
+                json=payload,
+                timeout=60,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            html = data.get("solution", {}).get("response", "")
+            if not html:
+                raise RuntimeError("Empty Scrappey response")
+            import json as _json
+            posts = _json.loads(html)
             return posts
-
         except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries}: {str(e)}")
