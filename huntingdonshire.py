@@ -24,6 +24,7 @@ SEARCH_PAGE_URL = f"{BASE_URL}/online-applications/search.do?action=monthlyList"
 MONTHLY_RESULTS_URL = f"{BASE_URL}/online-applications/monthlyListResults.do?action=firstPage"
 PAGED_RESULTS_URL = f"{BASE_URL}/online-applications/pagedSearchResults.do"
 DETAILS_URL = f"{BASE_URL}/online-applications/applicationDetails.do"
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 
 HEADERS = {
     "User-Agent": (
@@ -100,8 +101,9 @@ def init_search(session: requests.Session, date_type: str = "DC_Validated") -> s
     return r2.text, csrf2 or csrf
 
 
-def fetch_page(session: requests.Session, csrf: str, page: int) -> str:
-    """POST to pagedSearchResults.do for the given page number with 100 results per page."""
+def fetch_page(session: requests.Session, csrf: str, page: int) -> str | None:
+    """POST to pagedSearchResults.do for the given page number with 100 results per page.
+    Returns None if the server returns 500 (no results for this period)."""
     r = session.post(
         PAGED_RESULTS_URL,
         data={
@@ -116,6 +118,9 @@ def fetch_page(session: requests.Session, csrf: str, page: int) -> str:
         timeout=30,
         verify=False,
     )
+    if r.status_code == 500:
+        print(f"  ⚠️  500 response — no results for this period, skipping.")
+        return None
     r.raise_for_status()
     return r.text
 
@@ -150,16 +155,42 @@ def parse_results(html: str) -> list[tuple[str, str, str]]:
 
 def scrape_print_preview(key_val: str, max_retries: int = 3):
     """
-    Fetch the print preview page for a planning application.
+    Fetch the print preview page for a planning application via Scrappey.
     Returns (title, date, body_text).
     """
     print_url = f"{DETAILS_URL}?activeTab=printPreview&keyVal={key_val}"
+    api_key = os.getenv("SCRAPPEY_API_KEY")
+    if not api_key:
+        raise RuntimeError("SCRAPPEY_API_KEY not set")
+
+    payload = {
+        "cmd": "request.get",
+        "url": print_url,
+        "premiumProxy": True,
+       # "proxyCountry": "UnitedKingdom",
+        "retries": 1,
+        "automaticallySolveCaptcha": True,
+        "browserActions": [
+            {"type": "wait_for_load_state", "waitForLoadState": "networkidle"},
+            {"type": "wait", "wait": 1500, "when": "after_captcha"},
+        ],
+    }
+
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            r = requests.get(print_url, headers=HEADERS, proxies=PROXIES, timeout=30, verify=False)
-            r.raise_for_status()
-            soup = BeautifulSoup(r.text, "html.parser")
+            resp = requests.post(
+                f"{SCRAPPEY_API_URL}?key={api_key}",
+                json=payload,
+                timeout=90,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            html = data.get("solution", {}).get("response", "")
+            if not html:
+                raise RuntimeError("Empty Scrappey response")
+
+            soup = BeautifulSoup(html, "html.parser")
 
             container = soup.select_one("div#popupContainer")
             if not container:
@@ -242,6 +273,9 @@ def main():
         print(f"  Fetching page 1 of results ({date_type})...")
         time.sleep(1)
         first_page_html = fetch_page(session, csrf, page=1)
+        if first_page_html is None:
+            print(f"  ⛔ No results for {date_type} this period, moving on.")
+            continue
 
         items = parse_results(first_page_html)
         print(f"  📄 {date_type}: {len(items)} application(s) found.")
