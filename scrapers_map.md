@@ -89,6 +89,22 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## Middlesex Partnership
+
+> Financial regulation, financial crime, insurance, payments, fintech news
+
+| ID | File | Source |
+|----|------|--------|
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
+| 31 | `businesswire.py` | https://www.businesswire.com |
+| 35 | `fca_news.py` | https://www.fca.org.uk/news (Consumer Duty, Financial crime, Insurance) |
+| 36 | `finextra.py` | https://www.finextra.com (regulation, crime, payments, startups, wholesale, security, identity) |
+| 37 | `cityam.py` | https://www.cityam.com |
+| 38 | `lawgazette.py` | https://www.lawgazette.co.uk/news |
+
+---
+
 
 {
   "companies_house": "Leadership Hire",
@@ -131,3 +147,4 @@ Quick reference for which scraper belongs to which company.
 | ERP Recruit | `81ef7ff7-c548-42d8-8b22-b339b26d08ac` |
 | PLEA | *(add UUID here)* |
 | Headliners | `16adda91-be84-461a-b6e2-dc81e76cc2c6` |
+| Middlesex Partnership | `b9b7e8e2-4646-4ee0-9344-39b09407e708` |

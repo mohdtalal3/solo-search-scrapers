@@ -51,6 +51,9 @@ import marketingweek
 import prolificnorth
 import thegrocer
 import fca_news
+import finextra
+import cityam
+import lawgazette
 
 
 class TeeStream:
@@ -251,6 +254,15 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("FCA News", fca_news.main, fca_news)
+    time.sleep(5)
+
+    run_scraper("Finextra", finextra.main, finextra)
+    time.sleep(5)
+
+    run_scraper("City AM", cityam.main, cityam)
+    time.sleep(5)
+
+    run_scraper("Law Gazette", lawgazette.main, lawgazette)
     time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
