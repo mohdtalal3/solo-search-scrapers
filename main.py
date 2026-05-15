@@ -54,6 +54,7 @@ import fca_news
 import finextra
 import cityam
 import lawgazette
+import datacenterdynamics
 
 
 class TeeStream:
@@ -263,6 +264,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Law Gazette", lawgazette.main, lawgazette)
+    time.sleep(5)
+
+    run_scraper("Data Center Dynamics", datacenterdynamics.main, datacenterdynamics)
     time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
