@@ -171,7 +171,7 @@ def main():
         print(f"  ✅ {result['title'][:70]}")
         return result
 
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         futures = {executor.submit(scrape_one, item): item for item in new_items}
         for future in as_completed(futures):
             result = future.result()
