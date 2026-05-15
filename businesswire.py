@@ -13,26 +13,44 @@ from db import get_recent_article_urls, insert_articles, is_subscription_active
 load_dotenv()
 
 BASE_URL = "https://www.businesswire.com"
-NEWSROOM_URL = (
-    "https://www.businesswire.com/newsroom"
-    "?region=1000489"
-    "&subject=1000004%7C1000007%7C1000009%7C1000011%7C1000015%7C1050041"
-    "&industry=1000048%7C1000051%7C1000107%7C1000150%7C1000084%7C1000162%7C1050101%7C1000178"
-    "&language=en"
-)
 SOURCE_NAME = "BUSINESS_WIRE"
 SCRAPER_ID = 31
+MAX_PAGES = 6
+
 COMPANY_CONFIGS = [
     {
         "label": "Headliners",
         "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?region=1000489"
+            "&subject=1000004%7C1000007%7C1000009%7C1000011%7C1000015%7C1050041"
+            "&industry=1000048%7C1000051%7C1000107%7C1000150%7C1000084%7C1000162%7C1050101%7C1000178"
+            "&language=en"
+        ),
     },
     {
         "label": "Middlesex Partnership",
         "company_id": os.getenv("MIDDLESEX_PARTNERSHIP_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?region=1000262%7C1000489"
+            "&industry=1000048%7C1000150%7C1000084%7C1000178"
+            "&subject=1778692%7C1000004%7C1000011%7C1000013%7C1778693%7C1050037"
+        ),
+    },
+    {
+        "label": "Net Zero Search",
+        "company_id": os.getenv("NET_ZERO_SEARCH_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?language=en"
+            "&region=1000490"
+            "&industry=1000049%7C1000065%7C1000119%7C1000178%7C1000068"
+            "&subject=1778692%7C1000004%7C1050034%7C1050037%7C1000007%7C1000011%7C1000013%7C1778693%7C1000015"
+        ),
     },
 ]
-MAX_PAGES = 6
 
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
@@ -166,10 +184,11 @@ def parse_listing_html(html):
 # ----------------------------------------------------------
 # Fetch all listing pages (pages 1–MAX_PAGES)
 # ----------------------------------------------------------
-def fetch_all_listings():
+def fetch_all_listings(newsroom_url):
     all_items = []
+    print(f"  🌐 Fetching newsroom: {newsroom_url[:80]}...")
     for page in range(1, MAX_PAGES + 1):
-        url = f"{NEWSROOM_URL}&page={page}"
+        url = f"{newsroom_url}&page={page}"
         print(f"  📄 Fetching listing page {page}: {url}")
         html = fetch_with_scrappey(url)
         if not html:
@@ -251,19 +270,28 @@ def url_slug(url):
 
 
 # ----------------------------------------------------------
-# MAIN
+# Run for a single company config
 # ----------------------------------------------------------
-def main():
-    print("🔍 Fetching Business Wire newsroom listings...")
+def run_for_company(config: dict):
+    label = config["label"]
+    company_id = config["company_id"]
+    newsroom_url = config["newsroom_url"]
+
+    if not is_subscription_active(SCRAPER_ID, company_id):
+        print(f"\n⏭️  Skipping {label} — subscription is inactive")
+        return
+
+    print(f"\n{'='*60}")
+    print(f"🏢 Running for: {label}")
+    print(f"{'='*60}")
 
     known_urls = get_recent_article_urls(SCRAPER_ID, limit=500)
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    all_items = fetch_all_listings()
+    all_items = fetch_all_listings(newsroom_url)
     print(f"\n🔗 Total articles found across all pages: {len(all_items)}")
 
-    # Deduplicate listing results
     deduped = []
     dedup_seen = set()
     for full_url, title in all_items:
@@ -305,14 +333,18 @@ def main():
 
     print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
 
-    # Insert once per active company
+    articles = [{**a, "company_id": company_id} for a in scraped]
+    inserted_count = insert_articles(articles)
+    print(f"✅ Inserted {inserted_count} articles for {label}")
+
+
+# ----------------------------------------------------------
+# MAIN
+# ----------------------------------------------------------
+def main():
     for config in COMPANY_CONFIGS:
-        if not is_subscription_active(SCRAPER_ID, config["company_id"]):
-            print(f"⏭️  Skipping {config['label']} — subscription inactive")
-            continue
-        articles = [{**a, "company_id": config["company_id"]} for a in scraped]
-        inserted_count = insert_articles(articles)
-        print(f"✅ Inserted {inserted_count} articles for {config['label']}")
+        run_for_company(config)
+        time.sleep(5)
 
 
 if __name__ == "__main__":
