@@ -58,6 +58,7 @@ import datacenterdynamics
 import heatmap_news
 import utilitydive
 import boem
+import energy_gov
 
 
 class TeeStream:
@@ -279,6 +280,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("BOEM", boem.main, boem)
+    time.sleep(5)
+
+    run_scraper("Energy.gov", energy_gov.main, energy_gov)
     time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
