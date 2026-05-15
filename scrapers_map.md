@@ -105,6 +105,23 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## Net Zero Search
+
+> Clean energy, renewable energy, offshore wind, climate, energy storage, grid
+
+| ID | File | Source |
+|----|------|--------|
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 31 | `businesswire.py` | https://www.businesswire.com |
+| 39 | `datacenterdynamics.py` | https://www.datacenterdynamics.com/en/news/?term=north-america |
+| 40 | `heatmap_news.py` | https://heatmap.news (Google News sitemap) |
+| 41 | `utilitydive.py` | https://www.utilitydive.com (monthly archive sitemap) |
+| 42 | `boem.py` | https://www.boem.gov (press releases & renewable energy state activities) |
+| 43 | `energy_gov.py` | https://www.energy.gov (clean energy press releases & articles) |
+| 44 | `sec_gov.py` | https://efts.sec.gov (SEC EDGAR 8-K & D filings, today's date) |
+
+---
+
 
 {
   "companies_house": "Leadership Hire",
@@ -148,3 +165,4 @@ Quick reference for which scraper belongs to which company.
 | PLEA | *(add UUID here)* |
 | Headliners | `16adda91-be84-461a-b6e2-dc81e76cc2c6` |
 | Middlesex Partnership | `b9b7e8e2-4646-4ee0-9344-39b09407e708` |
+| Net Zero Search | `a63088a1-6828-42ad-be8a-b5b47aa79793` |
