@@ -19,8 +19,7 @@ BASE_URL = "https://www.sec.gov"
 PAGE_SIZE = 100
 MAX_PAGES = 5
 
-PROXY = os.getenv("SCRAPER_PROXY")
-PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+PROXIES = None
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
