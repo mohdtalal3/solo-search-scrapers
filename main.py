@@ -55,6 +55,7 @@ import finextra
 import cityam
 import lawgazette
 import datacenterdynamics
+import heatmap_news
 
 
 class TeeStream:
@@ -267,6 +268,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Data Center Dynamics", datacenterdynamics.main, datacenterdynamics)
+    time.sleep(5)
+
+    run_scraper("Heatmap News", heatmap_news.main, heatmap_news)
     time.sleep(5)
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
