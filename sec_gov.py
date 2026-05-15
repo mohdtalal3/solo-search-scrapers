@@ -1,3 +1,4 @@
+import json
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -19,19 +20,46 @@ BASE_URL = "https://www.sec.gov"
 PAGE_SIZE = 100
 MAX_PAGES = 5
 
-PROXIES = None
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
-    "Accept": "application/json, */*",
-    "Accept-Language": "en-US,en;q=0.9",
-}
 
-DOC_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
-    "Accept": "text/html,*/*",
-    "Accept-Language": "en-US,en;q=0.9",
-}
+def scrappey_get(url: str, max_retries: int = 3) -> str:
+    """Fetch a URL via Scrappey request.get. Returns response body or empty string."""
+    api_key = os.getenv("SCRAPPEY_API_KEY")
+    if not api_key:
+        raise RuntimeError("SCRAPPEY_API_KEY not set")
+
+    payload = {
+        "cmd": "request.get",
+        "requestType": "request",
+        "url": url,
+        "premiumProxy": True,
+        "proxyCountry": "UnitedStates",
+        "retries": 1,
+    }
+
+    for attempt in range(max_retries):
+        try:
+            time.sleep(1)
+            resp = requests.post(
+                f"{SCRAPPEY_API_URL}?key={api_key}",
+                json=payload,
+                timeout=90,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            solution = data.get("solution", {})
+            if solution.get("statusCode") not in (None, 200):
+                print(f"  ⚠️  Scrappey status {solution.get('statusCode')} for {url}")
+                return ""
+            return solution.get("response", "")
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"  ⚠️  Retry {attempt + 1}/{max_retries}: {e}")
+                time.sleep(2)
+            else:
+                print(f"  ❌ Scrappey failed for {url}: {e}")
+    return ""
 
 
 def build_api_url(filing_date: str, page: int) -> str:
@@ -73,12 +101,14 @@ def build_doc_url(hit: dict) -> str | None:
 def fetch_page(filing_date: str, page: int) -> list[dict]:
     """Fetch one page of search results and return list of {url, title, date}."""
     url = build_api_url(filing_date, page)
+    raw = scrappey_get(url)
+    if not raw:
+        print(f"  ❌ Empty response for page {page}")
+        return []
     try:
-        resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=30)
-        resp.raise_for_status()
-        data = resp.json()
+        data = json.loads(raw)
     except Exception as e:
-        print(f"  ❌ Failed to fetch page {page}: {e}")
+        print(f"  ❌ Failed to parse JSON for page {page}: {e}")
         return []
 
     hits = data.get("hits", {}).get("hits", [])
@@ -103,16 +133,12 @@ def fetch_page(filing_date: str, page: int) -> list[dict]:
 
 
 def scrape_body(url: str) -> str:
-    """Fetch and extract text from an SEC filing document page."""
-    try:
-        time.sleep(0.5)
-        resp = requests.get(url, headers=DOC_HEADERS, proxies=PROXIES, timeout=30)
-        resp.raise_for_status()
-    except Exception as e:
-        print(f"  ❌ Failed to fetch {url}: {e}")
+    """Fetch and extract text from an SEC filing document page via Scrappey."""
+    raw = scrappey_get(url)
+    if not raw:
         return ""
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(raw, "html.parser")
 
     for tag in soup.select("script, style"):
         tag.decompose()
@@ -171,7 +197,7 @@ def main():
         print(f"  ✅ {result['title'][:70]}")
         return result
 
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = {executor.submit(scrape_one, item): item for item in new_items}
         for future in as_completed(futures):
             result = future.result()
