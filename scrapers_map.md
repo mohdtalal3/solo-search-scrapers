@@ -122,6 +122,24 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## Connected IT
+
+> Higher education, IT services, digital transformation, public sector technology procurement
+
+| ID | File | Source |
+|----|------|--------|
+| 2 | `contract_finder.py` | https://www.contractsfinder.service.gov.uk (digital/IT/tech, £10k+) |
+| 3 | `digital_health.py` | https://digitalhealth.net |
+| 5 | `find_tender.py` | https://www.find-tender.service.gov.uk (digital transformation, ERP, IT services) |
+| 7 | `htn_co.py` | https://htn.co.uk |
+| 11 | `ukri.py` | https://www.ukri.org |
+| 45 | `universitybusiness.py` | https://universitybusiness.co.uk |
+| 46 | `jisc.py` | https://www.jisc.ac.uk/intelligence-ideas-insights |
+| 47 | `ucisa.py` | https://www.ucisa.ac.uk/news-and-blogs/ |
+| 48 | `publictechnology.py` | https://www.publictechnology.net |
+
+---
+
 
 {
   "companies_house": "Leadership Hire",

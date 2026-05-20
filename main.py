@@ -60,6 +60,10 @@ import utilitydive
 import boem
 import energy_gov
 import sec_gov
+import universitybusiness
+import jisc
+import ucisa
+import publictechnology
 
 
 class TeeStream:
@@ -288,6 +292,19 @@ def run_all_scrapers():
 
     run_scraper("SEC EDGAR", sec_gov.main, sec_gov)
     time.sleep(5)
+
+    run_scraper("University Business", universitybusiness.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Jisc", jisc.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("UCISA", ucisa.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Public Technology", publictechnology.main)  # multi-company: checked internally
+    time.sleep(5)
+
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
     seconds = int(elapsed_time % 60)
