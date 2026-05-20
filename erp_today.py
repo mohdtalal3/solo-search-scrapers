@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import os
-from flask import json
 import requests
 import time
 from dotenv import load_dotenv
