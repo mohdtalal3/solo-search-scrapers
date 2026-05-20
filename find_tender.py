@@ -53,6 +53,18 @@ COMPANY_CONFIGS = [
         "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
         "cpv_codes": [],
     },
+    {
+        "label": "Connected IT (Digital / IT / Technology)",
+        "company_id": os.getenv("CONNECTED_IT_COMPANY_ID"),
+        "keywords": '"digital transformation" OR ERP OR "enterprise resource planning" OR "cloud migration" OR "IT services" OR technology OR "programme management" OR "systems implementation" OR "data platform" OR Oracle OR SAP OR Unit4 OR Agresso OR SITS OR Tribal OR Civica OR "NHS digital" OR EPR OR "electronic patient record"',
+        "value_low": "10000",
+        "stages": ["4", "2", "5"],
+        "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+        "cpv_codes": [
+            "48000000",
+            "72000000",
+        ],
+    },
 ]
 
 HEADERS = {

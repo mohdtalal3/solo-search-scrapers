@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import os
+from flask import json
 import requests
 import time
 from dotenv import load_dotenv
@@ -36,12 +37,11 @@ def fetch_posts_with_retry(page_num, max_retries=3):
         raise RuntimeError("SCRAPPEY_API_KEY not set")
     payload = {
         "cmd": "request.get",
-        "requestType": "request",
         "url": url,
         "premiumProxy": True,
         "proxyCountry": "UnitedKingdom",
         "retries": 1,
-        "automaticallySolveCaptcha": True
+        "automaticallySolveCaptcha": True,
     }
 
 
@@ -53,9 +53,11 @@ def fetch_posts_with_retry(page_num, max_retries=3):
                 json=payload,
                 timeout=60,
             )
+            # with open("output.json", "w", encoding="utf-8") as f:
+            #     json.dump(resp.json(), f, indent=4, ensure_ascii=False)
             resp.raise_for_status()
             data = resp.json()
-            html = data.get("solution", {}).get("response", "")
+            html = data.get("solution", {}).get("innerText", "")
             if not html:
                 raise RuntimeError("Empty Scrappey response")
             import json as _json

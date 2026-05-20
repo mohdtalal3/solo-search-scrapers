@@ -92,6 +92,17 @@ COMPANY_CONFIGS = [
         "notice_types": ["awarded", "open", "public_notice", "supplychain_notice"],
         "cpv_codes": [],
     },
+    {
+        "label": "Connected IT (Digital / IT / Technology)",
+        "company_id": os.getenv("CONNECTED_IT_COMPANY_ID"),
+        "keywords": 'digital OR "IT services" OR technology OR software OR systems OR ERP OR cloud OR data OR transformation OR "programme management"',
+        "value_low": "10000",
+        "notice_types": DEFAULT_NOTICE_TYPES,
+        "cpv_codes": [
+            "48000000",
+            "72000000",
+        ],
+    },
 ]
 
 HEADERS = {
