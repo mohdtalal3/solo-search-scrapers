@@ -2,7 +2,7 @@ import os
 import json
 import time
 from bs4 import BeautifulSoup
-from curl_cffi import requests
+import requests as std_requests
 from dotenv import load_dotenv
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
@@ -10,6 +10,7 @@ load_dotenv()
 
 LISTING_URL = "https://www.jisc.ac.uk/intelligence-ideas-insights"
 BASE_URL = "https://www.jisc.ac.uk"
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SOURCE_NAME = "JISC"
 SCRAPER_ID = 46
 
@@ -20,19 +21,38 @@ COMPANY_CONFIGS = [
     },
 ]
 
-HEADERS = {
-    "Accept-Language": "en-GB,en;q=0.9",
-}
-
-
 def fetch_next_data(url, max_retries=3):
-    """Fetch a page and extract the __NEXT_DATA__ JSON."""
+    """Fetch a page via Scrappey and extract the __NEXT_DATA__ JSON."""
+    api_key = os.getenv("SCRAPPEY_API_KEY")
+    if not api_key:
+        raise RuntimeError("SCRAPPEY_API_KEY not set")
+
+    payload = {
+        "cmd": "request.get",
+        "requestType": "request",
+        "url": url,
+        "premiumProxy": True,
+        #"proxyCountry": "UnitedKingdom",
+        "retries": 1,
+        #"automaticallySolveCaptcha": True
+    }
+
     for attempt in range(max_retries):
         try:
             time.sleep(2)
-            resp = requests.get(url, headers=HEADERS, impersonate="chrome131", timeout=30)
+            resp = std_requests.post(
+                f"{SCRAPPEY_API_URL}?key={api_key}",
+                json=payload,
+                timeout=60,
+            )
             resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, "html.parser")
+            data = resp.json()
+            solution = data.get("solution", {})
+            html = solution.get("response", "")
+            if not html:
+                raise RuntimeError("Empty Scrappey response")
+
+            soup = BeautifulSoup(html, "html.parser")
             script_tag = soup.find("script", {"id": "__NEXT_DATA__"})
             if not script_tag:
                 raise RuntimeError("__NEXT_DATA__ script tag not found")
