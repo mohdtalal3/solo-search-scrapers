@@ -50,6 +50,13 @@ COMPANY_CONFIGS = [
             "&subject=1778692%7C1000004%7C1050034%7C1050037%7C1000007%7C1000011%7C1000013%7C1778693%7C1000015"
         ),
     },
+    {
+        "label": "H2 Recruit",
+        "company_id": os.getenv("H2_RECRUIT_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom?industry=1000178&subject=1778692%7C1000007%7C1000011%7C1000013%7C1000015%7C1000004&region=1000283"
+        ),
+    },
 ]
 
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"

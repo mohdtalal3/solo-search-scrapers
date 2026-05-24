@@ -49,6 +49,12 @@ COMPANY_CONFIGS = [
         "sitemap_url": "https://www.prnewswire.com/sitemap-news.xml",
         "pages": 4,
     },
+    {
+        "label": "H2 Recruit",
+        "company_id": os.getenv("H2_RECRUIT_COMPANY_ID"),
+        "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
+        "pages": 1,
+    },
 ]
 
 HEADERS = {

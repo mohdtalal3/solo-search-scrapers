@@ -15,16 +15,30 @@ load_dotenv()
 
 SOURCE_NAME = "FINEXTRA"
 SCRAPER_ID = 36
-COMPANY_ID = os.getenv("MIDDLESEX_PARTNERSHIP_COMPANY_ID")
 
-RSS_CHANNELS = [
-    "https://www.finextra.com/rss/channel.aspx?channel=regulation",
-    "https://www.finextra.com/rss/channel.aspx?channel=crime",
-    "https://www.finextra.com/rss/channel.aspx?channel=payments",
-    "https://www.finextra.com/rss/channel.aspx?channel=startups",
-    "https://www.finextra.com/rss/channel.aspx?channel=wholesale",
-    "https://www.finextra.com/rss/channel.aspx?channel=security",
-    "https://www.finextra.com/rss/channel.aspx?channel=identity",
+COMPANY_CONFIGS = [
+    {
+        "label": "Middlesex Partnership",
+        "company_id": os.getenv("MIDDLESEX_PARTNERSHIP_COMPANY_ID"),
+        "rss_channels": [
+            "https://www.finextra.com/rss/channel.aspx?channel=regulation",
+            "https://www.finextra.com/rss/channel.aspx?channel=crime",
+            "https://www.finextra.com/rss/channel.aspx?channel=payments",
+            "https://www.finextra.com/rss/channel.aspx?channel=startups",
+            "https://www.finextra.com/rss/channel.aspx?channel=wholesale",
+            "https://www.finextra.com/rss/channel.aspx?channel=security",
+            "https://www.finextra.com/rss/channel.aspx?channel=identity",
+        ],
+    },
+    {
+        "label": "H2 Recruit",
+        "company_id": os.getenv("H2_RECRUIT_COMPANY_ID"),
+        "rss_channels": [
+            "https://www.finextra.com/rss/headlines.aspx",
+            "https://www.finextra.com/rss/channel.aspx?channel=startups",
+            "https://www.finextra.com/rss/events.aspx",
+        ],
+    },
 ]
 
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
@@ -159,22 +173,27 @@ def scrape_article(url: str, max_retries: int = 3) -> str:
                 return ""
 
 
-def main():
-    if not is_subscription_active(SCRAPER_ID, COMPANY_ID):
-        print("⏭️  Skipping Finextra — subscription is inactive")
+def run_for_company(config: dict):
+    label = config["label"]
+    company_id = config["company_id"]
+    rss_channels = config["rss_channels"]
+
+    if not is_subscription_active(SCRAPER_ID, company_id):
+        print(f"\n⏭️  Skipping {label} — subscription is inactive")
         return
 
-    print("🔍 Scraping Finextra RSS channels...")
+    print(f"\n{'='*60}")
+    print(f"🏢 Running for: {label}")
+    print(f"{'='*60}")
 
     known_urls = get_recent_article_urls(SCRAPER_ID, limit=500)
     print(f"🗄️  {len(known_urls)} known URLs in DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    # Collect all unique new items across all channels
-    new_items: dict[str, dict] = {}  # url → item dict
+    new_items: dict[str, dict] = {}
 
-    for channel_url in RSS_CHANNELS:
-        channel = channel_url.split("channel=")[-1]
+    for channel_url in rss_channels:
+        channel = channel_url.split("channel=")[-1] if "channel=" in channel_url else channel_url.split("/")[-1]
         print(f"  📡 Fetching channel: {channel}")
         items = fetch_rss(channel_url)
         print(f"     {len(items)} item(s) found.")
@@ -209,7 +228,7 @@ def main():
             "text": text,
             "date": item["date"],
             "scraper_id": SCRAPER_ID,
-            "company_id": COMPANY_ID,
+            "company_id": company_id,
         }
 
     with ThreadPoolExecutor(max_workers=5) as executor:
@@ -224,7 +243,13 @@ def main():
         return
 
     inserted = insert_articles(articles)
-    print(f"✅ Inserted {inserted} articles into database.")
+    print(f"✅ Inserted {inserted} articles for {label}.")
+
+
+def main():
+    print("🔍 Scraping Finextra RSS channels...")
+    for config in COMPANY_CONFIGS:
+        run_for_company(config)
 
 
 if __name__ == "__main__":
