@@ -155,6 +155,25 @@ Quick reference for which scraper belongs to which company.
 }
 
 
+## H2 Recruit
+
+> Venture capital, startup funding, fintech and tech investment news
+
+| ID | File | Source |
+|----|------|--------|
+| 4 | `eu_startups.py` | https://eu-startups.com |
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 31 | `businesswire.py` | https://www.businesswire.com |
+| 36 | `finextra.py` | https://www.finextra.com |
+| 49 | `balderton.py` | https://www.balderton.com |
+| 50 | `techcrunch.py` | https://techcrunch.com |
+| 51 | `sifted.py` | https://sifted.eu |
+| 52 | `globenewswire.py` | https://www.globenewswire.com |
+| 53 | `fintechfutures.py` | https://www.fintechfutures.com |
+| 54 | `notion_vc.py` | https://www.notion.vc |
+
+---
+
 ## Both Companies
 
 > Runs for multiple companies with different keywords/stages
@@ -184,3 +203,4 @@ Quick reference for which scraper belongs to which company.
 | Headliners | `16adda91-be84-461a-b6e2-dc81e76cc2c6` |
 | Middlesex Partnership | `b9b7e8e2-4646-4ee0-9344-39b09407e708` |
 | Net Zero Search | `a63088a1-6828-42ad-be8a-b5b47aa79793` |
+| H2 Recruit | `7e8a211e-68cc-4485-ada0-0f9be81de536` |
