@@ -12,14 +12,6 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles, i
 load_dotenv()
 
 BASE_URL = "https://www.globenewswire.com"
-LISTING_URL = (
-    "https://www.globenewswire.com/en/search/continent/eu"
-    "/subject/coa,prs,fin,mgt,mgc,mna,pdt,prt"
-    "/industry/technology,software,software%2520&%2520computer%2520services,"
-    "internet,computer%2520services,financial%2520services,"
-    "financial%2520data%2520providers,business%252520support%252520services"
-    "/load/more?page={page}&pageSize=50"
-)
 SOURCE_NAME = "GLOBENEWSWIRE"
 SCRAPER_ID = 52
 MAX_PAGES = 3
@@ -32,6 +24,26 @@ COMPANY_CONFIGS = [
     {
         "label": "H2 Recruit",
         "company_id": os.getenv("H2_RECRUIT_COMPANY_ID"),
+        "listing_url": (
+            "https://www.globenewswire.com/en/search/continent/eu"
+            "/subject/coa,prs,fin,mgt,mgc,mna,pdt,prt"
+            "/industry/technology,software,software%2520&%2520computer%2520services,"
+            "internet,computer%2520services,financial%2520services,"
+            "financial%2520data%2520providers,business%252520support%252520services"
+            "/load/more?page={page}&pageSize=50"
+        ),
+    },
+    {
+        "label": "VM Search",
+        "company_id": os.getenv("VM_SEARCH_COMPANY_ID"),
+        "listing_url": (
+            "https://www.globenewswire.com/en/search/continent/eu"
+            "/industry/technology,software%2520&%2520computer%2520services,software,internet,"
+            "media,broadcasting%2520&%2520entertainment,telecommunications,"
+            "fixed%2520line%2520telecommunications,computer%2520hardware"
+            "/subject/fin,prt,jvn,mna,mgt,mgc,pdt,bfc,lic,prs,rcn"
+            "/load/more?page={page}&pageSize=50"
+        ),
     },
 ]
 
@@ -113,11 +125,11 @@ def parse_listing_date(date_str):
 # ----------------------------------------------------------
 # Phase 1: Collect article URLs from listing pages
 # ----------------------------------------------------------
-def collect_links(saved_timestamp):
+def collect_links(saved_timestamp, listing_url):
     collected = []
 
     for page_num in range(1, MAX_PAGES + 1):
-        url = LISTING_URL.format(page=page_num)
+        url = listing_url.format(page=page_num)
         print(f"\n📄 Fetching listing page {page_num}...")
 
         html = fetch_url(url)
@@ -250,27 +262,12 @@ def scrape_articles_threaded(links, saved_timestamp):
 # Main
 # ----------------------------------------------------------
 def main():
-    company_id = COMPANY_CONFIGS[0]["company_id"]
-    saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
-
     print("🔍 GlobeNewswire scraper starting...")
-    print(f"🗄️  Saved timestamp: {saved_timestamp or 'None (first run)'}")
 
-    # Phase 1: collect links
-    links = collect_links(saved_timestamp)
-    print(f"\n🔗 Total articles to scrape: {len(links)}")
-
-    if not links:
-        print("⛔ No articles found.")
-        return
-
-    # Phase 2: threaded article scraping
-    all_articles, newest_timestamp = scrape_articles_threaded(links, saved_timestamp)
-
-    # Save results per company
     for config in COMPANY_CONFIGS:
         company_id = config["company_id"]
         label = config["label"]
+        listing_url = config["listing_url"]
 
         print(f"\n{'='*60}")
         print(f"🏢 Processing: {label}")
@@ -280,18 +277,30 @@ def main():
             print(f"⏭️  Skipping {label} — subscription is inactive")
             continue
 
-        saved_ts = get_latest_timestamp(SCRAPER_ID, company_id)
+        saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
+        print(f"🗄️  Saved timestamp: {saved_timestamp or 'None (first run)'}")
 
-        if saved_ts is None:
+        # Phase 1: collect links
+        links = collect_links(saved_timestamp, listing_url)
+        print(f"\n🔗 Total articles to scrape: {len(links)}")
+
+        if not links:
+            print("⛔ No articles found.")
+            continue
+
+        # Phase 2: threaded article scraping
+        all_articles, newest_timestamp = scrape_articles_threaded(links, saved_timestamp)
+
+        if saved_timestamp is None:
             print("🟢 First run detected — NOT saving any articles.")
             if newest_timestamp:
                 update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
                 print("🕒 Saved latest timestamp:", newest_timestamp)
             continue
 
-        print("Previously saved timestamp:", saved_ts)
+        print("Previously saved timestamp:", saved_timestamp)
 
-        new_articles = [a for a in all_articles if a["date"] > saved_ts]
+        new_articles = [a for a in all_articles if a["date"] > saved_timestamp]
 
         if not new_articles:
             print("⛔ No new articles found.")

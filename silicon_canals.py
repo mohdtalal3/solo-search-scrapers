@@ -9,21 +9,13 @@ from dotenv import load_dotenv
 
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
-API_URL = "https://www.eu-startups.com/wp-json/wp/v2/posts"
-SOURCE_NAME = "EU_STARTUPS"
-SCRAPER_ID = 4
+API_URL = "https://siliconcanals.com/wp-json/wp/v2/posts"
+SOURCE_NAME = "SILICON_CANALS"
+SCRAPER_ID = 57
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
 
 COMPANY_CONFIGS = [
-    {
-        "label": "Solo Search",
-        "company_id": os.getenv("SOLO_SEARCH_COMPANY_ID"),
-    },
-    {
-        "label": "H2 Recruit",
-        "company_id": os.getenv("H2_RECRUIT_COMPANY_ID"),
-    },
     {
         "label": "VM Search",
         "company_id": os.getenv("VM_SEARCH_COMPANY_ID"),
@@ -129,10 +121,9 @@ def fetch_posts_with_retry(params, max_retries=3):
 
 
 def main():
-    print("🔍 Fetching articles from EU-Startups API...")
+    print("🔍 Fetching articles from Silicon Canals API...")
 
     params = {
-        "categories": 1282,  # Funding category
         "per_page": 100,
         "page": 1,
         "orderby": "date",

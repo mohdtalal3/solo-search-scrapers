@@ -174,6 +174,27 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## VM Search
+
+> Broadcast, media technology, XR, virtual production, and European tech startup news
+
+| ID | File | Source | Notes |
+|----|------|--------|-------|
+| 14 | `prnewswire.py` | https://www.prnewswire.com | RSS; industry tag filtering |
+| 52 | `globenewswire.py` | https://www.globenewswire.com | RSS; strong EU coverage |
+| 31 | `businesswire.py` | https://www.businesswire.com | RSS; industry-specific feeds |
+| 51 | `sifted.py` | https://sifted.eu | Category pages; no auth |
+| 4 | `eu_startups.py` | https://eu-startups.com | Category pages; round detail in headline |
+| 57 | `silicon_canals.py` | https://siliconcanals.com | Benelux-focused; clean HTML; no auth |
+| 58 | `ibc.py` | https://ibc.org/news | Trade body; consistent structure; publicly accessible |
+| 59 | `tvbeurope.py` | https://www.tvbeurope.com | Category filtering available; no auth |
+| 60 | `xr_today.py` | https://www.xrtoday.com | Category pages by vertical; clean structure; no auth |
+| 61 | `disguise.py` | https://www.disguise.one/en/news | Extract client org name as lead, not disguise |
+| 62 | `tech_eu.py` | https://tech.eu | FLAG — verify HTML structure and tag pages before build |
+| 63 | `broadcastnow.py` | https://www.broadcastnow.co.uk | FLAG — verify authentication requirements before build |
+
+---
+
 ## Both Companies
 
 > Runs for multiple companies with different keywords/stages
@@ -204,3 +225,4 @@ Quick reference for which scraper belongs to which company.
 | Middlesex Partnership | `b9b7e8e2-4646-4ee0-9344-39b09407e708` |
 | Net Zero Search | `a63088a1-6828-42ad-be8a-b5b47aa79793` |
 | H2 Recruit | `7e8a211e-68cc-4485-ada0-0f9be81de536` |
+| VM Search | *(add UUID here)* |

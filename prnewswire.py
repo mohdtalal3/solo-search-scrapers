@@ -55,6 +55,12 @@ COMPANY_CONFIGS = [
         "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
         "pages": 1,
     },
+    {
+        "label": "VM Search",
+        "company_id": os.getenv("VM_SEARCH_COMPANY_ID"),
+        "sitemap_url": "https://www.prnewswire.com/sitemap-news.xml",
+        "pages": 1,
+    },
 ]
 
 HEADERS = {

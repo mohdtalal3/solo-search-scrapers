@@ -57,8 +57,19 @@ COMPANY_CONFIGS = [
             "https://www.businesswire.com/newsroom?industry=1000178&subject=1778692%7C1000007%7C1000011%7C1000013%7C1000015%7C1000004&region=1000283"
         ),
     },
-]
+    {
+        "label": "VM Search",
+        "company_id": os.getenv("VM_SEARCH_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?industry=1000178%7C1000067"
+            "&subject=1000004%7C1000007%7C1000011%7C1000013%7C1000015%7C1050041%7C1085196"
+            "&region=1000283"
 
+        ),
+    },
+]
+# "&language=en"
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
 
