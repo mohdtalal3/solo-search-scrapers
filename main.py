@@ -65,6 +65,8 @@ import jisc
 import ucisa
 import publictechnology
 import balderton
+import silicon_canals
+import tech_eu
 
 
 class TeeStream:
@@ -307,6 +309,12 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Balderton", balderton.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Silicon Canals", silicon_canals.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Tech.eu", tech_eu.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
