@@ -14,10 +14,10 @@ COMPANY_CONFIGS = [
         "label": "Solo Search",
         "company_id": os.getenv("SOLO_SEARCH_COMPANY_ID"),
     },
-    {
-        "label": "Connected IT",
-        "company_id": os.getenv("CONNECTED_IT_COMPANY_ID"),
-    },
+    # {
+    #     "label": "Connected IT",
+    #     "company_id": os.getenv("CONNECTED_IT_COMPANY_ID"),
+    # },
 ]
 
 headers = {"User-Agent": "Mozilla/5.0"}
