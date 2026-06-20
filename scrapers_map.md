@@ -51,6 +51,9 @@ Quick reference for which scraper belongs to which company.
 | 20 | `oracle.py` | https://www.oracle.com/nl/news/ |
 | 21 | `deloitte.py` | https://www.deloitte.com (UK/NL/BE/IE/LU) |
 | 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
+| 64 | `inoapps.py` | https://www.inoapps.com/sitemap.xml |
+| 65 | `ey.py` | https://www.ey.com/en_uk/sitemap/insights.xml |
+| 66 | `kpmg.py` | https://kpmg.com/xx/en/sitemap.xml |
 
 ---
 

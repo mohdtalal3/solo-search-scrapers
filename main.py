@@ -67,6 +67,9 @@ import publictechnology
 import balderton
 import silicon_canals
 import tech_eu
+import inoapps
+import ey
+import kpmg
 
 
 class TeeStream:
@@ -315,6 +318,15 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Tech.eu", tech_eu.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Inoapps", inoapps.main, inoapps)
+    time.sleep(5)
+
+    run_scraper("EY", ey.main, ey)
+    time.sleep(5)
+
+    run_scraper("KPMG", kpmg.main, kpmg)
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
