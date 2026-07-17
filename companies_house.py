@@ -26,6 +26,10 @@ COMPANY_CONFIGS = [
         "label": "Middlesex Partnership",
         "company_id": os.getenv("MIDDLESEX_PARTNERSHIP_COMPANY_ID"),
     },
+    {
+        "label": "1492 Search",
+        "company_id": os.getenv("1492_SEARCH_COMPANY_ID"),
+    },
 ]
 
 BASE_URL = "https://www.gov.uk"
