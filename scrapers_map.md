@@ -54,7 +54,7 @@ Quick reference for which scraper belongs to which company.
 | 64 | `inoapps.py` | https://www.inoapps.com/sitemap.xml |
 | 65 | `ey.py` | https://www.ey.com/en_uk/sitemap/insights.xml |
 | 66 | `kpmg.py` | https://kpmg.com/xx/en/sitemap.xml |
-
+| 67 | `pwc.py` | https://www.pwc.co.uk/sitemap.xml |
 ---
 
 ## PLEA (Landscape Architecture)
@@ -198,6 +198,20 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## 1492 Search
+
+> Aerospace, defence, security and space industry news
+
+| ID | File | Source |
+|----|------|--------|
+| 9 | `themanufacturer.py` | https://www.themanufacturer.com |
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
+| 68 | `adsgroup.py` | https://www.adsgroup.org.uk |
+| 69 | `business_live.py` | https://www.business-live.co.uk |
+
+---
+
 ## Both Companies
 
 > Runs for multiple companies with different keywords/stages
@@ -229,3 +243,4 @@ Quick reference for which scraper belongs to which company.
 | Net Zero Search | `a63088a1-6828-42ad-be8a-b5b47aa79793` |
 | H2 Recruit | `7e8a211e-68cc-4485-ada0-0f9be81de536` |
 | VM Search | *(add UUID here)* |
+| 1492 Search | `edbc2c4f-c333-4fce-8700-82abcf2b4c74` |
