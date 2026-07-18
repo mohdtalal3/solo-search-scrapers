@@ -209,6 +209,8 @@ Quick reference for which scraper belongs to which company.
 | 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
 | 68 | `adsgroup.py` | https://www.adsgroup.org.uk |
 | 69 | `business_live.py` | https://www.business-live.co.uk |
+| 2 | `contract_finder.py` | https://www.contractsfinder.service.gov.uk (aerospace/defence/energy, £500k+) |
+| 70 | `privateequitywire.py` | https://www.privateequitywire.co.uk |
 
 ---
 

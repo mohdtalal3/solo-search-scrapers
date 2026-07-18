@@ -103,6 +103,23 @@ COMPANY_CONFIGS = [
             "72000000",
         ],
     },
+    {
+        "label": "1492 Search (Aerospace / Defence / Energy)",
+        "company_id": os.getenv("1492_SEARCH_COMPANY_ID"),
+        "keywords": "",
+        "value_low": "500000",
+        "notice_types": ["awarded", "open", "organisation_sme", "supplier_sme", "public_notice", "supplychain_notice"],
+        "cpv_codes": [
+            "14000000",
+            "19000000",
+            "38000000",
+            "42000000",
+            "43000000",
+            "44000000",
+            "45000000",
+        ],
+        "regions": ["1770"],
+    },
 ]
 
 HEADERS = {
@@ -134,12 +151,12 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, notice_types: list = None) -> str:
+def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, notice_types: list = None, regions: list = None) -> str:
     if notice_types is None:
         notice_types = DEFAULT_NOTICE_TYPES
 
     # Calculate date 2 days ago from today
-    two_days_ago = datetime.now() - timedelta(days=2)
+    two_days_ago = datetime.now() - timedelta(days=20)
     day = two_days_ago.strftime("%d")
     month = two_days_ago.strftime("%m")
     year = two_days_ago.strftime("%Y")
@@ -150,8 +167,14 @@ def submit_search(session: requests.Session, form_token: str, keywords: str, cpv
     for nt in notice_types:
         data.append((nt, "1"))
 
+    if regions:
+        data.append(("location", "region"))
+        for region in regions:
+            data.append(("regions[]", region))
+    else:
+        data.append(("location", "all_locations"))
+
     data += [
-        ("location", "all_locations"),
         ("postcode", ""),
         ("postcode_distance_select", "5 miles"),
         ("postcode_distance", "5"),
@@ -249,10 +272,7 @@ def download_xml(session: requests.Session, filename="contracts_finder_results.x
     if not r.text.strip().startswith("<?xml"):
         raise RuntimeError("Did not receive XML content")
 
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(r.text)
-
-    print(f"📄 XML downloaded: {filename}")
+    print("📄 XML downloaded")
     return r.text
 
 
@@ -406,6 +426,7 @@ def run_for_company(config: dict):
     cpv_codes = config["cpv_codes"]
     value_low = config["value_low"]
     notice_types = config.get("notice_types", DEFAULT_NOTICE_TYPES)
+    regions = config.get("regions")
 
     print(f"\n{'='*60}")
     print(f"🏢 Running for: {label}")
@@ -421,7 +442,7 @@ def run_for_company(config: dict):
 
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, notice_types)
+    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, notice_types, regions)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")

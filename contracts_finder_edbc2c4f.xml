@@ -1,0 +1,2461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfFullNotice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<FullNotice>
+  <Id>6ce1e2dc-fc25-4173-8427-156282499085</Id>
+  <Notice>
+    <Id>6ce1e2dc-fc25-4173-8427-156282499085</Id>
+    <ParentIdentifier xsi:nil="true" />
+    <ContactDetails>
+      <Name xsi:nil="true" />
+      <Email>procurementsupport@lancashire.police.uk</Email>
+      <Address1>Saunders Lane</Address1>
+      <Address2 xsi:nil="true" />
+      <Town>PRESTON</Town>
+      <Postcode>PR45SB</Postcode>
+      <Country>England</Country>
+      <Phone xsi:nil="true" />
+      <WebAddress xsi:nil="true" />
+    </ContactDetails>
+    <Identifier>2623</Identifier>
+    <Title>Greenbank Custody Refurbishmant</Title>
+    <Description>The refurbishment of Greenbank Custody via Northwest Construction Hub Low Value £1m-£4m framework</Description>
+    <CpvDescription>Construction work</CpvDescription>
+    <PublishedDate>2026-07-16T12:49:24+01:00</PublishedDate>
+    <DeadlineDate>2026-06-17T12:00:00+01:00</DeadlineDate>
+    <ValueLow>1781975.62</ValueLow>
+    <ValueHigh xsi:nil="true" />
+    <Postcode>BB1 3HP</Postcode>
+    <Region xsi:nil="true" />
+    <Nationwide>false</Nationwide>
+    <Location>
+      <Lat>53.755406</Lat>
+      <Lon>-2.456299</Lon>
+    </Location>
+    <Start>2026-07-15T00:00:00+01:00</Start>
+    <End>2027-01-29T00:00:00Z</End>
+    <Type>Contract</Type>
+    <CpvCodes>
+      <string>45000000</string>
+    </CpvCodes>
+    <Status>Awarded</Status>
+    <IsSuitableForSme>true</IsSuitableForSme>
+    <IsSuitableForVco>false</IsSuitableForVco>
+    <SupplyChain>false</SupplyChain>
+    <LastNotifiableUpdate>2026-07-16T12:49:24+01:00</LastNotifiableUpdate>
+    <OrganisationName>Lancashire Constabulary</OrganisationName>
+    <Sector xsi:nil="true" />
+    <ProcedureType xsi:nil="true" />
+    <ProcedureTypeOther xsi:nil="true" />
+    <ProcedureAcceleratedJustification xsi:nil="true" />
+    <OjeuContractType>Works</OjeuContractType>
+    <IsFrameworkAgreement>false</IsFrameworkAgreement>
+    <IsExtensionPossible>false</IsExtensionPossible>
+  </Notice>
+  <CreatedDate>2026-07-16T11:34:51+01:00</CreatedDate>
+  <LastUpdatedDate>2026-07-16T12:49:24+01:00</LastUpdatedDate>
+  <Awards>
+    <AwardDetail>
+      <Id>548197</Id>
+      <NoticeId>6ce1e2dc-fc25-4173-8427-156282499085</NoticeId>
+      <ParentId xsi:nil="true" />
+      <Value>1781975.62</Value>
+      <SupplierName>Whitfield &amp; Brown</SupplierName>
+      <SupplierAddress>Halton House,
+      Gorsey Lane
+      Cheshire
+      WA8 0RP</SupplierAddress>
+      <Contact xsi:nil="true" />
+      <ReferenceType>NONE_OTHER</ReferenceType>
+      <Reference xsi:nil="true" />
+      <StartDate>2026-07-15T00:00:00+01:00</StartDate>
+      <EndDate>2027-01-29T00:00:00Z</EndDate>
+      <AwardedDate>2026-07-15T00:00:00+01:00</AwardedDate>
+      <AwardedProcedureType>Other</AwardedProcedureType>
+      <AwardedProcedureTypeOther>Mini Competition via Framework</AwardedProcedureTypeOther>
+      <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+      <AnnexDOptionType xsi:nil="true" />
+      <AdditionalDetail xsi:nil="true" />
+      <AwardedToSME>true</AwardedToSME>
+      <AwardedToVCSO>false</AwardedToVCSO>
+      <AwardGuid>373335ad-06d4-4a30-9a3b-eafd3ff847a0</AwardGuid>
+    </AwardDetail>
+  </Awards>
+  <IsPublished>true</IsPublished>
+  <IsPreAwarded>true</IsPreAwarded>
+  <Organisation>
+    <Name>Lancashire Constabulary</Name>
+  </Organisation>
+  <AdditionalDetails>
+    <AdditionalDetail>
+      <Id>6ce1e2dc-fc25-4173-8427-156282499085</Id>
+      <NoticeId>6ce1e2dc-fc25-4173-8427-156282499085</NoticeId>
+      <Description>Additional Text</Description>
+      <DataType>AdditionalText</DataType>
+      <TextData xsi:nil="true" />
+      <MimeType xsi:nil="true" />
+      <AwardGuid xsi:nil="true" />
+    </AdditionalDetail>
+  </AdditionalDetails>
+  <CpvCodes>
+    <CpvCode>
+      <Code>45000000</Code>
+      <Description>Construction work</Description>
+      <ParentCode>45000000</ParentCode>
+      <HasChildren>true</HasChildren>
+    </CpvCode>
+  </CpvCodes>
+  <PublishedVersion>
+    <PublishedNoticeVersion>
+      <ChangedByUser>rachel.astbury@lancashire.police.uk</ChangedByUser>
+      <DateChanged>2026-07-16T12:49:24+01:00</DateChanged>
+      <PublishedNoticeId>6ce1e2dc-fc25-4173-8427-156282499085</PublishedNoticeId>
+      <VersionNumber>1</VersionNumber>
+    </PublishedNoticeVersion>
+  </PublishedVersion>
+  <NumberOfViews>35</NumberOfViews>
+</FullNotice>
+<FullNotice>
+  <Id>2b7af141-afa6-4072-b481-00819a56e4fd</Id>
+  <Notice>
+    <Id>2b7af141-afa6-4072-b481-00819a56e4fd</Id>
+    <ParentIdentifier xsi:nil="true" />
+    <ContactDetails>
+      <Name>James Allen</Name>
+      <Email>james.allen@sanctuary.co.uk</Email>
+      <Address1>Chamber Court</Address1>
+      <Address2>Castle Street</Address2>
+      <Town>Worcester</Town>
+      <Postcode>WR1 3ZQ</Postcode>
+      <Country>England</Country>
+      <Phone>+44 1905 335249</Phone>
+      <WebAddress>http://www.sanctuary.co.uk</WebAddress>
+    </ContactDetails>
+    <Identifier>SANCTUARYLIVE001-DN743022-55928118</Identifier>
+    <Title>Air Conditioning and Mechanical Ventilation 2024</Title>
+    <Description>A 4-year contract for the provision of planned &amp; reactive air conditioning and mechanical ventilation servicing, repair and installation services across East Midlands, West Midlands, East of England, London, South East and South West.</Description>
+    <CpvDescription>Cooling and ventilation equipment and Fans and air-conditioning appliances and Inspection of ventilation system</CpvDescription>
+    <PublishedDate>2026-07-15T10:29:36+01:00</PublishedDate>
+    <DeadlineDate>2024-12-04T12:00:00Z</DeadlineDate>
+    <ValueLow>928000</ValueLow>
+    <ValueHigh xsi:nil="true" />
+    <Postcode xsi:nil="true" />
+    <Region>East Midlands,West Midlands,East of England,London,South East,South West</Region>
+    <Nationwide>false</Nationwide>
+    <Location>
+      <Lat>0</Lat>
+      <Lon>0</Lon>
+    </Location>
+    <Start>2025-06-30T00:00:00+01:00</Start>
+    <End>2029-06-29T00:00:00+01:00</End>
+    <Type>Contract</Type>
+    <CpvCodes>
+      <string>42500000</string>
+      <string>39717000</string>
+      <string>71315410</string>
+    </CpvCodes>
+    <Status>Awarded</Status>
+    <IsSuitableForSme>true</IsSuitableForSme>
+    <IsSuitableForVco>false</IsSuitableForVco>
+    <SupplyChain>false</SupplyChain>
+    <LastNotifiableUpdate>2026-07-15T10:29:36+01:00</LastNotifiableUpdate>
+    <OrganisationName>Sanctuary Housing Group</OrganisationName>
+    <Sector xsi:nil="true" />
+    <ProcedureType>CallOffFromFrameworkAgreement</ProcedureType>
+    <ProcedureTypeOther xsi:nil="true" />
+    <ProcedureAcceleratedJustification xsi:nil="true" />
+    <OjeuContractType>Services</OjeuContractType>
+    <IsFrameworkAgreement>false</IsFrameworkAgreement>
+    <IsExtensionPossible>true</IsExtensionPossible>
+  </Notice>
+  <CreatedDate>2026-07-15T10:29:35+01:00</CreatedDate>
+  <LastUpdatedDate>2026-07-15T10:29:36+01:00</LastUpdatedDate>
+  <Awards>
+    <AwardDetail>
+      <Id>547947</Id>
+      <NoticeId>2b7af141-afa6-4072-b481-00819a56e4fd</NoticeId>
+      <ParentId xsi:nil="true" />
+      <Value>1392000</Value>
+      <SupplierName>DMA Maintenance Limited</SupplierName>
+      <SupplierAddress>5 Beaufort House, Beaufort Court, Medway City Estate, Rochester, United Kingdom, ME2 4FB</SupplierAddress>
+      <Contact xsi:nil="true" />
+      <ReferenceType>NONE</ReferenceType>
+      <Reference xsi:nil="true" />
+      <StartDate>2025-06-30T00:00:00+01:00</StartDate>
+      <EndDate>2029-06-29T00:00:00+01:00</EndDate>
+      <AwardedDate>2025-02-14T00:00:00Z</AwardedDate>
+      <AwardedProcedureType>Open</AwardedProcedureType>
+      <AwardedProcedureTypeOther xsi:nil="true" />
+      <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+      <AnnexDOptionType xsi:nil="true" />
+      <AdditionalDetail xsi:nil="true" />
+      <AwardedToSME>true</AwardedToSME>
+      <AwardedToVCSO>false</AwardedToVCSO>
+      <AwardGuid>23d9037f-c70d-4933-85c0-f630e9cd6f0f</AwardGuid>
+    </AwardDetail>
+  </Awards>
+  <IsPublished>true</IsPublished>
+  <IsPreAwarded>true</IsPreAwarded>
+  <Organisation>
+    <Name>Sanctuary Housing Group</Name>
+  </Organisation>
+  <AdditionalDetails>
+    <AdditionalDetail>
+      <Id>2b7af141-afa6-4072-b481-00819a56e4fd</Id>
+      <NoticeId>2b7af141-afa6-4072-b481-00819a56e4fd</NoticeId>
+      <Description>Additional Text</Description>
+      <DataType>AdditionalText</DataType>
+      <TextData xsi:nil="true" />
+      <MimeType xsi:nil="true" />
+      <AwardGuid xsi:nil="true" />
+    </AdditionalDetail>
+  </AdditionalDetails>
+  <CpvCodes>
+    <CpvCode>
+      <Code>42500000</Code>
+      <Description>Cooling and ventilation equipment</Description>
+      <ParentCode>42000000</ParentCode>
+      <HasChildren>true</HasChildren>
+    </CpvCode>
+    <CpvCode>
+      <Code>39717000</Code>
+      <Description>Fans and air-conditioning appliances</Description>
+      <ParentCode>39710000</ParentCode>
+      <HasChildren>true</HasChildren>
+    </CpvCode>
+    <CpvCode>
+      <Code>71315410</Code>
+      <Description>Inspection of ventilation system</Description>
+      <ParentCode>71315000</ParentCode>
+      <HasChildren>false</HasChildren>
+    </CpvCode>
+  </CpvCodes>
+  <PublishedVersion>
+    <PublishedNoticeVersion>
+      <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+      <DateChanged>2026-07-15T10:29:37+01:00</DateChanged>
+      <PublishedNoticeId>2b7af141-afa6-4072-b481-00819a56e4fd</PublishedNoticeId>
+      <VersionNumber>1</VersionNumber>
+    </PublishedNoticeVersion>
+  </PublishedVersion>
+  <NumberOfViews>38</NumberOfViews>
+</FullNotice>
+<FullNotice>
+  <Id>14808dd3-edc7-456f-90a5-3c047e5f2dc2</Id>
+  <Notice>
+    <Id>14808dd3-edc7-456f-90a5-3c047e5f2dc2</Id>
+    <ParentIdentifier xsi:nil="true" />
+    <ContactDetails>
+      <Name>Kerry Davidson</Name>
+      <Email>kerry.davidson@northumberland.gov.uk</Email>
+      <Address1>County Hall</Address1>
+      <Address2 xsi:nil="true" />
+      <Town>MORPETH</Town>
+      <Postcode>NE612EF</Postcode>
+      <Country>England</Country>
+      <Phone xsi:nil="true" />
+      <WebAddress xsi:nil="true" />
+    </ContactDetails>
+    <Identifier>NCC1108</Identifier>
+    <Title>Berwick Academy Construction</Title>
+    <Description>Two stage design and build procurement for the delivery of a new build secondary school inclusive of an SEN facility.  
+    
+    This award is for Stage 1 - PCSA value - £1,519,483.03 
+    If stage 2 can be carried out within budget this will progress to the full build - £49,000,000</Description>
+    <CpvDescription>Construction work</CpvDescription>
+    <PublishedDate>2026-07-14T13:10:32+01:00</PublishedDate>
+    <DeadlineDate>2026-02-02T12:00:00Z</DeadlineDate>
+    <ValueLow>49000000</ValueLow>
+    <ValueHigh xsi:nil="true" />
+    <Postcode xsi:nil="true" />
+    <Region>North East</Region>
+    <Nationwide>false</Nationwide>
+    <Location>
+      <Lat>0</Lat>
+      <Lon>0</Lon>
+    </Location>
+    <Start>2026-02-03T00:00:00Z</Start>
+    <End>2028-12-30T00:00:00Z</End>
+    <Type>Contract</Type>
+    <CpvCodes>
+      <string>45000000</string>
+    </CpvCodes>
+    <Status>Awarded</Status>
+    <IsSuitableForSme>true</IsSuitableForSme>
+    <IsSuitableForVco>false</IsSuitableForVco>
+    <SupplyChain>false</SupplyChain>
+    <LastNotifiableUpdate>2026-07-14T13:10:32+01:00</LastNotifiableUpdate>
+    <OrganisationName>Northumberland County Council</OrganisationName>
+    <Sector xsi:nil="true" />
+    <ProcedureType xsi:nil="true" />
+    <ProcedureTypeOther xsi:nil="true" />
+    <ProcedureAcceleratedJustification xsi:nil="true" />
+    <OjeuContractType>Works</OjeuContractType>
+    <IsFrameworkAgreement>false</IsFrameworkAgreement>
+    <IsExtensionPossible>false</IsExtensionPossible>
+  </Notice>
+  <CreatedDate>2026-07-14T12:58:30+01:00</CreatedDate>
+  <LastUpdatedDate>2026-07-14T13:10:32+01:00</LastUpdatedDate>
+  <Awards>
+    <AwardDetail>
+      <Id>547790</Id>
+      <NoticeId>14808dd3-edc7-456f-90a5-3c047e5f2dc2</NoticeId>
+      <ParentId xsi:nil="true" />
+      <Value>49000000</Value>
+      <SupplierName>Kier Construction Limited</SupplierName>
+      <SupplierAddress>7 Merchant Court
+      Koppers Way
+      Monkton Business Park South
+      Hebburn
+      NE31 2EX</SupplierAddress>
+      <Contact xsi:nil="true" />
+      <ReferenceType>NONE_OTHER</ReferenceType>
+      <Reference xsi:nil="true" />
+      <StartDate>2026-02-03T00:00:00Z</StartDate>
+      <EndDate>2028-12-30T00:00:00Z</EndDate>
+      <AwardedDate>2026-02-02T00:00:00Z</AwardedDate>
+      <AwardedProcedureType>CallOffFromFrameworkAgreement</AwardedProcedureType>
+      <AwardedProcedureTypeOther xsi:nil="true" />
+      <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+      <AnnexDOptionType xsi:nil="true" />
+      <AdditionalDetail xsi:nil="true" />
+      <AwardedToSME>true</AwardedToSME>
+      <AwardedToVCSO>false</AwardedToVCSO>
+      <AwardGuid>5714d3bc-0b4c-4f17-b74c-1c6a6da86e17</AwardGuid>
+    </AwardDetail>
+  </Awards>
+  <IsPublished>true</IsPublished>
+  <IsPreAwarded>true</IsPreAwarded>
+  <Organisation>
+    <Name>Northumberland County Council</Name>
+  </Organisation>
+  <AdditionalDetails>
+    <AdditionalDetail>
+      <Id>14808dd3-edc7-456f-90a5-3c047e5f2dc2</Id>
+      <NoticeId>14808dd3-edc7-456f-90a5-3c047e5f2dc2</NoticeId>
+      <Description>Additional Text</Description>
+      <DataType>AdditionalText</DataType>
+      <TextData xsi:nil="true" />
+      <MimeType xsi:nil="true" />
+      <AwardGuid xsi:nil="true" />
+    </AdditionalDetail>
+  </AdditionalDetails>
+  <CpvCodes>
+    <CpvCode>
+      <Code>45000000</Code>
+      <Description>Construction work</Description>
+      <ParentCode>45000000</ParentCode>
+      <HasChildren>true</HasChildren>
+    </CpvCode>
+  </CpvCodes>
+  <PublishedVersion>
+    <PublishedNoticeVersion>
+      <ChangedByUser>kerry.davidson@northumberland.gov.uk</ChangedByUser>
+      <DateChanged>2026-07-14T13:10:32+01:00</DateChanged>
+      <PublishedNoticeId>14808dd3-edc7-456f-90a5-3c047e5f2dc2</PublishedNoticeId>
+      <VersionNumber>1</VersionNumber>
+    </PublishedNoticeVersion>
+  </PublishedVersion>
+  <NumberOfViews>43</NumberOfViews>
+</FullNotice>
+<FullNotice>
+  <Id>ee2ab2fd-aacf-4d1c-9542-740185300cd1</Id>
+  <Notice>
+    <Id>ee2ab2fd-aacf-4d1c-9542-740185300cd1</Id>
+    <ParentIdentifier xsi:nil="true" />
+    <ContactDetails>
+      <Name>Georgia Lawrence</Name>
+      <Email>Georgia.Lawrence@cityoflondon.gov.uk</Email>
+      <Address1>Guildhall</Address1>
+      <Address2 xsi:nil="true" />
+      <Town>London</Town>
+      <Postcode>EC2P 2EJ</Postcode>
+      <Country>England</Country>
+      <Phone>0207 332 3060</Phone>
+      <WebAddress xsi:nil="true" />
+    </ContactDetails>
+    <Identifier>tender_405881/1404964</Identifier>
+    <Title>Barbican Fire Project - High Sensitive Fire Doors</Title>
+    <Description>The City of London are seeking a Competent Contractor to undertake the fire remediation works to the Heritage Doors only. The 2019 Surveys are deemed out of date, and as such, the successful Contractor will be responsible for the remediation (repair or replacement) strategy for all 354 doors. 
+    
+    The scope of works is broadly defined as:
+    
+    - Remediation to existing fire doors/frames as appropriate
+    - Replacement of existing fire doors/frames as appropriate
+    - All other reasonably foreseeable works required to complete the above</Description>
+    <CpvDescription>Fire doors</CpvDescription>
+    <PublishedDate>2026-07-10T18:02:26+01:00</PublishedDate>
+    <DeadlineDate>2024-05-07T14:00:00+01:00</DeadlineDate>
+    <ValueLow>4208647</ValueLow>
+    <ValueHigh xsi:nil="true" />
+    <Postcode xsi:nil="true" />
+    <Region>London</Region>
+    <Nationwide>false</Nationwide>
+    <Location>
+      <Lat>0</Lat>
+      <Lon>0</Lon>
+    </Location>
+    <Start>2024-09-05T00:00:00+01:00</Start>
+    <End>2025-12-31T00:00:00Z</End>
+    <Type>Contract</Type>
+    <CpvCodes>
+      <string>44221220</string>
+    </CpvCodes>
+    <Status>Awarded</Status>
+    <IsSuitableForSme>true</IsSuitableForSme>
+    <IsSuitableForVco>false</IsSuitableForVco>
+    <SupplyChain>false</SupplyChain>
+    <LastNotifiableUpdate>2026-07-10T18:02:26+01:00</LastNotifiableUpdate>
+    <OrganisationName>City of London Corporation</OrganisationName>
+    <Sector xsi:nil="true" />
+    <ProcedureType>OpenOJEU</ProcedureType>
+    <ProcedureTypeOther xsi:nil="true" />
+    <ProcedureAcceleratedJustification xsi:nil="true" />
+    <OjeuContractType>Works</OjeuContractType>
+    <IsFrameworkAgreement>false</IsFrameworkAgreement>
+    <IsExtensionPossible>false</IsExtensionPossible>
+  </Notice>
+  <CreatedDate>2026-07-10T18:02:17+01:00</CreatedDate>
+  <LastUpdatedDate>2026-07-10T18:02:26+01:00</LastUpdatedDate>
+  <Awards>
+    <AwardDetail>
+      <Id>547402</Id>
+      <NoticeId>ee2ab2fd-aacf-4d1c-9542-740185300cd1</NoticeId>
+      <ParentId xsi:nil="true" />
+      <Value>4208647</Value>
+      <SupplierName>Onyx Fire and Security</SupplierName>
+      <SupplierAddress>Suite 4, lst Floor, Howbury House, Thames Road, Dartford, Kent, DA1 4RQ, UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND</SupplierAddress>
+      <Contact xsi:nil="true" />
+      <ReferenceType>NONE_OTHER</ReferenceType>
+      <Reference xsi:nil="true" />
+      <StartDate>2024-09-05T00:00:00+01:00</StartDate>
+      <EndDate>2025-12-31T00:00:00Z</EndDate>
+      <AwardedDate>2024-09-05T00:00:00+01:00</AwardedDate>
+      <AwardedProcedureType>OpenOJEU</AwardedProcedureType>
+      <AwardedProcedureTypeOther xsi:nil="true" />
+      <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+      <AnnexDOptionType xsi:nil="true" />
+      <AdditionalDetail xsi:nil="true" />
+      <AwardedToSME>true</AwardedToSME>
+      <AwardedToVCSO>false</AwardedToVCSO>
+      <AwardGuid>617e7964-de47-44f3-895b-b4f861100f1f</AwardGuid>
+    </AwardDetail>
+  </Awards>
+  <IsPublished>true</IsPublished>
+  <IsPreAwarded>true</IsPreAwarded>
+  <Organisation>
+    <Name>City of London Corporation</Name>
+  </Organisation>
+  <AdditionalDetails>
+    <AdditionalDetail>
+      <Id>ee2ab2fd-aacf-4d1c-9542-740185300cd1</Id>
+      <NoticeId>ee2ab2fd-aacf-4d1c-9542-740185300cd1</NoticeId>
+      <Description>Additional Text</Description>
+      <DataType>AdditionalText</DataType>
+      <TextData xsi:nil="true" />
+      <MimeType xsi:nil="true" />
+      <AwardGuid xsi:nil="true" />
+    </AdditionalDetail>
+  </AdditionalDetails>
+  <CpvCodes>
+    <CpvCode>
+      <Code>44221220</Code>
+      <Description>Fire doors</Description>
+      <ParentCode>44221000</ParentCode>
+      <HasChildren>false</HasChildren>
+    </CpvCode>
+  </CpvCodes>
+  <PublishedVersion>
+    <PublishedNoticeVersion>
+      <ChangedByUser>gcc-uk@jaggaer.com</ChangedByUser>
+      <DateChanged>2026-07-10T18:02:26+01:00</DateChanged>
+      <PublishedNoticeId>ee2ab2fd-aacf-4d1c-9542-740185300cd1</PublishedNoticeId>
+      <VersionNumber>1</VersionNumber>
+    </PublishedNoticeVersion>
+  </PublishedVersion>
+  <NumberOfViews>57</NumberOfViews>
+</FullNotice>
+<FullNotice>
+  <Id>59a96170-f588-4621-beb2-4c2feea84501</Id>
+  <Notice>
+    <Id>59a96170-f588-4621-beb2-4c2feea84501</Id>
+    <ParentIdentifier xsi:nil="true" />
+    <ContactDetails>
+      <Name>Estates Service</Name>
+      <Email>tim.allen@cheshireeast.gov.uk</Email>
+      <Address1>2nd Floor, Delamere House</Address1>
+      <Address2>Delamere Street</Address2>
+      <Town>Crewe</Town>
+      <Postcode>CW1 2LL</Postcode>
+      <Country>England</Country>
+      <Phone xsi:nil="true" />
+      <WebAddress>http://www.cheshireeast.gov.uk/</WebAddress>
+    </ContactDetails>
+    <Identifier>CHEAST001-DN796093-64741958</Identifier>
+    <Title>NWCH L422 Environmental Hub - Expansion for Food Waste Collection</Title>
+    <Description>Building contract for the Phase One of the Design and Construction of the proposed expansion of the Environmental Hub for food waste collection, Cledford Lane, Middlewich, Cheshire. CW10 0JR</Description>
+    <CpvDescription>Construction work</CpvDescription>
+    <PublishedDate>2026-07-10T10:53:18+01:00</PublishedDate>
+    <DeadlineDate>2025-11-28T12:00:00Z</DeadlineDate>
+    <ValueLow>573587.55</ValueLow>
+    <ValueHigh xsi:nil="true" />
+    <Postcode xsi:nil="true" />
+    <Region>North West</Region>
+    <Nationwide>false</Nationwide>
+    <Location>
+      <Lat>0</Lat>
+      <Lon>0</Lon>
+    </Location>
+    <Start>2026-08-03T00:00:00+01:00</Start>
+    <End>2026-11-05T00:00:00Z</End>
+    <Type>Contract</Type>
+    <CpvCodes>
+      <string>45000000</string>
+    </CpvCodes>
+    <Status>Awarded</Status>
+    <IsSuitableForSme>true</IsSuitableForSme>
+    <IsSuitableForVco>false</IsSuitableForVco>
+    <SupplyChain>false</SupplyChain>
+    <LastNotifiableUpdate>2026-07-10T10:53:18+01:00</LastNotifiableUpdate>
+    <OrganisationName>Cheshire East Borough Council</OrganisationName>
+    <Sector xsi:nil="true" />
+    <ProcedureType>RestrictedOJEU</ProcedureType>
+    <ProcedureTypeOther xsi:nil="true" />
+    <ProcedureAcceleratedJustification xsi:nil="true" />
+    <OjeuContractType>Works</OjeuContractType>
+    <IsFrameworkAgreement>false</IsFrameworkAgreement>
+    <IsExtensionPossible>false</IsExtensionPossible>
+  </Notice>
+  <CreatedDate>2026-07-10T10:53:16+01:00</CreatedDate>
+  <LastUpdatedDate>2026-07-10T10:53:18+01:00</LastUpdatedDate>
+  <Awards>
+    <AwardDetail>
+      <Id>547293</Id>
+      <NoticeId>59a96170-f588-4621-beb2-4c2feea84501</NoticeId>
+      <ParentId xsi:nil="true" />
+      <Value>573587.55</Value>
+      <SupplierName>Manchester &amp; Cheshire Construction Co Ltd</SupplierName>
+      <SupplierAddress>6 Oldfield Road, Salford, Manchester, M5 4WB</SupplierAddress>
+      <Contact xsi:nil="true" />
+      <ReferenceType>NONE</ReferenceType>
+      <Reference xsi:nil="true" />
+      <StartDate>2026-08-03T00:00:00+01:00</StartDate>
+      <EndDate>2026-11-05T00:00:00Z</EndDate>
+      <AwardedDate>2025-12-19T00:00:00Z</AwardedDate>
+      <AwardedProcedureType>Restricted</AwardedProcedureType>
+      <AwardedProcedureTypeOther xsi:nil="true" />
+      <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+      <AnnexDOptionType xsi:nil="true" />
+      <AdditionalDetail xsi:nil="true" />
+      <AwardedToSME>true</AwardedToSME>
+      <AwardedToVCSO>false</AwardedToVCSO>
+      <AwardGuid>5d7c8681-40ce-4bf7-912e-0b19e2e18e51</AwardGuid>
+    </AwardDetail>
+  </Awards>
+  <IsPublished>true</IsPublished>
+  <IsPreAwarded>true</IsPreAwarded>
+  <Organisation>
+    <Name>Cheshire East Borough Council</Name>
+  </Organisation>
+  <AdditionalDetails>
+    <AdditionalDetail>
+      <Id>59a96170-f588-4621-beb2-4c2feea84501</Id>
+      <NoticeId>59a96170-f588-4621-beb2-4c2feea84501</NoticeId>
+      <Description>Additional Text</Description>
+      <DataType>AdditionalText</DataType>
+      <TextData>
+        Award notice for NWCH L422 Environmental Hub - Expansion for Food Waste Collection</TextData>
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45000000</Code>
+        <Description>Construction work</Description>
+        <ParentCode>45000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+        <DateChanged>2026-07-10T10:53:18+01:00</DateChanged>
+        <PublishedNoticeId>59a96170-f588-4621-beb2-4c2feea84501</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>36</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>ba7203e3-c266-444a-b9e3-a82b9934e2d5</Id>
+    <Notice>
+      <Id>ba7203e3-c266-444a-b9e3-a82b9934e2d5</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Kate Potts</Name>
+        <Email>kate.potts@aster.co.uk</Email>
+        <Address1>Sarsen Court</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>DEVIZES</Town>
+        <Postcode>SN102AZ</Postcode>
+        <Country>England</Country>
+        <Phone>07957749258</Phone>
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>CAS-01085-K6F9R7 .2</Identifier>
+      <Title>Fire Remediation Works with Aster Group</Title>
+      <Description>Description of the goods, services, or works	Fire remediation works including compartmentation, fire door repairs and renewal, and associated fire stopping works across various Aster properties. Works are to address actions arising from Specialist Fire Safety Reports. Direct Award via LHC Building and Fire Safety Framework Lot WS4A - Installation, Maintenance &amp; Remediation of Passive Fire Protection</Description>
+      <CpvDescription>Fire-prevention installation works and Installation of doors</CpvDescription>
+      <PublishedDate>2026-07-09T11:54:06+01:00</PublishedDate>
+      <DeadlineDate>2026-04-25T12:00:00+01:00</DeadlineDate>
+      <ValueLow>3500000</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>East of England,London,South East,South West</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-04-27T00:00:00+01:00</Start>
+      <End>2028-04-26T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45343000</string>
+        <string>45421131</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>true</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-09T11:54:06+01:00</LastNotifiableUpdate>
+      <OrganisationName>ASTER GROUP LIMITED</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType xsi:nil="true" />
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-09T11:49:14+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-09T11:54:06+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>547123</Id>
+        <NoticeId>ba7203e3-c266-444a-b9e3-a82b9934e2d5</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>3500000</Value>
+        <SupplierName>Axis Europe Limited</SupplierName>
+        <SupplierAddress>3 Tramway Avenue, London, England, E15 4PN</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>COMPANIES_HOUSE</ReferenceType>
+        <Reference>01991637</Reference>
+        <StartDate>2026-04-27T00:00:00+01:00</StartDate>
+        <EndDate>2028-04-26T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-04-15T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>CallOffFromFrameworkAgreement</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>8ffd8fc2-1c39-4956-b2b4-2fefc67085fa</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>ASTER GROUP LIMITED</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>ba7203e3-c266-444a-b9e3-a82b9934e2d5</Id>
+        <NoticeId>ba7203e3-c266-444a-b9e3-a82b9934e2d5</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45343000</Code>
+        <Description>Fire-prevention installation works</Description>
+        <ParentCode>45340000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>45421131</Code>
+        <Description>Installation of doors</Description>
+        <ParentCode>45421000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>kate.potts@aster.co.uk</ChangedByUser>
+        <DateChanged>2026-07-09T11:54:06+01:00</DateChanged>
+        <PublishedNoticeId>ba7203e3-c266-444a-b9e3-a82b9934e2d5</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>44</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>47a5a7f9-887b-434e-95c4-5eafe3f0ed7b</Id>
+    <Notice>
+      <Id>47a5a7f9-887b-434e-95c4-5eafe3f0ed7b</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Samantha Hastings</Name>
+        <Email>samantha.hastings@cambridgeshire.gov.uk</Email>
+        <Address1>New Shire Hall</Address1>
+        <Address2>Alconbury Weald</Address2>
+        <Town>Huntingdon</Town>
+        <Postcode>PE28 4YE</Postcode>
+        <Country>England</Country>
+        <Phone xsi:nil="true" />
+        <WebAddress>https://www.cambridgeshire.gov.uk/</WebAddress>
+      </ContactDetails>
+      <Identifier>CCC001-DN810148-78875883</Identifier>
+      <Title>26025 Soil Affected Roads Innovation Trial (Further Competition under EHF 4, Lot 1)</Title>
+      <Description>The outline scope of the services required is a Soil Affected Roads Innovation Trial, a carriageway reconstruction scheme utilising multiple unique treatments to the B1099 Upwell Road March. Treatments will range from geopolymer resin injection, deep soil mixing, steel carriageway reinforcement and geogrid reconstruction. We will be looking for some added value in the form of sustainability (carbon reduction and reporting) to meet CCC&apos;s Climate Change and Environment Strategy.</Description>
+      <CpvDescription>Construction work</CpvDescription>
+      <PublishedDate>2026-07-09T11:21:45+01:00</PublishedDate>
+      <DeadlineDate>2026-05-19T12:00:00+01:00</DeadlineDate>
+      <ValueLow>0</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode>PE28 4YE</Postcode>
+      <Region>Any region</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>52.379361</Lat>
+        <Lon>-0.230575</Lon>
+      </Location>
+      <Start>2026-07-01T00:00:00+01:00</Start>
+      <End>2026-12-31T00:00:00Z</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45000000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-09T11:21:45+01:00</LastNotifiableUpdate>
+      <OrganisationName>Cambridgeshire County Council</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromFrameworkAgreement</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-09T11:21:43+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-09T11:21:45+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>547112</Id>
+        <NoticeId>47a5a7f9-887b-434e-95c4-5eafe3f0ed7b</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>1428875</Value>
+        <SupplierName>Winvic Construction Ltd</SupplierName>
+        <SupplierAddress>Brampton House, 19 Tenter Road, Moulton Park, Northampton, Northamptonshire, NN3 6PZ</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-07-01T00:00:00+01:00</StartDate>
+        <EndDate>2026-12-31T00:00:00Z</EndDate>
+        <AwardedDate>2026-06-15T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>Restricted</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>e87ffc89-ba31-4c61-be9f-5a2e39afbf65</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Cambridgeshire County Council</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>47a5a7f9-887b-434e-95c4-5eafe3f0ed7b</Id>
+        <NoticeId>47a5a7f9-887b-434e-95c4-5eafe3f0ed7b</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45000000</Code>
+        <Description>Construction work</Description>
+        <ParentCode>45000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+        <DateChanged>2026-07-09T11:21:45+01:00</DateChanged>
+        <PublishedNoticeId>47a5a7f9-887b-434e-95c4-5eafe3f0ed7b</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>47</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>f34b689c-42a6-4525-bc29-6c0504dba0ee</Id>
+    <Notice>
+      <Id>f34b689c-42a6-4525-bc29-6c0504dba0ee</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Paula Macardle</Name>
+        <Email>Paula@prosper.uk.com</Email>
+        <Address1>Cobalt Business Exchange</Address1>
+        <Address2>Cobalt Park Way</Address2>
+        <Town>Newcastle upon Tyne</Town>
+        <Postcode>NE28 9NZ</Postcode>
+        <Country>United Kingdom</Country>
+        <Phone>+44 1912805665</Phone>
+        <WebAddress>http://prosper.uk.com/</WebAddress>
+      </ContactDetails>
+      <Identifier>NEP001-DN807737-67959303</Identifier>
+      <Title>Karbon Homes - Garden Lane New Build Development</Title>
+      <Description>Karbon Homes seek to appoint a Principal Contractor to complete the construction of 66 new build properties at Garden Lane through a 2-Stage tender.
+      
+      Prosper Procurement Ltd (PROSPER) is managing this procurement on behalf of the Contracting Body. 
+      
+      PLEASE NOTE: This is an award notice following a Further Competition under a Framework Agreement and this contract has been let.</Description>
+      <CpvDescription>Construction work</CpvDescription>
+      <PublishedDate>2026-07-09T09:33:15+01:00</PublishedDate>
+      <DeadlineDate>2026-05-19T12:00:00+01:00</DeadlineDate>
+      <ValueLow>0</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>North East</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-07-15T00:00:00+01:00</Start>
+      <End>2028-07-14T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45000000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-09T09:33:15+01:00</LastNotifiableUpdate>
+      <OrganisationName>PROSPER</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromFrameworkAgreement</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-09T09:33:13+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-09T09:33:15+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>547080</Id>
+        <NoticeId>f34b689c-42a6-4525-bc29-6c0504dba0ee</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>5770115</Value>
+        <SupplierName>Termrim Construction Limited</SupplierName>
+        <SupplierAddress>1 Pellon Place  
+        Dyson Wood Way 
+        Bradley Business Park 
+        Huddersfield 
+        HD2 1GT</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-07-15T00:00:00+01:00</StartDate>
+        <EndDate>2028-07-14T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-07-02T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>Other</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>505b7c50-4559-4de3-aec9-ad6d3de2e333</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>PROSPER</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>f34b689c-42a6-4525-bc29-6c0504dba0ee</Id>
+        <NoticeId>f34b689c-42a6-4525-bc29-6c0504dba0ee</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData>
+          This is an award notice following a Further Competition under Framework Ref:DN764120 - New Build Development Framework [FTS reference:2025/S 000-006703]</TextData>
+          <MimeType xsi:nil="true" />
+          <AwardGuid xsi:nil="true" />
+        </AdditionalDetail>
+      </AdditionalDetails>
+      <CpvCodes>
+        <CpvCode>
+          <Code>45000000</Code>
+          <Description>Construction work</Description>
+          <ParentCode>45000000</ParentCode>
+          <HasChildren>true</HasChildren>
+        </CpvCode>
+      </CpvCodes>
+      <PublishedVersion>
+        <PublishedNoticeVersion>
+          <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+          <DateChanged>2026-07-09T09:33:15+01:00</DateChanged>
+          <PublishedNoticeId>f34b689c-42a6-4525-bc29-6c0504dba0ee</PublishedNoticeId>
+          <VersionNumber>1</VersionNumber>
+        </PublishedNoticeVersion>
+      </PublishedVersion>
+      <NumberOfViews>74</NumberOfViews>
+    </FullNotice>
+    <FullNotice>
+      <Id>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</Id>
+      <Notice>
+        <Id>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</Id>
+        <ParentIdentifier xsi:nil="true" />
+        <ContactDetails>
+          <Name>Nathan Brown</Name>
+          <Email>nathan.brown@efficiencynorth.org</Email>
+          <Address1>Collaboration Works, 2 Carbrook Street</Address1>
+          <Address2 xsi:nil="true" />
+          <Town>Sheffield</Town>
+          <Postcode>S9 2JE</Postcode>
+          <Country>England</Country>
+          <Phone>+44 3306061460</Phone>
+          <WebAddress>https://www.efficiencynorth.org/procure</WebAddress>
+        </ContactDetails>
+        <Identifier>ENP001-DN803672-94079338</Identifier>
+        <Title>Voids &amp; Repairs Works for St Leger Homes of Doncaster on behalf of the City of Doncaster Council</Title>
+        <Description>Delivery of Voids &amp; Repairs works that cannot be completed internally by St Leger Homes of Doncaster. The service supports internal capacity and ensures timely, quality completion of works.
+        
+        The contract is for an initial period of 2 years, with the available option to extend for a further 2  x 12 months at the sole discretion of St Leger Homes &amp; Doncaster Council. 
+        
+        This underlying contract is awarded via Mini Competition from (Lot 9 - General Building Works (Including but not limited to remodelling, refurbishment and small extensions)) of the EN:Procure Dynamic Purchasing System Agreement for the provision of Major and Minor Construction Works. (OJEU Contract Notice 2025/S 000-005834).
+      </Description>
+      <CpvDescription>Construction work</CpvDescription>
+      <PublishedDate>2026-07-09T08:55:49+01:00</PublishedDate>
+      <DeadlineDate>2026-02-23T12:00:00Z</DeadlineDate>
+      <ValueLow>0.01</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>England</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-05-01T00:00:00+01:00</Start>
+      <End>2030-04-30T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45000000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-09T08:55:49+01:00</LastNotifiableUpdate>
+      <OrganisationName>City of Doncaster Council</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromDynamicPurchasingSystem</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>true</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-09T08:55:47+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-09T08:55:49+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>547068</Id>
+        <NoticeId>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>2600000</Value>
+        <SupplierName>Concorde BGW Limited</SupplierName>
+        <SupplierAddress>Palmer Street, Hyde Park, Doncaster, South Yorkshire, DN4 5DD</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-04-09T00:00:00+01:00</StartDate>
+        <EndDate>2030-04-30T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-04-08T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>Restricted</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>d2d29374-9e84-45e1-b1b0-7a48596588bd</AwardGuid>
+      </AwardDetail>
+      <AwardDetail>
+        <Id>547068</Id>
+        <NoticeId>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>2600000</Value>
+        <SupplierName>Allerton Damp Proofing Ltd</SupplierName>
+        <SupplierAddress>Unit 1, Ashbrooke Park, Lincoln Way, Sherburn in Elmet, LS25 6QX</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-04-09T00:00:00+01:00</StartDate>
+        <EndDate>2030-04-30T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-04-08T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>Restricted</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>13720da4-5c98-4035-b9fb-b3aa6c203627</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>City of Doncaster Council</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</Id>
+        <NoticeId>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45000000</Code>
+        <Description>Construction work</Description>
+        <ParentCode>45000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+        <DateChanged>2026-07-09T08:55:49+01:00</DateChanged>
+        <PublishedNoticeId>25bcf061-a826-4bfa-aa5f-b92ac0b4acab</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>59</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>d05ce0e4-786c-46c4-aea4-c1fa06da2aae</Id>
+    <Notice>
+      <Id>d05ce0e4-786c-46c4-aea4-c1fa06da2aae</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name xsi:nil="true" />
+        <Email>procurement@nuneatonandbedworth.gov.uk</Email>
+        <Address1>Town Hall</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>NUNEATON</Town>
+        <Postcode>CV115AA</Postcode>
+        <Country>England</Country>
+        <Phone xsi:nil="true" />
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>NUN - 26676</Identifier>
+      <Title>NUNCON - Door Entry Maintenance and Reactive Repairs</Title>
+      <Description>Door Entry Maintenance &amp; Reactive Repairs.</Description>
+      <CpvDescription>Windows, doors and related items and Miscellaneous padlocks and locks and Repair and maintenance services</CpvDescription>
+      <PublishedDate>2026-07-08T17:50:07+01:00</PublishedDate>
+      <DeadlineDate>2026-06-30T17:00:00+01:00</DeadlineDate>
+      <ValueLow>0</ValueLow>
+      <ValueHigh>1000000</ValueHigh>
+      <Postcode xsi:nil="true" />
+      <Region>West Midlands</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-07-20T00:00:00+01:00</Start>
+      <End>2029-07-19T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>44221000</string>
+        <string>44521000</string>
+        <string>50000000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-08T17:50:07+01:00</LastNotifiableUpdate>
+      <OrganisationName>Nuneaton &amp; Bedworth Borough Council</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType xsi:nil="true" />
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Services</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-08T17:40:05+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-08T17:50:07+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>547022</Id>
+        <NoticeId>d05ce0e4-786c-46c4-aea4-c1fa06da2aae</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>1000000</Value>
+        <SupplierName>Baydale Control Systems Limited</SupplierName>
+        <SupplierAddress>Edmund Palmer House, Morton Park Way, Darlington, England, DL1 4XZ</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>COMPANIES_HOUSE</ReferenceType>
+        <Reference>03885564</Reference>
+        <StartDate>2026-07-20T00:00:00+01:00</StartDate>
+        <EndDate>2029-07-19T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-07-07T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>Other</AwardedProcedureType>
+        <AwardedProcedureTypeOther>Direct Award</AwardedProcedureTypeOther>
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>34ce378c-1c61-4c98-8e98-a7caf6db5c0d</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Nuneaton &amp; Bedworth Borough Council</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>d05ce0e4-786c-46c4-aea4-c1fa06da2aae</Id>
+        <NoticeId>d05ce0e4-786c-46c4-aea4-c1fa06da2aae</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>44221000</Code>
+        <Description>Windows, doors and related items</Description>
+        <ParentCode>44220000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>44521000</Code>
+        <Description>Miscellaneous padlocks and locks</Description>
+        <ParentCode>44520000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>50000000</Code>
+        <Description>Repair and maintenance services</Description>
+        <ParentCode>50000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>rashna.gurung@nuneatonandbedworth.gov.uk</ChangedByUser>
+        <DateChanged>2026-07-08T17:50:08+01:00</DateChanged>
+        <PublishedNoticeId>d05ce0e4-786c-46c4-aea4-c1fa06da2aae</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>41</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>b5349b3d-7402-47eb-b04c-61339555b2f3</Id>
+    <Notice>
+      <Id>b5349b3d-7402-47eb-b04c-61339555b2f3</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Amy McQueen</Name>
+        <Email>commercial.esndcategories@fcdo.gov.uk</Email>
+        <Address1>King Charles Street</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>London</Town>
+        <Postcode>SW1A 2PA</Postcode>
+        <Country>England</Country>
+        <Phone xsi:nil="true" />
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>tender_513540/1591440</Identifier>
+      <Title>Lisbon HMA New Residence 2</Title>
+      <Description>The Foreign, Commonwealth and Development Office (FCDO) sought a main works construction contractor to undertake the refurbishment and fit-out of the new Residence for His Majesty&amp;apos;s Ambassador in Lisbon, Portugal. The property will provide residential accommodation for the Ambassador and support diplomatic functions, including formal events and occasional accommodation for visiting VIPs. The works comprised significant refurbishment, alteration and fit-out works required to make the property suitable for occupation and official diplomatic use.
+      Appropriate suppliers appointed to the FCDO DPS within the relevant value band were invited to submit tenders for the provision of the above works. The procurement was conducted as a further competition under the DPS in accordance with PCR 2015. Tenders were evaluated on the basis of Most Economically Advantageous Tender (MEAT), considering both quality and price in accordance with the published evaluation criteria.
+      Orostream International Contracts Limited were appointed as the Successful Supplier, having submitted the Most Economically Advantageous Tender.</Description>
+      <CpvDescription>Building construction work and Refurbishment work</CpvDescription>
+      <PublishedDate>2026-07-08T08:07:13+01:00</PublishedDate>
+      <DeadlineDate>2026-02-26T12:01:00Z</DeadlineDate>
+      <ValueLow>0</ValueLow>
+      <ValueHigh>0</ValueHigh>
+      <Postcode>SW1A 2AH</Postcode>
+      <Region>Any region</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>51.503</Lat>
+        <Lon>-0.132</Lon>
+      </Location>
+      <Start>2026-06-26T00:00:00+01:00</Start>
+      <End>2028-07-07T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45210000</string>
+        <string>45453100</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-08T08:07:13+01:00</LastNotifiableUpdate>
+      <OrganisationName>Foreign Commonwealth and Development Office</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromDynamicPurchasingSystem</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-08T08:07:07+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-08T08:07:13+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546882</Id>
+        <NoticeId>b5349b3d-7402-47eb-b04c-61339555b2f3</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>3986359.36</Value>
+        <SupplierName>Orostream International Contracts Ltd</SupplierName>
+        <SupplierAddress>Beacon House,  Croft Road,  Crowborough,  East Sussex, TN6 1DL</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE_OTHER</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-06-26T00:00:00+01:00</StartDate>
+        <EndDate>2028-07-07T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-06-26T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>CallOffFromDynamicPurchasingSystem</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>8a99ed3c-d3ad-4ba5-a99c-3df8cefc17a3</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Foreign Commonwealth and Development Office</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>b5349b3d-7402-47eb-b04c-61339555b2f3</Id>
+        <NoticeId>b5349b3d-7402-47eb-b04c-61339555b2f3</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45210000</Code>
+        <Description>Building construction work</Description>
+        <ParentCode>45200000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>45453100</Code>
+        <Description>Refurbishment work</Description>
+        <ParentCode>45453000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>gcc-uk@jaggaer.com</ChangedByUser>
+        <DateChanged>2026-07-08T08:07:13+01:00</DateChanged>
+        <PublishedNoticeId>b5349b3d-7402-47eb-b04c-61339555b2f3</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>44</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>a48e6899-5d94-45e0-8351-c55b21cca604</Id>
+    <Notice>
+      <Id>a48e6899-5d94-45e0-8351-c55b21cca604</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Julie Palmer</Name>
+        <Email>j.palmer@preston.gov.uk</Email>
+        <Address1>Town Hall</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>PRESTON</Town>
+        <Postcode>PR12RL</Postcode>
+        <Country>England</Country>
+        <Phone xsi:nil="true" />
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>2012/S 47-077170-26061</Identifier>
+      <Title>Preston City Council - Levelling Up Fund Public Realm Works: North-South Links</Title>
+      <Description>Active Travel Preston City Council - Levelling Up Fund Public Realm Works: North-South Links</Description>
+      <CpvDescription>Construction, foundation and surface works for highways, roads</CpvDescription>
+      <PublishedDate>2026-07-07T10:59:33+01:00</PublishedDate>
+      <DeadlineDate>2012-10-01T00:00:00+01:00</DeadlineDate>
+      <ValueLow>3653080.79</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>North West</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-06-11T00:00:00+01:00</Start>
+      <End>2027-05-26T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45233000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>true</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-07T10:59:33+01:00</LastNotifiableUpdate>
+      <OrganisationName>Preston City Council</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType xsi:nil="true" />
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-07T10:51:50+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-07T10:59:33+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546745</Id>
+        <NoticeId>a48e6899-5d94-45e0-8351-c55b21cca604</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>3653080.79</Value>
+        <SupplierName>Eric Wright Civil Engineering</SupplierName>
+        <SupplierAddress>Sceptre House, Sceptre Way, Bamber Bridge, Preston, Lancashire, PR5 6AW</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>COMPANIES_HOUSE</ReferenceType>
+        <Reference>02565379</Reference>
+        <StartDate>2026-06-11T00:00:00+01:00</StartDate>
+        <EndDate>2027-05-26T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-06-11T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>CallOffFromFrameworkAgreement</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>19346d6f-14e6-44ad-8c43-29129283a52e</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Preston City Council</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>a48e6899-5d94-45e0-8351-c55b21cca604</Id>
+        <NoticeId>a48e6899-5d94-45e0-8351-c55b21cca604</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45233000</Code>
+        <Description>Construction, foundation and surface works for highways, roads</Description>
+        <ParentCode>45230000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>a.ridehalgh@preston.gov.uk</ChangedByUser>
+        <DateChanged>2026-07-07T10:59:34+01:00</DateChanged>
+        <PublishedNoticeId>a48e6899-5d94-45e0-8351-c55b21cca604</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>41</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>c3f8764d-eb88-4fe3-a2b3-71966483cd43</Id>
+    <Notice>
+      <Id>c3f8764d-eb88-4fe3-a2b3-71966483cd43</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Leanne Appleby</Name>
+        <Email>leanne.appleby@northtyneside.gov.uk</Email>
+        <Address1>QUADRANT, THE SILVERLINK NORTH</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>NEWCASTLE-UPON-TYNE</Town>
+        <Postcode>NE270BY</Postcode>
+        <Country>England</Country>
+        <Phone>01916436416</Phone>
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>OPEN29052026123227</Identifier>
+      <Title>** Direct Award ** Howdon Rosehill Estate - Kitchen and Bathroom Installations</Title>
+      <Description>Notice of awarded contract following a mini competition</Description>
+      <CpvDescription>Construction structures and materials; auxiliary products to construction (except electric apparatus)</CpvDescription>
+      <PublishedDate>2026-07-07T09:36:18+01:00</PublishedDate>
+      <DeadlineDate>2026-06-05T12:00:00+01:00</DeadlineDate>
+      <ValueLow>563000</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>North East</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-06-08T00:00:00+01:00</Start>
+      <End>2026-08-08T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>44000000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-07T09:36:18+01:00</LastNotifiableUpdate>
+      <OrganisationName>NORTH TYNESIDE COUNCIL</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType xsi:nil="true" />
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-07T09:34:40+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-07T09:36:18+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546715</Id>
+        <NoticeId>c3f8764d-eb88-4fe3-a2b3-71966483cd43</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>563000</Value>
+        <SupplierName>A &amp; J Keith Limited</SupplierName>
+        <SupplierAddress>189 VINE STREET , WALLSEND, TYNE AND WEAR, VINE STREET, Newcastle , UNITED KINGDOM, NE28 6JB</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>COMPANIES_HOUSE</ReferenceType>
+        <Reference>02321244</Reference>
+        <StartDate>2026-06-08T00:00:00+01:00</StartDate>
+        <EndDate>2026-08-08T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-06-09T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>CallOffFromFrameworkAgreement</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>99126ad1-ad52-4171-8234-9260e9374199</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>NORTH TYNESIDE COUNCIL</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>c3f8764d-eb88-4fe3-a2b3-71966483cd43</Id>
+        <NoticeId>c3f8764d-eb88-4fe3-a2b3-71966483cd43</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>44000000</Code>
+        <Description>Construction structures and materials; auxiliary products to construction (except electric apparatus)</Description>
+        <ParentCode>44000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>leanne.appleby@northtyneside.gov.uk</ChangedByUser>
+        <DateChanged>2026-07-07T09:36:18+01:00</DateChanged>
+        <PublishedNoticeId>c3f8764d-eb88-4fe3-a2b3-71966483cd43</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>43</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>db9fba3c-dd39-4110-8a79-8750e89e2a73</Id>
+    <Notice>
+      <Id>db9fba3c-dd39-4110-8a79-8750e89e2a73</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Nathan Brown</Name>
+        <Email>nathan.brown@efficiencynorth.org</Email>
+        <Address1>Collaboration Works, 2 Carbrook Street</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>Sheffield</Town>
+        <Postcode>S9 2JE</Postcode>
+        <Country>England</Country>
+        <Phone>+44 3306061460</Phone>
+        <WebAddress>https://www.efficiencynorth.org/procure</WebAddress>
+      </ContactDetails>
+      <Identifier>ENP001-DN810308-39765019</Identifier>
+      <Title>Temporary Scaffolding Handrails to Failing Concrete Balustrades and Walkways - Incommunities Limited</Title>
+      <Description>The Employer, following a structural engineer&apos;s report identifying defects to existing concrete balustrades and walkways, requires the provision of a suitably experiences and qualified Scaffolding Contractor to provide designs, supply, erect, maintain and dismantle temporary scaffolding systems to provide safe, continuous temporary handrails to all affected areas within occupied residential blocks.
+      
+      The temporary works are required to mitigate fall risks and ensure resident safety pending permanent remedial works.
+      
+      The works shall include, but not be limited to:
+      
+      - Site inspections and survey of all affected walkways and balustrades.
+      - Liaison with the Employer / Managing agent regarding access and sequencing.
+      - Design of temporary scaffolding handrail systems.
+      - Supply and installation of all scaffold components.
+      - Provision of edge protection to exposed edges.
+      - Routine inspection, maintenance and adjustment.
+      - Safe dismantling and making good on completion.
+      
+      The Contract is let on a JCT Measured Term Contract 2016 basis with a contract term of 12 months commencing on the 6th July 2026 with an option to extend the contract of up to a further 2nr 12 months up to the 5th July 2029 at the absolute sole discrestion of the Employer. 
+      
+      There is no volume or workflow guarantee, but indicatively it is anticipated that orders for works between £0 and £200,000 per annum may be issued via this contract. 
+      
+      The initial works to be undertaken to the following blocks in Year 1:
+      
+      Kelvin House, Danecourt Road, Bradford, BD4 0DE: A 9-storey and plant room GF-8F purpose-built, single stairway, detached flats tower block containing 57 flats. The building consists of 2 blocks arranged in an offset H shape, with the two (2) blocks joined together at upper floor levels by semi-enclosed bridges. 
+      
+      Ogden House, Danecourt Road, Bradford, BD4 0DF: A 9 storey (B-8F) purpose-built single stairway detached flats tower block containing 55 flats and offices. The building consists of two separate blocks arranged in an H shape, with the two blocks joined together at upper floor levels by semi-enclosed bridges. The bridges contain a lift, protected stairway enclosure. 
+      
+      Further works and future Years:
+      Incommunities reserves the right to include similar type works to other HRBs within its portfolio. At Incommunities request, the same detail, design and site surveys are to be carried out for the following HRBs;
+      
+      Thorpe Edge Blocks:
+      Gerard House, Fairhaven Green, Bradford, BD10 9QU
+      Ailsa House, 65 Fairhaven Green, Bradford, BD10 9ND
+      Thorold House, Fairhaven Green, Bradford, BD10 9QT
+      Waryn House, Haigh Beck View, Bradford, BD10 9NE
+      
+      
+      
+      This underlying contract is awarded via Mini Competition from Lot 1 - Scaffolding and Associated Services of the EN:Procure Dynamic Purchasing System (DPS) for Scaffolding and Associated Services (OJEU Contract Notice 2025/S 000-005663).</Description>
+      <CpvDescription>Construction work</CpvDescription>
+      <PublishedDate>2026-07-06T10:09:52+01:00</PublishedDate>
+      <DeadlineDate>2026-04-15T17:00:00+01:00</DeadlineDate>
+      <ValueLow>0.01</ValueLow>
+      <ValueHigh>600000</ValueHigh>
+      <Postcode xsi:nil="true" />
+      <Region>England</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-06-01T00:00:00+01:00</Start>
+      <End>2029-05-30T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45000000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-06T10:09:52+01:00</LastNotifiableUpdate>
+      <OrganisationName>Incommunities Limited</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromDynamicPurchasingSystem</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>true</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-06T10:09:51+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-06T10:09:52+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546584</Id>
+        <NoticeId>db9fba3c-dd39-4110-8a79-8750e89e2a73</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>600000</Value>
+        <SupplierName>Ingleford Scaffolding Limited</SupplierName>
+        <SupplierAddress>2 MONUMENT PARK, PATTINSON INDUSTRIAL ESTATE, WASHINGTON, TYNE &amp; WEAR, NE38 8QU</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-07-06T00:00:00+01:00</StartDate>
+        <EndDate>2029-06-05T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-06-17T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>Restricted</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>4201786c-f040-497a-92c7-b30ae9fa27dd</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Incommunities Limited</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>db9fba3c-dd39-4110-8a79-8750e89e2a73</Id>
+        <NoticeId>db9fba3c-dd39-4110-8a79-8750e89e2a73</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45000000</Code>
+        <Description>Construction work</Description>
+        <ParentCode>45000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+        <DateChanged>2026-07-06T10:09:53+01:00</DateChanged>
+        <PublishedNoticeId>db9fba3c-dd39-4110-8a79-8750e89e2a73</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>41</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>a1902f91-e54a-45fc-a9a7-327fe1ee0da9</Id>
+    <Notice>
+      <Id>a1902f91-e54a-45fc-a9a7-327fe1ee0da9</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Emma Douglas</Name>
+        <Email>emma@prosper.uk.com</Email>
+        <Address1>Cobalt Business Exchange</Address1>
+        <Address2>Cobalt Park Way</Address2>
+        <Town>Newcastle upon Tyne</Town>
+        <Postcode>NE28 9NZ</Postcode>
+        <Country>United Kingdom</Country>
+        <Phone>+44 1912805665</Phone>
+        <WebAddress>http://prosper.uk.com/</WebAddress>
+      </ContactDetails>
+      <Identifier>NEP001-DN820617-18432593</Identifier>
+      <Title>Bernicia - Boiler Replacement Programme</Title>
+      <Description>Bernicia are seeking a Contractor to carry out boiler replacements to circa 2000 properties
+      
+      Prosper Procurement Ltd (PROSPER) is managing this procurement on behalf of the Contracting Body. 
+      
+      PLEASE NOTE: This is an award notice following a Direct Award under a Framework Agreement and this contract has been let.</Description>
+      <CpvDescription>Boiler installations</CpvDescription>
+      <PublishedDate>2026-07-06T09:21:32+01:00</PublishedDate>
+      <DeadlineDate>2026-07-02T23:59:00+01:00</DeadlineDate>
+      <ValueLow>0</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>North East</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-08-03T00:00:00+01:00</Start>
+      <End>2027-08-02T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>42160000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-06T09:21:32+01:00</LastNotifiableUpdate>
+      <OrganisationName>PROSPER</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromFrameworkAgreement</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-06T09:21:30+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-06T09:21:32+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546576</Id>
+        <NoticeId>a1902f91-e54a-45fc-a9a7-327fe1ee0da9</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>2000000</Value>
+        <SupplierName>PHS Home Solutions Ltd</SupplierName>
+        <SupplierAddress>3 Mandarin Road 
+        Rainton Bridge Business Park
+        Houghton-le-Spring
+        DH4 5RA</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-08-03T00:00:00+01:00</StartDate>
+        <EndDate>2027-08-02T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-07-03T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>DirectAward</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>3cdd76ad-4993-4134-9f31-728fa1291e06</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>PROSPER</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>a1902f91-e54a-45fc-a9a7-327fe1ee0da9</Id>
+        <NoticeId>a1902f91-e54a-45fc-a9a7-327fe1ee0da9</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData>
+          This is an award notice following a Direct Award under Framework Ref. DN750494: Investment Works Framework [FTS Reference:2024/S 000-036226]</TextData>
+          <MimeType xsi:nil="true" />
+          <AwardGuid xsi:nil="true" />
+        </AdditionalDetail>
+      </AdditionalDetails>
+      <CpvCodes>
+        <CpvCode>
+          <Code>42160000</Code>
+          <Description>Boiler installations</Description>
+          <ParentCode>42100000</ParentCode>
+          <HasChildren>true</HasChildren>
+        </CpvCode>
+      </CpvCodes>
+      <PublishedVersion>
+        <PublishedNoticeVersion>
+          <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+          <DateChanged>2026-07-06T09:21:32+01:00</DateChanged>
+          <PublishedNoticeId>a1902f91-e54a-45fc-a9a7-327fe1ee0da9</PublishedNoticeId>
+          <VersionNumber>1</VersionNumber>
+        </PublishedNoticeVersion>
+      </PublishedVersion>
+      <NumberOfViews>41</NumberOfViews>
+    </FullNotice>
+    <FullNotice>
+      <Id>3a0882a6-fb44-41ab-9fc0-0d0eee800ba2</Id>
+      <Notice>
+        <Id>3a0882a6-fb44-41ab-9fc0-0d0eee800ba2</Id>
+        <ParentIdentifier xsi:nil="true" />
+        <ContactDetails>
+          <Name>Kerry Davidson</Name>
+          <Email>kerry.davidson@northumberland.gov.uk</Email>
+          <Address1>County Hall</Address1>
+          <Address2 xsi:nil="true" />
+          <Town>MORPETH</Town>
+          <Postcode>NE612EF</Postcode>
+          <Country>England</Country>
+          <Phone xsi:nil="true" />
+          <WebAddress xsi:nil="true" />
+        </ContactDetails>
+        <Identifier>NCC1493</Identifier>
+        <Title>Wooler School Refurbishment</Title>
+        <Description>A contractor is required for the remodelling and refurbishment of Wooler Middle School to become a primary school and Family Hub facility</Description>
+        <CpvDescription>Construction work</CpvDescription>
+        <PublishedDate>2026-07-03T07:58:41+01:00</PublishedDate>
+        <DeadlineDate>2024-10-30T12:00:00Z</DeadlineDate>
+        <ValueLow>3350000</ValueLow>
+        <ValueHigh xsi:nil="true" />
+        <Postcode xsi:nil="true" />
+        <Region>North East</Region>
+        <Nationwide>false</Nationwide>
+        <Location>
+          <Lat>0</Lat>
+          <Lon>0</Lon>
+        </Location>
+        <Start>2024-11-01T00:00:00Z</Start>
+        <End>2026-12-01T00:00:00Z</End>
+        <Type>Contract</Type>
+        <CpvCodes>
+          <string>45000000</string>
+        </CpvCodes>
+        <Status>Awarded</Status>
+        <IsSuitableForSme>true</IsSuitableForSme>
+        <IsSuitableForVco>false</IsSuitableForVco>
+        <SupplyChain>false</SupplyChain>
+        <LastNotifiableUpdate>2026-07-03T07:58:41+01:00</LastNotifiableUpdate>
+        <OrganisationName>Northumberland County Council</OrganisationName>
+        <Sector xsi:nil="true" />
+        <ProcedureType xsi:nil="true" />
+        <ProcedureTypeOther xsi:nil="true" />
+        <ProcedureAcceleratedJustification xsi:nil="true" />
+        <OjeuContractType>Works</OjeuContractType>
+        <IsFrameworkAgreement>false</IsFrameworkAgreement>
+        <IsExtensionPossible>false</IsExtensionPossible>
+      </Notice>
+      <CreatedDate>2026-07-03T07:55:19+01:00</CreatedDate>
+      <LastUpdatedDate>2026-07-03T07:58:41+01:00</LastUpdatedDate>
+      <Awards>
+        <AwardDetail>
+          <Id>546330</Id>
+          <NoticeId>3a0882a6-fb44-41ab-9fc0-0d0eee800ba2</NoticeId>
+          <ParentId xsi:nil="true" />
+          <Value>3350000</Value>
+          <SupplierName>Robertsons Construction</SupplierName>
+          <SupplierAddress>FAO Martin Westgate - Development Director 
+          Robertsons Construction 
+          Level 4, West Tower, 
+          Baltic Place, S Shore Rd, 
+          Gateshead 
+          NE8 3AE</SupplierAddress>
+          <Contact xsi:nil="true" />
+          <ReferenceType>NONE_OTHER</ReferenceType>
+          <Reference xsi:nil="true" />
+          <StartDate>2024-11-01T00:00:00Z</StartDate>
+          <EndDate>2026-12-01T00:00:00Z</EndDate>
+          <AwardedDate>2024-10-30T00:00:00Z</AwardedDate>
+          <AwardedProcedureType>Other</AwardedProcedureType>
+          <AwardedProcedureTypeOther>Direct Award from NEPO207 Framework</AwardedProcedureTypeOther>
+          <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+          <AnnexDOptionType xsi:nil="true" />
+          <AdditionalDetail xsi:nil="true" />
+          <AwardedToSME>true</AwardedToSME>
+          <AwardedToVCSO>false</AwardedToVCSO>
+          <AwardGuid>f767c809-09cc-4579-83e4-3f33611d6a70</AwardGuid>
+        </AwardDetail>
+      </Awards>
+      <IsPublished>true</IsPublished>
+      <IsPreAwarded>true</IsPreAwarded>
+      <Organisation>
+        <Name>Northumberland County Council</Name>
+      </Organisation>
+      <AdditionalDetails>
+        <AdditionalDetail>
+          <Id>3a0882a6-fb44-41ab-9fc0-0d0eee800ba2</Id>
+          <NoticeId>3a0882a6-fb44-41ab-9fc0-0d0eee800ba2</NoticeId>
+          <Description>Additional Text</Description>
+          <DataType>AdditionalText</DataType>
+          <TextData xsi:nil="true" />
+          <MimeType xsi:nil="true" />
+          <AwardGuid xsi:nil="true" />
+        </AdditionalDetail>
+      </AdditionalDetails>
+      <CpvCodes>
+        <CpvCode>
+          <Code>45000000</Code>
+          <Description>Construction work</Description>
+          <ParentCode>45000000</ParentCode>
+          <HasChildren>true</HasChildren>
+        </CpvCode>
+      </CpvCodes>
+      <PublishedVersion>
+        <PublishedNoticeVersion>
+          <ChangedByUser>kerry.davidson@northumberland.gov.uk</ChangedByUser>
+          <DateChanged>2026-07-03T07:58:41+01:00</DateChanged>
+          <PublishedNoticeId>3a0882a6-fb44-41ab-9fc0-0d0eee800ba2</PublishedNoticeId>
+          <VersionNumber>1</VersionNumber>
+        </PublishedNoticeVersion>
+      </PublishedVersion>
+      <NumberOfViews>48</NumberOfViews>
+    </FullNotice>
+    <FullNotice>
+      <Id>70bfe51f-f168-4a3d-af76-7d2ae7558b7a</Id>
+      <Notice>
+        <Id>70bfe51f-f168-4a3d-af76-7d2ae7558b7a</Id>
+        <ParentIdentifier xsi:nil="true" />
+        <ContactDetails>
+          <Name>Rebecca Omoloye</Name>
+          <Email>rebecca.omoloye@towerhamlets.gov.uk</Email>
+          <Address1>New Town Hall</Address1>
+          <Address2>160 Whitechapel Road London</Address2>
+          <Town>London</Town>
+          <Postcode>E1 1BJ</Postcode>
+          <Country>England</Country>
+          <Phone>+44 2073644099</Phone>
+          <WebAddress>http://www.towerhamlets.gov.uk</WebAddress>
+        </ContactDetails>
+        <Identifier>TOWER001-DN812892-20131915</Identifier>
+        <Title>HAR6152: Mobility Aids - Lifts</Title>
+        <Description>The Contract includes full and comprehensive service including: Statutory servicing and certification ,Breakdown/responsive repairs, Maintenance ,Out of Hours service, Minor planned works. Installation, servicing and maintenance of domestic lifting equipment including stairlifts, hoists, step-lifts, through-floor lifts etc
+        
+      </Description>
+      <CpvDescription>Lifts and Chairlifts and Bath lifts and Hoists and Stairlifts and Installation services of lifting equipment</CpvDescription>
+      <PublishedDate>2026-07-02T13:57:32+01:00</PublishedDate>
+      <DeadlineDate>2026-03-06T23:59:00Z</DeadlineDate>
+      <ValueLow>740000</ValueLow>
+      <ValueHigh>740000</ValueHigh>
+      <Postcode xsi:nil="true" />
+      <Region>England</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-04-20T00:00:00+01:00</Start>
+      <End>2030-04-19T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>42416100</string>
+        <string>42418220</string>
+        <string>42416110</string>
+        <string>42416300</string>
+        <string>44115600</string>
+        <string>51511100</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-02T13:57:32+01:00</LastNotifiableUpdate>
+      <OrganisationName>Tower Hamlets</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromFrameworkAgreement</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Services</OjeuContractType>
+      <IsFrameworkAgreement>true</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-02T13:57:30+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-02T13:57:32+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546250</Id>
+        <NoticeId>70bfe51f-f168-4a3d-af76-7d2ae7558b7a</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>740000</Value>
+        <SupplierName>Stannah Stairlift Services Limited</SupplierName>
+        <SupplierAddress>Watt Close, East Portway Industrial Estate, Andover, Hampshire, SP10 3SD,</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-04-20T00:00:00+01:00</StartDate>
+        <EndDate>2030-04-19T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-03-24T00:00:00Z</AwardedDate>
+        <AwardedProcedureType>DirectAward</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>a43b1822-b158-49ed-9d1d-1474939f881b</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Tower Hamlets</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>70bfe51f-f168-4a3d-af76-7d2ae7558b7a</Id>
+        <NoticeId>70bfe51f-f168-4a3d-af76-7d2ae7558b7a</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>42416100</Code>
+        <Description>Lifts</Description>
+        <ParentCode>42416000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>42418220</Code>
+        <Description>Chairlifts</Description>
+        <ParentCode>42418000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>42416110</Code>
+        <Description>Bath lifts</Description>
+        <ParentCode>42416000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>42416300</Code>
+        <Description>Hoists</Description>
+        <ParentCode>42416000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>44115600</Code>
+        <Description>Stairlifts</Description>
+        <ParentCode>44115000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>51511100</Code>
+        <Description>Installation services of lifting equipment</Description>
+        <ParentCode>51511000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+        <DateChanged>2026-07-02T13:57:32+01:00</DateChanged>
+        <PublishedNoticeId>70bfe51f-f168-4a3d-af76-7d2ae7558b7a</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>43</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>f575217c-f655-480f-8561-eb505707ff53</Id>
+    <Notice>
+      <Id>f575217c-f655-480f-8561-eb505707ff53</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Hannah Mapp</Name>
+        <Email>hmapp@aspirehousing.co.uk</Email>
+        <Address1>Kingsley</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>NEWCASTLE</Town>
+        <Postcode>ST50QW</Postcode>
+        <Country>England</Country>
+        <Phone>07741251851</Phone>
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>ID608</Identifier>
+      <Title>Damp &amp; Mould Works Dwelling Doctors Direct Award</Title>
+      <Description>Direct award to Dwelling Doctors via NHMF Frameworx - Damp, mould and condensation remediation, surveying and monitoring works.
+      
+      Short term contract 6+6 months</Description>
+      <CpvDescription>Refurbishment work</CpvDescription>
+      <PublishedDate>2026-07-02T13:13:55+01:00</PublishedDate>
+      <DeadlineDate>2026-06-22T12:00:00+01:00</DeadlineDate>
+      <ValueLow>500000</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode>ST5 0QW</Postcode>
+      <Region xsi:nil="true" />
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>53.015</Lat>
+        <Lon>-2.237</Lon>
+      </Location>
+      <Start>2026-06-29T00:00:00+01:00</Start>
+      <End>2027-06-29T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45453100</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>true</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-02T13:13:55+01:00</LastNotifiableUpdate>
+      <OrganisationName>ASPIRE HOUSING LIMITED</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType xsi:nil="true" />
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-02T12:58:22+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-02T13:13:55+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546234</Id>
+        <NoticeId>f575217c-f655-480f-8561-eb505707ff53</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>500000</Value>
+        <SupplierName>The Dwelling Doctors Ltd</SupplierName>
+        <SupplierAddress>110 Brooker Road, Waltham Abbey, England, EN91JH</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>COMPANIES_HOUSE</ReferenceType>
+        <Reference>13096330</Reference>
+        <StartDate>2026-06-29T00:00:00+01:00</StartDate>
+        <EndDate>2027-06-29T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-06-22T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>CallOffFromFrameworkAgreement</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>93b81648-4d68-453d-ae4f-36f3bf7576ac</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>ASPIRE HOUSING LIMITED</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>f575217c-f655-480f-8561-eb505707ff53</Id>
+        <NoticeId>f575217c-f655-480f-8561-eb505707ff53</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45453100</Code>
+        <Description>Refurbishment work</Description>
+        <ParentCode>45453000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>hmapp@aspirehousing.co.uk</ChangedByUser>
+        <DateChanged>2026-07-02T13:13:55+01:00</DateChanged>
+        <PublishedNoticeId>f575217c-f655-480f-8561-eb505707ff53</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>47</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>73f902bb-7d95-43f4-a83c-d1b42e87e156</Id>
+    <Notice>
+      <Id>73f902bb-7d95-43f4-a83c-d1b42e87e156</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Procurement Team</Name>
+        <Email>procurement@bromsgroveandredditch.gov.uk</Email>
+        <Address1>Town Hall</Address1>
+        <Address2>Walter Stranz Square</Address2>
+        <Town>Redditch</Town>
+        <Postcode>B98 8AH</Postcode>
+        <Country>England</Country>
+        <Phone>+44 152764252</Phone>
+        <WebAddress>http://www.redditchbc.gov.uk</WebAddress>
+      </ContactDetails>
+      <Identifier>REDDITCH001-DN820933-84750831</Identifier>
+      <Title>Contract for Supply and delivery of general building materials and associated services</Title>
+      <Description>RBC Contract for Supply and delivery of general building materials and associated services via PFH Framework for Material Supply &amp; Associated Services - Lot 3 - Building Materials</Description>
+      <CpvDescription>Building materials</CpvDescription>
+      <PublishedDate>2026-07-02T11:06:36+01:00</PublishedDate>
+      <DeadlineDate>2026-05-29T23:59:00+01:00</DeadlineDate>
+      <ValueLow>0</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>England</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-06-01T00:00:00+01:00</Start>
+      <End>2029-05-31T00:00:00+01:00</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>44111000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-02T11:06:36+01:00</LastNotifiableUpdate>
+      <OrganisationName>Redditch Borough Council</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType>CallOffFromFrameworkAgreement</ProcedureType>
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Products</OjeuContractType>
+      <IsFrameworkAgreement>true</IsFrameworkAgreement>
+      <IsExtensionPossible>true</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-02T11:06:35+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-02T11:06:36+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546186</Id>
+        <NoticeId>73f902bb-7d95-43f4-a83c-d1b42e87e156</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>3000000</Value>
+        <SupplierName>Travis Perkins plc</SupplierName>
+        <SupplierAddress>NN5 7UG</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-06-01T00:00:00+01:00</StartDate>
+        <EndDate>2029-05-31T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-05-29T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>DirectAward</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>75790291-aebf-4c71-8610-5737c4fa9e65</AwardGuid>
+      </AwardDetail>
+      <AwardDetail>
+        <Id>546186</Id>
+        <NoticeId>73f902bb-7d95-43f4-a83c-d1b42e87e156</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>3000000</Value>
+        <SupplierName>Travis Perkins Plc</SupplierName>
+        <SupplierAddress>NN5 7UG</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>NONE</ReferenceType>
+        <Reference xsi:nil="true" />
+        <StartDate>2026-06-01T00:00:00+01:00</StartDate>
+        <EndDate>2029-05-31T00:00:00+01:00</EndDate>
+        <AwardedDate>2026-05-29T00:00:00+01:00</AwardedDate>
+        <AwardedProcedureType>DirectAward</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail xsi:nil="true" />
+        <AwardedToSME>false</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>c4330f53-665c-4745-9e97-03405f566529</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>Redditch Borough Council</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>73f902bb-7d95-43f4-a83c-d1b42e87e156</Id>
+        <NoticeId>73f902bb-7d95-43f4-a83c-d1b42e87e156</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>44111000</Code>
+        <Description>Building materials</Description>
+        <ParentCode>44110000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>procontractv3.cflive@proactisinterfaces.com</ChangedByUser>
+        <DateChanged>2026-07-02T11:06:36+01:00</DateChanged>
+        <PublishedNoticeId>73f902bb-7d95-43f4-a83c-d1b42e87e156</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>29</NumberOfViews>
+  </FullNotice>
+  <FullNotice>
+    <Id>bf5389d4-b163-4426-a12d-b10fb7ecc579</Id>
+    <Notice>
+      <Id>bf5389d4-b163-4426-a12d-b10fb7ecc579</Id>
+      <ParentIdentifier xsi:nil="true" />
+      <ContactDetails>
+        <Name>Zoe Robinson</Name>
+        <Email>zrobinson@wakefield.gov.uk</Email>
+        <Address1>Wakefield One</Address1>
+        <Address2 xsi:nil="true" />
+        <Town>WAKEFIELD</Town>
+        <Postcode>WF12EB</Postcode>
+        <Country>England</Country>
+        <Phone xsi:nil="true" />
+        <WebAddress xsi:nil="true" />
+      </ContactDetails>
+      <Identifier>RFS23-041</Identifier>
+      <Title>Old Westgate Station Hotel Development, Wakefield</Title>
+      <Description>Wakefield Council undertook a procurement process, pursuant to Regulation 30 of the Public Contracts Regulations 2015 to procure and appoint a development partner to deliver its hotel regeneration ambitions for the Old Westgate Station site in Wakefield City Centre.
+      
+      Ion Property Developments Limited was the most economically advantageous tenderer and was subsequent appointed as Wakefield Council&apos;s preferred partner. 
+      
+      Wakefield Council entered into a pre-development services agreement (&quot;PDSA&quot;) on 25 February 2026 and, Wakefield Council intends to enter into a development agreement (&quot;DA&quot;), in relation to the delivery of the Old Westgate Station Hotel Development, in Wakefield City Centre.</Description>
+      <CpvDescription>Site preparation work and Hotel construction work and Building completion work</CpvDescription>
+      <PublishedDate>2026-07-01T17:54:30+01:00</PublishedDate>
+      <DeadlineDate>2025-06-30T12:00:00+01:00</DeadlineDate>
+      <ValueLow>8000000</ValueLow>
+      <ValueHigh xsi:nil="true" />
+      <Postcode xsi:nil="true" />
+      <Region>Yorkshire and The Humber</Region>
+      <Nationwide>false</Nationwide>
+      <Location>
+        <Lat>0</Lat>
+        <Lon>0</Lon>
+      </Location>
+      <Start>2026-02-25T00:00:00Z</Start>
+      <End>2029-02-24T00:00:00Z</End>
+      <Type>Contract</Type>
+      <CpvCodes>
+        <string>45100000</string>
+        <string>45212411</string>
+        <string>45400000</string>
+      </CpvCodes>
+      <Status>Awarded</Status>
+      <IsSuitableForSme>true</IsSuitableForSme>
+      <IsSuitableForVco>false</IsSuitableForVco>
+      <SupplyChain>false</SupplyChain>
+      <LastNotifiableUpdate>2026-07-01T17:54:30+01:00</LastNotifiableUpdate>
+      <OrganisationName>WAKEFIELD COUNCIL</OrganisationName>
+      <Sector xsi:nil="true" />
+      <ProcedureType xsi:nil="true" />
+      <ProcedureTypeOther xsi:nil="true" />
+      <ProcedureAcceleratedJustification xsi:nil="true" />
+      <OjeuContractType>Works</OjeuContractType>
+      <IsFrameworkAgreement>false</IsFrameworkAgreement>
+      <IsExtensionPossible>false</IsExtensionPossible>
+    </Notice>
+    <CreatedDate>2026-07-01T17:44:00+01:00</CreatedDate>
+    <LastUpdatedDate>2026-07-01T17:54:30+01:00</LastUpdatedDate>
+    <Awards>
+      <AwardDetail>
+        <Id>546117</Id>
+        <NoticeId>bf5389d4-b163-4426-a12d-b10fb7ecc579</NoticeId>
+        <ParentId xsi:nil="true" />
+        <Value>8000000</Value>
+        <SupplierName>Ion Property Developments Limited</SupplierName>
+        <SupplierAddress>Port of Liverpool Building, First Floor, Liverpool, United Kingdom, L3 1BY</SupplierAddress>
+        <Contact xsi:nil="true" />
+        <ReferenceType>COMPANIES_HOUSE</ReferenceType>
+        <Reference>03498080</Reference>
+        <StartDate>2026-02-25T00:00:00Z</StartDate>
+        <EndDate>2029-02-24T00:00:00Z</EndDate>
+        <AwardedDate>2026-02-25T00:00:00Z</AwardedDate>
+        <AwardedProcedureType>CompetitiveDialogueOJEU</AwardedProcedureType>
+        <AwardedProcedureTypeOther xsi:nil="true" />
+        <AwardedProcedureAcceleratedJustification xsi:nil="true" />
+        <AnnexDOptionType xsi:nil="true" />
+        <AdditionalDetail>A F20 Modification Notice cannot be published at this time. However, to ensure transparency and compliance with legislative requirements, the details of the modification are set out below. 
+        
+        By transfer deed dated 31 March 2023 Network Rail Infrastructure Limited transferred a piece of land to Wakefield  Council which includes the structure of bridge deck, which is a single structure which runs under and supports the East Coast Mainline (&quot;Bridge Deck&quot;). The transfer provides that Wakefield Council (and any successor in title) will be obligated to repair Bridge Deck. 
+         
+        The Information Memorandum (&quot;IM&quot;), released alongside the Selection Questionnaire (&quot;SQ&quot;), set out Wakefield Council&apos;s position on Bridge Deck which confirmed that Bridge Deck would transfer to the successful bidder, as part of the Old Westgate Station Hotel development,  with this position to be set out in the contractual documents.  
+         
+        Owing to unforeseen circumstances, in respect of the provision of funding for the development the Old Westgate Station Hotel development, Wakefield Council intends to modify the DA so that Bridge Deck will not transfer to Ion Property Developments Limited. 
+         
+        The modification (i.e. that Bridge Deck will not transfer to the successful bidder) has been brought about by circumstances, in respect of third party funding constraints, which Wakefield Council, acting as a diligent contracting authority could not have foreseen. The modification does not alter the overall nature of the contractual documents and there is no increase in price as a result of the intended modification.  
+         
+        Need for modification brought about by circumstances that a diligent contracting/entity could not foresee. 
+        
+        Updated total contract value before the modifications (taking into account possible earlier contract modifications, price adaptions and average inflation) - Estimated total value: £8,000,000 (excluding VAT) 
+        
+        Total contract value after the modifications - Estimated total value: £8,000,000 (excluding VAT)</AdditionalDetail>
+        <AwardedToSME>true</AwardedToSME>
+        <AwardedToVCSO>false</AwardedToVCSO>
+        <AwardGuid>dbf8ed11-1adb-4554-902c-2a829f8a5c85</AwardGuid>
+      </AwardDetail>
+    </Awards>
+    <IsPublished>true</IsPublished>
+    <IsPreAwarded>true</IsPreAwarded>
+    <Organisation>
+      <Name>WAKEFIELD COUNCIL</Name>
+    </Organisation>
+    <AdditionalDetails>
+      <AdditionalDetail>
+        <Id>bf5389d4-b163-4426-a12d-b10fb7ecc579</Id>
+        <NoticeId>bf5389d4-b163-4426-a12d-b10fb7ecc579</NoticeId>
+        <Description>Additional Text</Description>
+        <DataType>AdditionalText</DataType>
+        <TextData xsi:nil="true" />
+        <MimeType xsi:nil="true" />
+        <AwardGuid xsi:nil="true" />
+      </AdditionalDetail>
+    </AdditionalDetails>
+    <CpvCodes>
+      <CpvCode>
+        <Code>45100000</Code>
+        <Description>Site preparation work</Description>
+        <ParentCode>45000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>45212411</Code>
+        <Description>Hotel construction work</Description>
+        <ParentCode>45212000</ParentCode>
+        <HasChildren>false</HasChildren>
+      </CpvCode>
+      <CpvCode>
+        <Code>45400000</Code>
+        <Description>Building completion work</Description>
+        <ParentCode>45000000</ParentCode>
+        <HasChildren>true</HasChildren>
+      </CpvCode>
+    </CpvCodes>
+    <PublishedVersion>
+      <PublishedNoticeVersion>
+        <ChangedByUser>zrobinson@wakefield.gov.uk</ChangedByUser>
+        <DateChanged>2026-07-01T17:54:30+01:00</DateChanged>
+        <PublishedNoticeId>bf5389d4-b163-4426-a12d-b10fb7ecc579</PublishedNoticeId>
+        <VersionNumber>1</VersionNumber>
+      </PublishedNoticeVersion>
+    </PublishedVersion>
+    <NumberOfViews>60</NumberOfViews>
+  </FullNotice>
+</ArrayOfFullNotice>
