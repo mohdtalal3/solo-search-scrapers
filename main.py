@@ -70,6 +70,12 @@ import tech_eu
 import inoapps
 import ey
 import kpmg
+import theengineer
+import adsgroup
+import business_live
+import clearwater
+import insidermedia
+import privateequitywire
 
 
 class TeeStream:
@@ -327,6 +333,24 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("KPMG", kpmg.main, kpmg)
+    time.sleep(5)
+
+    run_scraper("The Engineer", theengineer.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("ADS Group", adsgroup.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Business Live", business_live.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Clearwater", clearwater.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Insider Media", insidermedia.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Private Equity Wire", privateequitywire.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
