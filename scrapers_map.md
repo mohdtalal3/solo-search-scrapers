@@ -212,6 +212,8 @@ Quick reference for which scraper belongs to which company.
 | 2 | `contract_finder.py` | https://www.contractsfinder.service.gov.uk (aerospace/defence/energy, £500k+) |
 | 70 | `privateequitywire.py` | https://www.privateequitywire.co.uk |
 | 71 | `clearwater.py` | https://www.clearwatercf.com/en-gb/news/ |
+| 72 | `insidermedia.py` | https://www.insidermedia.com/news/all/manufacturing, /deals, /business |
+| 73 | `theengineer.py` | https://www.theengineer.co.uk/news |
 
 ---
 
