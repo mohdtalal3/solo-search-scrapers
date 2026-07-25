@@ -16,10 +16,10 @@ LISTING_URLS = [
     f"{BASE_URL}/news/all/manufacturing",
     f"{BASE_URL}/news/all/deals",
     f"{BASE_URL}/news/all/business",
+    f"{BASE_URL}/news/all/technology",
 ]
 SOURCE_NAME = "INSIDER_MEDIA"
 SCRAPER_ID = 72
-
 COMPANY_CONFIGS = [
     {
         "label": "1492 Search",
