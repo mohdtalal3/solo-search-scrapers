@@ -162,7 +162,7 @@ def submit_search(session: requests.Session, form_token: str, keywords: str, cpv
         notice_types = DEFAULT_NOTICE_TYPES
 
     # Calculate date 2 days ago from today
-    two_days_ago = datetime.now() - timedelta(days=20)
+    two_days_ago = datetime.now() - timedelta(days=2)
     day = two_days_ago.strftime("%d")
     month = two_days_ago.strftime("%m")
     year = two_days_ago.strftime("%Y")
