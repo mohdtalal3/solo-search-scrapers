@@ -67,6 +67,12 @@ COMPANY_CONFIGS = [
         "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
         "pages": 1,
     },
+    {
+        "label": "Intune Talent",
+        "company_id": os.getenv("INTUNE_TALENT_COMPANY_ID"),
+        "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
+        "pages": 1,
+    },
 ]
 
 HEADERS = {
