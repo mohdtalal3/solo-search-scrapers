@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
-from curl_cffi import requests as cffi_requests
+from curl_cffi import requests 
 from dotenv import load_dotenv
 
 from db import get_recent_article_urls, insert_articles, is_subscription_active
