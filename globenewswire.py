@@ -45,6 +45,18 @@ COMPANY_CONFIGS = [
             "/load/more?page={page}&pageSize=50"
         ),
     },
+    {
+        "label": "Intune Talent",
+        "company_id": os.getenv("INTUNE_TALENT_COMPANY_ID"),
+        "listing_url": (
+            "https://www.globenewswire.com/en/search/country/us"
+            "/industry/technology,software,software%2520&%2520computer%2520services,"
+            "computer%2520services,internet,professional%2520business%2520support%2520services,"
+            "business%2520support%2520services,support%2520services,financial%2520services"
+            "/subject/bfc,fin,mgc,mna,jvn"
+            "/load/more?page={page}&pageSize=50"
+        ),
+    },
 ]
 
 HEADERS = {

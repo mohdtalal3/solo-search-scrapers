@@ -68,6 +68,16 @@ COMPANY_CONFIGS = [
 
         ),
     },
+    {
+        "label": "Intune Talent",
+        "company_id": os.getenv("INTUNE_TALENT_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?region=1000490"
+            "&industry=1000178"
+            "&subject=1778692%7C1000004%7C1000007%7C1000011%7C1000013%7C1000015"
+        ),
+    },
 ]
 # "&language=en"
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
