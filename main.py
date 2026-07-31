@@ -78,6 +78,7 @@ import insidermedia
 import privateequitywire
 import rcpmag
 import techcrunch
+import crn
 
 
 class TeeStream:
@@ -359,6 +360,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("TechCrunch", techcrunch.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("CRN", crn.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
