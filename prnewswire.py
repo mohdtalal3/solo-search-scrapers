@@ -70,7 +70,7 @@ COMPANY_CONFIGS = [
     {
         "label": "Intune Talent",
         "company_id": os.getenv("INTUNE_TALENT_COMPANY_ID"),
-        "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
+        "sitemap_url": "https://www.prnewswire.com/sitemap-news.xml",
         "pages": 1,
     },
 ]
