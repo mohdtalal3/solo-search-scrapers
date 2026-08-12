@@ -78,6 +78,16 @@ COMPANY_CONFIGS = [
             "&subject=1778692%7C1000004%7C1000007%7C1000011%7C1000013%7C1000015"
         ),
     },
+    {
+        "label": "1492 Search",
+        "company_id": os.getenv("1492_SEARCH_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?industry=1000051%7C1000088%7C1000107"
+            "&subject=1000004%7C1000007%7C1000011%7C1000013%7C1778692"
+            "&region=1000489"
+        ),
+    },
 ]
 # "&language=en"
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
