@@ -255,8 +255,8 @@ def run_all_scrapers():
     run_scraper("East Cambs", eastcambs.main, eastcambs)
     time.sleep(5)
 
-    run_scraper("Greater Cambridge", greater_cambridge.main, greater_cambridge)
-    time.sleep(5)
+    # run_scraper("Greater Cambridge", greater_cambridge.main, greater_cambridge)
+    # time.sleep(5)
 
     run_scraper("Cambridge News", cambridge_news.main, cambridge_news)
     time.sleep(5)
