@@ -30,6 +30,10 @@ COMPANY_CONFIGS = [
         "label": "1492 Search",
         "company_id": os.getenv("1492_SEARCH_COMPANY_ID"),
     },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+    },
 ]
 
 BASE_URL = "https://www.gov.uk"

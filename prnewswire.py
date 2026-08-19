@@ -73,6 +73,12 @@ COMPANY_CONFIGS = [
         "sitemap_url": "https://www.prnewswire.com/sitemap-news.xml",
         "pages": 1,
     },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+        "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
+        "pages": 1,
+    },
 ]
 
 HEADERS = {
