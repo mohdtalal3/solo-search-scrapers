@@ -6,14 +6,23 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_recent_article_urls, insert_articles
+from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
 LISTING_URL = "https://www.thedrum.com/latest"
 SOURCE_NAME = "THE_DRUM"
 SCRAPER_ID = 30
-COMPANY_ID = os.getenv("HEADLINERS_COMPANY_ID")
+COMPANY_CONFIGS = [
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+    },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+    },
+]
 
 HEADERS = {
     "User-Agent": (
@@ -100,7 +109,6 @@ def scrape_article(url):
                         "date": date,
                         "lastmod": date,
                         "scraper_id": SCRAPER_ID,
-                        "company_id": COMPANY_ID,
                     }
         except (json.JSONDecodeError, KeyError):
             continue
@@ -167,8 +175,20 @@ def main():
         return
 
     print(f"\n🆕 Found {len(articles)} new article(s) in total.")
-    inserted_count = insert_articles(articles)
-    print(f"✅ Inserted {inserted_count} articles into database")
+
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        label = config["label"]
+
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {label} — subscription is inactive")
+            continue
+
+        company_articles = [
+            {**article, "company_id": company_id} for article in articles
+        ]
+        inserted_count = insert_articles(company_articles)
+        print(f"✅ Inserted {inserted_count} articles for {label}")
 
 
 if __name__ == "__main__":

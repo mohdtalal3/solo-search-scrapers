@@ -4,7 +4,7 @@ import os
 import requests
 import time
 from dotenv import load_dotenv
-from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
 load_dotenv()
 
@@ -21,7 +21,16 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 SCRAPER_ID = 32
-COMPANY_ID = os.getenv("HEADLINERS_COMPANY_ID")
+COMPANY_CONFIGS = [
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+    },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+    },
+]
 
 
 def clean_html_content(html_content):
@@ -46,7 +55,7 @@ def fetch_posts_with_retry(page_num, max_retries=3):
         "url": url,
         "premiumProxy": True,
         "proxyCountry": "UnitedKingdom",
-        "retries": 1,
+        "retries": 2,
         "automaticallySolveCaptcha": True
     }
 
@@ -77,12 +86,33 @@ def fetch_posts_with_retry(page_num, max_retries=3):
 
 
 def main():
-    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
-
-    all_articles = []
-    newest_timestamp = None
-
     print("🔍 Fetching articles from Marketing Week API...")
+
+    # Collect per-company saved timestamps
+    company_timestamps = {}
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {config['label']} — subscription is inactive")
+            continue
+        company_timestamps[company_id] = {
+            "label": config["label"],
+            "saved_timestamp": get_latest_timestamp(SCRAPER_ID, company_id),
+        }
+
+    if not company_timestamps:
+        print("⛔ No active companies.")
+        return
+
+    # Use the oldest saved timestamp as cutoff so we catch all new articles for all companies
+    active_timestamps = [
+        v["saved_timestamp"] for v in company_timestamps.values()
+        if v["saved_timestamp"]
+    ]
+    earliest_cutoff = min(active_timestamps) if active_timestamps else None
+
+    all_posts = []
+    newest_timestamp = None
 
     for page_num in range(1, 3):
         print(f"📄 Fetching page {page_num}...")
@@ -94,59 +124,65 @@ def main():
 
         for post in posts:
             timestamp = post["date_gmt"]
-
             if newest_timestamp is None:
                 newest_timestamp = timestamp
+            all_posts.append(post)
 
-            if saved_timestamp and timestamp <= saved_timestamp:
-                break
+        if earliest_cutoff and any(p["date_gmt"] <= earliest_cutoff for p in posts):
+            break
+
+    if not all_posts:
+        print("⛔ No articles found.")
+        return
+
+    # Process each company
+    for company_id, info in company_timestamps.items():
+        label = info["label"]
+        saved_timestamp = info["saved_timestamp"]
+
+        print(f"\n{'='*60}")
+        print(f"🏢 Processing: {label}")
+        print(f"{'='*60}")
+
+        if saved_timestamp is None:
+            print("🟢 First run detected — NOT saving any articles.")
+            if newest_timestamp:
+                print("Saving latest timestamp:", newest_timestamp)
+                update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+            continue
+
+        company_articles = []
+        for post in all_posts:
+            timestamp = post["date_gmt"]
+            if timestamp <= saved_timestamp:
+                continue
 
             title = post["title"]["rendered"]
             html_content = post["content"]["rendered"]
             text = clean_html_content(html_content)
 
-            article = {
+            company_articles.append({
                 "url": post["link"],
                 "date": timestamp,
                 "title": title,
                 "text": text,
                 "lastmod": timestamp,
-                "company_id": COMPANY_ID,
+                "company_id": company_id,
                 "scraper_id": SCRAPER_ID,
-            }
+            })
 
-            all_articles.append(article)
-            print(f"Fetched: {title[:60]}...")
+        if not company_articles:
+            print("⛔ No new articles found.")
+            continue
 
-        if saved_timestamp and any(post["date_gmt"] <= saved_timestamp for post in posts):
-            break
+        print(f"🆕 Found {len(company_articles)} new articles.")
+        inserted_count = insert_articles(company_articles)
+        print(f"✅ Inserted {inserted_count} articles into database")
 
-    # ----------------------------
-    # FIRST RUN — NO SCRAPING
-    # ----------------------------
-    if saved_timestamp is None:
-        print("🟢 First run detected — NOT saving any articles.")
-        if newest_timestamp:
-            print("Saving latest timestamp:", newest_timestamp)
-            update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
-        return
-
-    # ----------------------------
-    # SUBSEQUENT RUNS — save new
-    # ----------------------------
-    print("Previously saved timestamp:", saved_timestamp)
-
-    if not all_articles:
-        print("⛔ No new articles found.")
-        return
-
-    print(f"🆕 Found {len(all_articles)} new articles.")
-    inserted_count = insert_articles(all_articles)
-    print(f"✅ Inserted {inserted_count} articles into database")
-
-    if newest_timestamp:
-        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
-        print("🕒 New latest timestamp saved:", newest_timestamp)
+        company_newest = max(p["date_gmt"] for p in all_posts if p["date_gmt"] > saved_timestamp)
+        if company_newest:
+            update_latest_timestamp(SCRAPER_ID, company_id, company_newest)
+            print("🕒 New latest timestamp saved:", company_newest)
 
 
 if __name__ == "__main__":

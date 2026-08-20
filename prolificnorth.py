@@ -1,5 +1,6 @@
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
 import requests
@@ -7,15 +8,42 @@ from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_recent_article_urls, insert_articles
+from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
-LISTING_URL = "https://www.prolificnorth.co.uk/news/?jsf=jet-engine:news-grid&tax=category:54,56,60,41,59"
+LISTING_URL = "https://www.prolificnorth.co.uk/news/"
 SOURCE_NAME = "PROLIFIC_NORTH"
 SCRAPER_ID = 33
-COMPANY_ID = os.getenv("HEADLINERS_COMPANY_ID")
 MAX_PAGES = 1
+
+COMPANY_CONFIGS = [
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+        "sectors": [
+            "Agency",
+            "Brand",
+            "Ecommerce",
+            "Publishing",
+            "Tech",
+        ],
+    },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+        "sectors": [
+            "Agency",
+            "Brand",
+            "Ecommerce",
+            "Tech",
+        ],
+    },
+]
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+MAX_THREADS = 5
 
 HEADERS = {
     "User-Agent": (
@@ -66,7 +94,7 @@ def fetch_url(url, max_retries=3):
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=30)
             resp.raise_for_status()
             return resp.text
         except Exception as e:
@@ -78,8 +106,9 @@ def fetch_url(url, max_retries=3):
 
 
 def parse_listing_html(html):
+    """Extract (url, sector) tuples from the listing page."""
     soup = BeautifulSoup(html, "html.parser")
-    urls = []
+    items_out = []
     seen = set()
 
     # The listing grid has id="news-grid" on first page; fallback to all items
@@ -92,11 +121,19 @@ def parse_listing_html(html):
         if not h2:
             continue
         a = h2.find("a", href=True)
-        if a and a["href"] not in seen:
-            seen.add(a["href"])
-            urls.append(a["href"])
+        if not a or a["href"] in seen:
+            continue
 
-    return urls
+        # Extract sector from the category link
+        sector = ""
+        sector_el = item.find("a", class_="jet-listing-dynamic-terms__link")
+        if sector_el:
+            sector = sector_el.get_text(strip=True)
+
+        seen.add(a["href"])
+        items_out.append((a["href"], sector))
+
+    return items_out
 
 
 def parse_date(date_str):
@@ -149,7 +186,6 @@ def scrape_article(url):
         "title": title,
         "text": text,
         "lastmod": date or "",
-        "company_id": COMPANY_ID,
         "scraper_id": SCRAPER_ID,
     }
 
@@ -161,7 +197,7 @@ def main():
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    all_urls = []
+    all_items = []  # [(url, sector), ...]
 
     for page_num in range(1, MAX_PAGES + 1):
         url = LISTING_URL if page_num == 1 else f"{LISTING_URL}&paged={page_num}"
@@ -172,29 +208,35 @@ def main():
             print(f"⛔ Empty response for page {page_num}, stopping.")
             break
 
-        urls = parse_listing_html(html)
-        if not urls:
+        items = parse_listing_html(html)
+        if not items:
             print(f"⛔ No articles found on page {page_num}, stopping.")
             break
 
-        all_urls.extend(urls)
-        print(f"  Found {len(urls)} article(s) on page {page_num}")
+        all_items.extend(items)
+        print(f"  Found {len(items)} article(s) on page {page_num}")
 
-    if not all_urls:
+    if not all_items:
         print("⛔ No article URLs found.")
         return
 
     # Deduplicate while preserving order
     seen = set()
-    unique_urls = []
-    for u in all_urls:
+    unique_items = []
+    for u, s in all_items:
         if u not in seen:
             seen.add(u)
-            unique_urls.append(u)
-    print(f"🔗 {len(unique_urls)} unique article URL(s) after deduplication.")
+            unique_items.append((u, s))
+    print(f"🔗 {len(unique_items)} unique article URL(s) after deduplication.")
 
-    new_urls = []
-    for u in unique_urls:
+    # Collect all sectors across active companies
+    all_sectors = set()
+    for config in COMPANY_CONFIGS:
+        if is_subscription_active(SCRAPER_ID, config["company_id"]):
+            all_sectors.update(s.lower() for s in config["sectors"])
+
+    new_items = []
+    for u, s in unique_items:
         slug = url_slug(u)
         if u in known_urls:
             print(f"  ⏭️  Skipping (already in DB): {slug}")
@@ -202,31 +244,59 @@ def main():
         if slug in seen_slugs:
             print(f"  ⏭️  Skipping (duplicate slug): {slug}")
             continue
-        new_urls.append(u)
+        if s.lower() not in all_sectors:
+            print(f"  ⏭️  Skipping (sector '{s}' not in config): {slug}")
+            continue
+        new_items.append((u, s))
         seen_slugs.add(slug)
 
-    if not new_urls:
+    if not new_items:
         print("\n⛔ No new articles found.")
         return
 
-    print(f"  🆕 {len(new_urls)} new article(s) to scrape.")
-    #new_urls = new_urls[:3]  # limit for testing
-    articles = []
-    for u in new_urls:
-        print(f"  Scraping: {u}")
-        article = scrape_article(u)
-        if not article:
-            continue
-        articles.append(article)
-        print(f"  ✅ {article['title'][:60]}...")
+    print(f"  🆕 {len(new_items)} new article(s) to scrape.")
+    #new_items = new_items[:3]  # limit for testing
 
-    if not articles:
+    # Scrape each article once, keeping its sector
+    scraped = []  # [(article_dict, sector), ...]
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        futures = {executor.submit(scrape_article, u): (u, sector) for u, sector in new_items}
+        for future in as_completed(futures):
+            u, sector = futures[future]
+            article = future.result()
+            if not article:
+                continue
+            scraped.append((article, sector))
+            print(f"  ✅ {article['title'][:60]}...")
+
+    if not scraped:
         print("\n⛔ No articles scraped successfully.")
         return
 
-    print(f"\n🆕 Found {len(articles)} new article(s) in total.")
-    inserted_count = insert_articles(articles)
-    print(f"✅ Inserted {inserted_count} articles into database")
+    print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
+
+    # Insert per company, filtered by their sectors
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        label = config["label"]
+        sectors = set(s.lower() for s in config["sectors"])
+
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {label} — subscription is inactive")
+            continue
+
+        company_articles = [
+            {**article, "company_id": company_id}
+            for article, sector in scraped
+            if sector.lower() in sectors
+        ]
+
+        if not company_articles:
+            print(f"⛔ No matching articles for {label}")
+            continue
+
+        inserted_count = insert_articles(company_articles)
+        print(f"✅ Inserted {inserted_count} articles for {label}")
 
 
 if __name__ == "__main__":

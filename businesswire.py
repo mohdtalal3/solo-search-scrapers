@@ -88,6 +88,16 @@ COMPANY_CONFIGS = [
             "&region=1000489"
         ),
     },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+        "newsroom_url": (
+            "https://www.businesswire.com/newsroom"
+            "?region=1000489"
+            "&industry=1000150%7C1000178"
+            "&subject=1778692%7C1000007%7C1000011"
+        ),
+    },
 ]
 # "&language=en"
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
