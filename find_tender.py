@@ -65,6 +65,23 @@ COMPANY_CONFIGS = [
             "72000000",
         ],
     },
+    {
+        "label": "Time to Hire (IT / Business Services)",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+        "keywords": "",
+        "value_low": "",
+        "stages": ["5", "3"],
+        "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+        "cpv_codes": [
+            "48000000",
+            "64000000",
+            "71000000",
+            "72000000",
+            "73000000",
+            "79000000",
+            "80000000",
+        ],
+    },
 ]
 
 HEADERS = {

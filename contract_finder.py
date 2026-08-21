@@ -126,6 +126,22 @@ COMPANY_CONFIGS = [
         ],
         "regions": ["1770"],
     },
+    {
+        "label": "Time to Hire (IT / Business Services)",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+        "keywords": "",
+        "value_low": "",
+        "notice_types": ["awarded", "open", "public_notice"],
+        "cpv_codes": [
+            "48000000",
+            "64000000",
+            "71000000",
+            "72000000",
+            "73000000",
+            "79000000",
+            "80000000",
+        ]
+    },
 ]
 
 HEADERS = {

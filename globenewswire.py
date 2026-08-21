@@ -57,6 +57,18 @@ COMPANY_CONFIGS = [
             "/load/more?page={page}&pageSize=50"
         ),
     },
+    {
+        "label": "Time to Hire",
+        "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
+        "listing_url": (
+            "https://www.globenewswire.com/en/search/country/gb"
+            "/industry/technology,financial%2520services,financials,software,"
+            "software%2520&%2520computer%2520services,internet,"
+            "professional%2520business%2520support%2520services,business%2520support%2520services"
+            "/subject/fin,coa,prs,mna,mgc"
+            "/load/more?page={page}&pageSize=50"
+        ),
+    },
 ]
 
 HEADERS = {
