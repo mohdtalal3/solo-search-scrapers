@@ -81,6 +81,8 @@ import techcrunch
 import crn
 import channeldive
 import bgf
+import internetretailing
+import globenewswire
 
 
 class TeeStream:
@@ -271,6 +273,9 @@ def run_all_scrapers():
     run_scraper("Business Wire", businesswire.main)  # multi-company: checked internally
     time.sleep(5)
 
+    run_scraper("GlobeNewswire", globenewswire.main)  # multi-company: checked internally
+    time.sleep(5)
+
     run_scraper("Marketing Week", marketingweek.main, marketingweek)
     time.sleep(5)
 
@@ -371,6 +376,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("BGF", bgf.main)
+    time.sleep(5)
+
+    run_scraper("Internet Retailing", internetretailing.main)
     time.sleep(5)
 
     elapsed_time = time.time() - start_time

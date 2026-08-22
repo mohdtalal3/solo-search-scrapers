@@ -1,5 +1,6 @@
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
 import requests
@@ -23,6 +24,10 @@ MONTHLY_RESULTS_URL = f"{BASE_URL}/online-applications/monthlyListResults.do?act
 PAGED_RESULTS_URL = f"{BASE_URL}/online-applications/pagedSearchResults.do"
 DETAILS_URL = f"{BASE_URL}/online-applications/applicationDetails.do"
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
+
+_proxy = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
+MAX_THREADS = 5
 
 HEADERS = {
     "User-Agent": (
@@ -48,7 +53,10 @@ def current_month_label() -> str:
 
 
 def make_session() -> requests.Session:
-    return requests.Session()
+    session = requests.Session()
+    if PROXIES:
+        session.proxies.update(PROXIES)
+    return session
 
 
 def get_tokens(html: str) -> tuple[str, str]:
@@ -144,10 +152,6 @@ def refresh_session(session: requests.Session) -> None:
         session.get(SEARCH_PAGE_URL, headers=HEADERS, timeout=30, verify=False)
     except Exception:
         pass
-
-
-_proxy = os.getenv("SCRAPER_PROXY")
-PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 
 
 def scrape_print_preview(key_val: str, max_retries: int = 3):
@@ -286,20 +290,25 @@ def main():
     print(f"  🆕 {len(new_items)} new application(s) to scrape.")
 
     articles = []
-    for full_url, key_val, fallback_title in new_items:
-        print(f"  Scraping: {key_val}")
-        title, date, body = scrape_print_preview(key_val)
-        if title is None:
-            continue
-        articles.append({
-            "url": full_url,
-            "date": date,
-            "title": title,
-            "text": body,
-            "company_id": COMPANY_ID,
-            "scraper_id": SCRAPER_ID,
-        })
-        print(f"  ✅ {title[:60]}...")
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        futures = {
+            executor.submit(scrape_print_preview, key_val): (full_url, key_val)
+            for full_url, key_val, _ in new_items
+        }
+        for future in as_completed(futures):
+            full_url, key_val = futures[future]
+            title, date, body = future.result()
+            if title is None:
+                continue
+            articles.append({
+                "url": full_url,
+                "date": date,
+                "title": title,
+                "text": body,
+                "company_id": COMPANY_ID,
+                "scraper_id": SCRAPER_ID,
+            })
+            print(f"  ✅ {title[:60]}...")
 
     if not articles:
         print("\n⛔ No applications scraped successfully.")
