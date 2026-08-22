@@ -2,7 +2,7 @@ import os
 import time
 from datetime import datetime
 
-import requests
+
 import urllib3
 from bs4 import BeautifulSoup
 from curl_cffi import requests as cffi_requests
@@ -56,9 +56,8 @@ def current_month_label() -> str:
     return now.strftime("%b") + " " + now.strftime("%y")
 
 
-def make_session() -> requests.Session:
-    s = requests.Session()
-    return s
+def make_session() -> cffi_requests.Session:
+    return cffi_requests.Session(impersonate="chrome131", verify=False, proxies=PROXIES)
 
 
 def get_tokens(html: str) -> tuple[str, str]:
@@ -76,7 +75,7 @@ def get_tokens(html: str) -> tuple[str, str]:
     return csrf, struts
 
 
-def init_search(session: requests.Session, date_type: str = "DC_Validated") -> str:
+def init_search(session: cffi_requests.Session, date_type: str = "DC_Validated") -> str:
     """GET the search form to establish session cookie + tokens, then POST the monthly list search."""
     r = session.get(SEARCH_PAGE_URL, headers=HEADERS, timeout=30, verify=False)
     r.raise_for_status()
@@ -106,7 +105,7 @@ def init_search(session: requests.Session, date_type: str = "DC_Validated") -> s
     return r2.text, csrf2 or csrf
 
 
-def fetch_page(session: requests.Session, csrf: str, page: int) -> str | None:
+def fetch_page(session: cffi_requests.Session, csrf: str, page: int) -> str | None:
     """POST to pagedSearchResults.do for the given page number with 100 results per page.
     Returns None if the server returns 500 (no results for this period)."""
     r = session.post(
