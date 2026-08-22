@@ -3,9 +3,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
-import requests
 import urllib3
 from bs4 import BeautifulSoup
+from curl_cffi import requests as cffi_requests
 from dotenv import load_dotenv
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -23,10 +23,7 @@ SEARCH_PAGE_URL = f"{BASE_URL}/online-applications/search.do?action=monthlyList"
 MONTHLY_RESULTS_URL = f"{BASE_URL}/online-applications/monthlyListResults.do?action=firstPage"
 PAGED_RESULTS_URL = f"{BASE_URL}/online-applications/pagedSearchResults.do"
 DETAILS_URL = f"{BASE_URL}/online-applications/applicationDetails.do"
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 
-_proxy = os.getenv("SCRAPER_PROXY")
-PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 MAX_THREADS = 5
 
 HEADERS = {
@@ -52,11 +49,8 @@ def current_month_label() -> str:
     return now.strftime("%b") + " " + now.strftime("%y")
 
 
-def make_session() -> requests.Session:
-    session = requests.Session()
-    if PROXIES:
-        session.proxies.update(PROXIES)
-    return session
+def make_session() -> cffi_requests.Session:
+    return cffi_requests.Session(impersonate="chrome131", verify=False)
 
 
 def get_tokens(html: str) -> tuple[str, str]:
@@ -71,7 +65,7 @@ def get_tokens(html: str) -> tuple[str, str]:
     return csrf, struts
 
 
-def init_search(session: requests.Session, date_type: str = "DC_Validated") -> tuple[str, str]:
+def init_search(session: cffi_requests.Session, date_type: str = "DC_Validated") -> tuple[str, str]:
     """GET the search form, then POST the monthly list search."""
     r = session.get(SEARCH_PAGE_URL, headers=HEADERS, timeout=30, verify=False)
     r.raise_for_status()
@@ -101,7 +95,7 @@ def init_search(session: requests.Session, date_type: str = "DC_Validated") -> t
     return r2.text, csrf2 or csrf
 
 
-def fetch_page(session: requests.Session, csrf: str, page: int) -> str | None:
+def fetch_page(session: cffi_requests.Session, csrf: str, page: int) -> str | None:
     r = session.post(
         PAGED_RESULTS_URL,
         data={
@@ -146,7 +140,7 @@ def parse_results(html: str) -> list[tuple[str, str, str]]:
     return results
 
 
-def refresh_session(session: requests.Session) -> None:
+def refresh_session(session: cffi_requests.Session) -> None:
     """Re-hit the main search page to reset the session after a 429."""
     try:
         session.get(SEARCH_PAGE_URL, headers=HEADERS, timeout=30, verify=False)
@@ -156,36 +150,21 @@ def refresh_session(session: requests.Session) -> None:
 
 def scrape_print_preview(key_val: str, max_retries: int = 3):
     print_url = f"{DETAILS_URL}?activeTab=printPreview&keyVal={key_val}"
-    api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not api_key:
-        raise RuntimeError("SCRAPPEY_API_KEY not set")
-
-    payload = {
-        "cmd": "request.get",
-        "url": print_url,
-        "premiumProxy": True,
-       # "proxyCountry": "UnitedKingdom",
-        "retries": 1,
-        "automaticallySolveCaptcha": True,
-        "browserActions": [
-            {"type": "wait_for_load_state", "waitForLoadState": "networkidle"},
-            {"type": "wait", "wait": 1500, "when": "after_captcha"},
-        ],
-    }
 
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            resp = requests.post(
-                f"{SCRAPPEY_API_URL}?key={api_key}",
-                json=payload,
-                timeout=90,
+            resp = cffi_requests.get(
+                print_url,
+                headers=HEADERS,
+                impersonate="chrome131",
+                timeout=30,
+                verify=False,
             )
             resp.raise_for_status()
-            data = resp.json()
-            html = data.get("solution", {}).get("response", "")
+            html = resp.text
             if not html:
-                raise RuntimeError("Empty Scrappey response")
+                raise RuntimeError("Empty response")
 
             soup = BeautifulSoup(html, "html.parser")
 

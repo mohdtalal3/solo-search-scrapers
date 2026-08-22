@@ -18,7 +18,7 @@ SOURCE_NAME = "HUNTINGDONSHIRE"
 SCRAPER_ID = 24
 COMPANY_ID = os.getenv("PLEA_COMPANY_ID")
 _proxy = os.getenv("SCRAPER_PROXY")
-PROXIES = None
+PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 
 BASE_URL = "https://publicaccess.huntingdonshire.gov.uk"
 SEARCH_PAGE_URL = f"{BASE_URL}/online-applications/search.do?action=monthlyList"
@@ -57,7 +57,7 @@ def current_month_label() -> str:
 
 
 def make_session() -> cffi_requests.Session:
-    return cffi_requests.Session(impersonate="chrome131", verify=False, proxies=PROXIES)
+    return cffi_requests.Session(impersonate="chrome131", verify=False)
 
 
 def get_tokens(html: str) -> tuple[str, str]:
@@ -171,7 +171,6 @@ def scrape_print_preview(key_val: str, max_retries: int = 3):
                 print_url,
                 headers=HEADERS,
                 impersonate="chrome131",
-                proxies=PROXIES,
                 timeout=30,
                 verify=False,
             )
