@@ -167,7 +167,7 @@ def scrape_print_preview(key_val: str, max_retries: int = 3):
         "cmd": "request.get",
         "url": print_url,
         "premiumProxy": True,
-       # "proxyCountry": "UnitedKingdom",
+        "proxyCountry": "UnitedKingdom",
         "retries": 1,
         "automaticallySolveCaptcha": True,
         "browserActions": [
