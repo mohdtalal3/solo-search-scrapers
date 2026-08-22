@@ -5,6 +5,7 @@ from datetime import datetime
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+from curl_cffi import requests as cffi_requests
 from dotenv import load_dotenv
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -24,7 +25,6 @@ SEARCH_PAGE_URL = f"{BASE_URL}/online-applications/search.do?action=monthlyList"
 MONTHLY_RESULTS_URL = f"{BASE_URL}/online-applications/monthlyListResults.do?action=firstPage"
 PAGED_RESULTS_URL = f"{BASE_URL}/online-applications/pagedSearchResults.do"
 DETAILS_URL = f"{BASE_URL}/online-applications/applicationDetails.do"
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 
 HEADERS = {
     "User-Agent": (
@@ -53,6 +53,8 @@ def current_month_label() -> str:
 
 def make_session() -> requests.Session:
     s = requests.Session()
+    if PROXIES:
+        s.proxies.update(PROXIES)
     return s
 
 
@@ -155,40 +157,26 @@ def parse_results(html: str) -> list[tuple[str, str, str]]:
 
 def scrape_print_preview(key_val: str, max_retries: int = 3):
     """
-    Fetch the print preview page for a planning application via Scrappey.
+    Fetch the print preview page for a planning application via curl_cffi.
     Returns (title, date, body_text).
     """
     print_url = f"{DETAILS_URL}?activeTab=printPreview&keyVal={key_val}"
-    api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not api_key:
-        raise RuntimeError("SCRAPPEY_API_KEY not set")
-
-    payload = {
-        "cmd": "request.get",
-        "url": print_url,
-        "premiumProxy": True,
-        "proxyCountry": "UnitedKingdom",
-        "retries": 1,
-        "automaticallySolveCaptcha": True,
-        "browserActions": [
-            {"type": "wait_for_load_state", "waitForLoadState": "networkidle"},
-            {"type": "wait", "wait": 1500, "when": "after_captcha"},
-        ],
-    }
 
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            resp = requests.post(
-                f"{SCRAPPEY_API_URL}?key={api_key}",
-                json=payload,
-                timeout=90,
+            resp = cffi_requests.get(
+                print_url,
+                headers=HEADERS,
+                impersonate="chrome131",
+                proxies=PROXIES,
+                timeout=30,
+                verify=False,
             )
             resp.raise_for_status()
-            data = resp.json()
-            html = data.get("solution", {}).get("response", "")
+            html = resp.text
             if not html:
-                raise RuntimeError("Empty Scrappey response")
+                raise RuntimeError("Empty response")
 
             soup = BeautifulSoup(html, "html.parser")
 
