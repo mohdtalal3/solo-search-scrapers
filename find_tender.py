@@ -5,7 +5,8 @@ from curl_cffi import requests as cffi_requests
 from datetime import datetime, timedelta
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 import re
-
+from dotenv import load_dotenv
+load_dotenv()
 BASE_URL = "https://www.find-tender.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
 SOURCE_NAME = "FIND_TENDER"
@@ -102,7 +103,7 @@ HEADERS = {
 
 
 def build_session() -> cffi_requests.Session:
-    proxy_url = os.getenv("SCRAPER_PROXY")
+    proxy_url = None#os.getenv("SCRAPER_PROXY")
     proxies = {"http": proxy_url, "https": proxy_url} if proxy_url else None
     s = cffi_requests.Session(impersonate="chrome131", proxies=proxies)
     if proxy_url:
@@ -322,7 +323,7 @@ def run_for_company(config: dict):
     time.sleep(2)
     print("Step 1: Load search page")
     initial_token = get_form_token(session)
-
+    
     time.sleep(2)
     print("Step 2: Submit search")
     search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, stages, form_type_ids)
