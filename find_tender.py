@@ -1,7 +1,7 @@
 import time
 import os
-import requests
 from bs4 import BeautifulSoup
+from curl_cffi import requests as cffi_requests
 from datetime import datetime, timedelta
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 import re
@@ -85,25 +85,31 @@ COMPANY_CONFIGS = [
 ]
 
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/123.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Language": "en-US,en;q=0.9,fr;q=0.8,af;q=0.7,ar;q=0.6,be;q=0.5,de;q=0.4",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "same-origin",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+    "sec-ch-ua": '"Not=A?Brand";v="99", "Google Chrome";v="131", "Chromium";v="131"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
 }
 
 
-def build_session() -> requests.Session:
-    s = requests.Session()
-    proxy_url = os.getenv("FIND_TENDER_PROXY")
+def build_session() -> cffi_requests.Session:
+    proxy_url = os.getenv("SCRAPER_PROXY")
+    proxies = {"http": proxy_url, "https": proxy_url} if proxy_url else None
+    s = cffi_requests.Session(impersonate="chrome131", proxies=proxies)
     if proxy_url:
-        s.proxies = {"http": proxy_url, "https": proxy_url}
         print(f"  🔒 Proxy active: {proxy_url.split('@')[-1]}")
     return s
 
-def get_form_token(session: requests.Session) -> str:
+def get_form_token(session: cffi_requests.Session) -> str:
     r = session.get(SEARCH_URL, headers=HEADERS, timeout=120)
     r.raise_for_status()
 
@@ -122,7 +128,7 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, stages: list = None, form_type_ids: list = None) -> str:
+def submit_search(session: cffi_requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, stages: list = None, form_type_ids: list = None) -> str:
     if stages is None:
         stages = ["5"]
     if form_type_ids is None:
@@ -174,7 +180,7 @@ def submit_search(session: requests.Session, form_token: str, keywords: str, cpv
     r = session.post(SEARCH_URL, headers=headers, data=data, timeout=120)
     r.raise_for_status()
     return r.text
-def submit_sort(session: requests.Session, sort_token: str) -> str:
+def submit_sort(session: cffi_requests.Session, sort_token: str) -> str:
     payload = [
         ("sort_select", "Published (newest)"),
         ("sort", "unix_published_date:DESC"),
@@ -230,40 +236,14 @@ def get_last_page(soup):
     return max(pages) if pages else 1
 
 
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
-
-
 def scrape_notice_details(session, notice_url):
-    """
-    Fetch notice detail page via Scrappey (bypasses bot protection).
-    Falls back to plain requests if Scrappey key is not set.
-    """
+    """Fetch notice detail page via curl_cffi session (with proxy)."""
     full_url = f"{BASE_URL}{notice_url}" if notice_url.startswith("/") else notice_url
 
     try:
-        scrappey_key = os.getenv("SCRAPPEY_API_KEY")
-        if scrappey_key:
-            payload = {
-                "cmd": "request.get",
-                "requestType": "request",
-                "retries":2,
-                #"cmd": "request.get",
-                "url": full_url,
-                "premiumProxy": True,
-                "proxyCountry": "UnitedKingdom",
-            }
-            resp = requests.post(
-                f"{SCRAPPEY_API_URL}?key={scrappey_key}",
-                json=payload,
-                timeout=120,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            html = data.get("solution", {}).get("response", "")
-        else:
-            r = session.get(full_url, headers=HEADERS, timeout=120  )
-            r.raise_for_status()
-            html = r.text
+        r = session.get(full_url, headers=HEADERS, timeout=120)
+        r.raise_for_status()
+        html = r.text
 
         soup = BeautifulSoup(html, "html.parser")
         content_div = soup.select_one(".notice-view.govuk-main-wrapper.app-main-class")
