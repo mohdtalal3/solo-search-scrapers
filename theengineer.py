@@ -12,7 +12,7 @@ from db import get_recent_article_urls, insert_articles, is_subscription_active
 load_dotenv()
 
 BASE_URL = "https://www.theengineer.co.uk"
-LISTING_URL = f"{BASE_URL}/news"
+LISTING_URL = f"{BASE_URL}/content/news/all"
 SOURCE_NAME = "THE_ENGINEER"
 SCRAPER_ID = 73
 
@@ -41,6 +41,8 @@ def fetch_with_scrappey(url, max_retries=MAX_RETRIES):
         "url": url,
         "proxyCountry": SCRAPPEY_PROXY_COUNTRY,
         "premiumProxy": True,
+         "retries": 1,
+        "automaticallySolveCaptcha": True
     }
 
     for attempt in range(max_retries):
@@ -89,7 +91,7 @@ def parse_listing_html(html):
     seen_urls = set()
 
     for card in soup.select('div[itemscope][itemtype="http://schema.org/Article"]'):
-        title_el = card.select_one('h3[itemprop="name"]')
+        title_el = card.select_one('h2.article__title') 
         if not title_el:
             continue
         link_el = title_el.find_parent("a", href=True)
