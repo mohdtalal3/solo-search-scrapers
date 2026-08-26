@@ -186,8 +186,8 @@ def run_all_scrapers():
     run_scraper("Contract Finder", contract_finder.main)  # multi-company: checked internally
     time.sleep(5)
 
-    run_scraper("Find Tender", find_tender.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Find Tender", find_tender.main)  # multi-company: checked internally
+    # time.sleep(5)
 
     run_scraper("HTN.co", htn_co.main, htn_co)
     time.sleep(5)
