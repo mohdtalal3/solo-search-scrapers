@@ -1,10 +1,16 @@
 import time
 import os
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
+from dotenv import load_dotenv
+load_dotenv()
+
+_proxy = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 
 BASE_URL = "https://www.contractsfinder.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
@@ -129,17 +135,14 @@ COMPANY_CONFIGS = [
     {
         "label": "Time to Hire (IT / Business Services)",
         "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
-        "keywords": "",
-        "value_low": "",
+        "keywords": 'funding investment growth expansion "market entry" "business growth" "digital transformation" technology software "IT services" marketing "digital marketing" ecommerce',
+        "value_low": "100000",
         "notice_types": ["awarded", "open", "public_notice"],
         "cpv_codes": [
             "48000000",
-            "64000000",
-            "71000000",
             "72000000",
             "73000000",
             "79000000",
-            "80000000",
         ]
     },
 ]
@@ -457,6 +460,9 @@ def run_for_company(config: dict):
     saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 
     session = requests.Session()
+    if PROXIES:
+        session.proxies.update(PROXIES)
+        print(f"  🔒 Proxy active: {_proxy.split('@')[-1]}")
 
     time.sleep(2)
     print("Step 1: Load search page")
@@ -531,9 +537,14 @@ def run_for_company(config: dict):
 
 
 def main():
-    for config in COMPANY_CONFIGS:
-        run_for_company(config)
-        time.sleep(5)  # brief pause between company runs
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(run_for_company, config): config for config in COMPANY_CONFIGS}
+        for future in as_completed(futures):
+            config = futures[future]
+            try:
+                future.result()
+            except Exception as e:
+                print(f"⛔ Error running {config['label']}: {e}")
 
 if __name__ == "__main__":
     main()

@@ -17,6 +17,8 @@ load_dotenv()
 SOURCE_NAME = "GREATER_CAMBRIDGE"
 SCRAPER_ID = 27
 COMPANY_ID = os.getenv("PLEA_COMPANY_ID")
+_proxy = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 
 BASE_URL = "https://applications.greatercambridgeplanning.org"
 SEARCH_PAGE_URL = f"{BASE_URL}/online-applications/search.do?action=monthlyList"
@@ -50,7 +52,7 @@ def current_month_label() -> str:
 
 
 def make_session() -> cffi_requests.Session:
-    return cffi_requests.Session(impersonate="chrome131", verify=False)
+    return cffi_requests.Session(impersonate="chrome131", verify=False, proxies=PROXIES)
 
 
 def get_tokens(html: str) -> tuple[str, str]:
@@ -160,6 +162,7 @@ def scrape_print_preview(key_val: str, max_retries: int = 3):
                 impersonate="chrome131",
                 timeout=30,
                 verify=False,
+                proxies=PROXIES,
             )
             resp.raise_for_status()
             html = resp.text

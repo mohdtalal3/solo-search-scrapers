@@ -1,5 +1,6 @@
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
 
@@ -57,7 +58,7 @@ def current_month_label() -> str:
 
 
 def make_session() -> cffi_requests.Session:
-    return cffi_requests.Session(impersonate="chrome131", verify=False)
+    return cffi_requests.Session(impersonate="chrome131", verify=False, proxies=PROXIES)
 
 
 def get_tokens(html: str) -> tuple[str, str]:
@@ -173,6 +174,7 @@ def scrape_print_preview(key_val: str, max_retries: int = 3):
                 impersonate="chrome131",
                 timeout=30,
                 verify=False,
+                proxies=PROXIES,
             )
             resp.raise_for_status()
             html = resp.text
@@ -285,20 +287,25 @@ def main():
     print(f"  🆕 {len(new_items)} new application(s) to scrape.")
 
     articles = []
-    for full_url, key_val, fallback_title in new_items:
-        print(f"  Scraping: {key_val}")
-        title, date, body = scrape_print_preview(key_val)
-        if title is None:
-            continue
-        articles.append({
-            "url": full_url,
-            "date": date,
-            "title": title,
-            "text": body,
-            "company_id": COMPANY_ID,
-            "scraper_id": SCRAPER_ID,
-        })
-        print(f"  ✅ {title[:60]}...")
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {
+            executor.submit(scrape_print_preview, key_val): (full_url, key_val)
+            for full_url, key_val, _ in new_items
+        }
+        for future in as_completed(futures):
+            full_url, key_val = futures[future]
+            title, date, body = future.result()
+            if title is None:
+                continue
+            articles.append({
+                "url": full_url,
+                "date": date,
+                "title": title,
+                "text": body,
+                "company_id": COMPANY_ID,
+                "scraper_id": SCRAPER_ID,
+            })
+            print(f"  ✅ {title[:60]}...")
 
     if not articles:
         print("\n⛔ No applications scraped successfully.")

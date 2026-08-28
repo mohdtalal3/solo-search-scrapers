@@ -2,6 +2,7 @@ import time
 import os
 from bs4 import BeautifulSoup
 from curl_cffi import requests as cffi_requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 import re
@@ -11,6 +12,7 @@ BASE_URL = "https://www.find-tender.service.gov.uk"
 SEARCH_URL = f"{BASE_URL}/Search/Results"
 SOURCE_NAME = "FIND_TENDER"
 SCRAPER_ID = 5
+MAX_WORKERS = 5
 
 # ----------------------------------------------------------
 # Company configs — each runs a separate search with its own
@@ -69,19 +71,17 @@ COMPANY_CONFIGS = [
     {
         "label": "Time to Hire (IT / Business Services)",
         "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
-        "keywords": "",
-        "value_low": "",
+        "keywords": 'funding investment growth expansion "market entry" "business growth" "digital transformation" technology software "IT services" marketing "digital marketing" ecommerce',
+        "value_low": "100000",
         "stages": ["5", "3"],
         "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
         "cpv_codes": [
             "48000000",
-            "64000000",
-            "71000000",
             "72000000",
             "73000000",
             "79000000",
-            "80000000",
         ],
+        "nuts_codes": ["UK"],
     },
 ]
 
@@ -103,9 +103,9 @@ HEADERS = {
 
 
 def build_session() -> cffi_requests.Session:
-    proxy_url = None#os.getenv("SCRAPER_PROXY")
+    proxy_url = os.getenv("SCRAPER_PROXY")
     proxies = {"http": proxy_url, "https": proxy_url} if proxy_url else None
-    s = cffi_requests.Session(impersonate="chrome131", proxies=proxies)
+    s = cffi_requests.Session(impersonate="chrome", proxies=proxies)
     if proxy_url:
         print(f"  🔒 Proxy active: {proxy_url.split('@')[-1]}")
     return s
@@ -129,7 +129,7 @@ def extract_sort_token(html: str) -> str:
 
     return token["value"]
 
-def submit_search(session: cffi_requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, stages: list = None, form_type_ids: list = None) -> str:
+def submit_search(session: cffi_requests.Session, form_token: str, keywords: str, cpv_codes: list, value_low: str, stages: list = None, form_type_ids: list = None, nuts_codes: list = None) -> str:
     if stages is None:
         stages = ["5"]
     if form_type_ids is None:
@@ -151,6 +151,10 @@ def submit_search(session: cffi_requests.Session, form_token: str, keywords: str
     if cpv_codes:
         for cpv in cpv_codes:
             data.append(("cpv_code_selections[]", cpv))
+
+    if nuts_codes:
+        for nuts in nuts_codes:
+            data.append(("nuts_code_selections[]", nuts))
 
     data += [
         ("minimum_value", value_low),
@@ -237,12 +241,12 @@ def get_last_page(soup):
     return max(pages) if pages else 1
 
 
-def scrape_notice_details(session, notice_url):
-    """Fetch notice detail page via curl_cffi session (with proxy)."""
+def scrape_notice_details(notice_url):
+    """Fetch notice detail page via direct request."""
     full_url = f"{BASE_URL}{notice_url}" if notice_url.startswith("/") else notice_url
 
     try:
-        r = session.get(full_url, headers=HEADERS, timeout=120)
+        r = cffi_requests.get(full_url, headers=HEADERS, timeout=120, impersonate="chrome")
         r.raise_for_status()
         html = r.text
 
@@ -298,6 +302,30 @@ def extract_notices_from_page(session, page_url):
     return notices
 
 
+def scrape_notice_worker(notice, company_id):
+    """Thread-safe worker: scrapes a single notice."""
+    full_text = scrape_notice_details(notice["url"])
+
+    text_parts = [
+        f"TITLE: {notice['title']}",
+        "",
+        "FULL NOTICE DETAILS:",
+        full_text,
+    ]
+
+    full_url = f"{BASE_URL}{notice['url']}" if notice["url"].startswith("/") else notice["url"]
+
+    return {
+        "url": full_url,
+        "date": notice["publication_date"],
+        "title": notice["title"],
+        "text": "\n".join(text_parts),
+        "lastmod": notice["publication_date"],
+        "company_id": company_id,
+        "scraper_id": SCRAPER_ID,
+    }
+
+
 def run_for_company(config: dict):
     company_id = config["company_id"]
     label = config["label"]
@@ -311,6 +339,7 @@ def run_for_company(config: dict):
     value_low = config["value_low"]
     stages = config.get("stages")
     form_type_ids = config.get("form_type_ids")
+    nuts_codes = config.get("nuts_codes")
 
     print(f"\n{'='*60}")
     print(f"🏢 Running for: {label}")
@@ -323,10 +352,10 @@ def run_for_company(config: dict):
     time.sleep(2)
     print("Step 1: Load search page")
     initial_token = get_form_token(session)
-    
+
     time.sleep(2)
     print("Step 2: Submit search")
-    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, stages, form_type_ids)
+    search_html = submit_search(session, initial_token, keywords, cpv_codes, value_low, stages, form_type_ids, nuts_codes)
 
     if "Something went wrong" in search_html:
         raise RuntimeError("Search failed")
@@ -385,30 +414,19 @@ def run_for_company(config: dict):
     print(f"🆕 Found {len(new_notices)} new notices.")
 
     contracts = []
-    for i, notice in enumerate(new_notices, 1):
-        print(f"Scraping notice {i}/{len(new_notices)}: {notice['title']}")
-
-        full_text = scrape_notice_details(session, notice["url"])
-
-        text_parts = [
-            f"TITLE: {notice['title']}",
-            "",
-            "FULL NOTICE DETAILS:",
-            full_text,
-        ]
-
-        full_url = f"{BASE_URL}{notice['url']}" if notice["url"].startswith("/") else notice["url"]
-
-        contracts.append({
-            "url": full_url,
-            "date": notice["publication_date"],
-            "title": notice["title"],
-            "text": "\n".join(text_parts),
-            "lastmod": notice["publication_date"],
-            "company_id": company_id,
-            "scraper_id": SCRAPER_ID,
-        })
-        time.sleep(1)
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {
+            executor.submit(scrape_notice_worker, notice, company_id): notice
+            for notice in new_notices
+        }
+        for i, future in enumerate(as_completed(futures), 1):
+            notice = futures[future]
+            try:
+                contract = future.result()
+                contracts.append(contract)
+                print(f"  ✅ [{i}/{len(new_notices)}] {notice['title'][:60]}")
+            except Exception as e:
+                print(f"  ⛔ [{i}/{len(new_notices)}] Error scraping {notice['title'][:60]}: {e}")
 
     inserted_count = insert_articles(contracts)
     print(f"✅ Inserted {inserted_count} notices into database")
@@ -419,9 +437,14 @@ def run_for_company(config: dict):
 
 
 def main():
-    for config in COMPANY_CONFIGS:
-        run_for_company(config)
-        time.sleep(5)
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(run_for_company, config): config for config in COMPANY_CONFIGS}
+        for future in as_completed(futures):
+            config = futures[future]
+            try:
+                future.result()
+            except Exception as e:
+                print(f"⛔ Error running {config['label']}: {e}")
 
 
 if __name__ == "__main__":
