@@ -12,6 +12,12 @@ from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
+_proxy = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
+
+SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
+SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
+
 BASE_URL = "https://www.businesswire.com"
 SOURCE_NAME = "BUSINESS_WIRE"
 SCRAPER_ID = 31
@@ -99,10 +105,6 @@ COMPANY_CONFIGS = [
         ),
     },
 ]
-# "&language=en"
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
-SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
-
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -114,9 +116,6 @@ HEADERS = {
 }
 
 
-# ----------------------------------------------------------
-# Scrappey fetch (for listing pages — JS-rendered)
-# ----------------------------------------------------------
 def fetch_with_scrappey(url, max_retries=3):
     scrappey_api_key = os.getenv("SCRAPPEY_API_KEY")
     if not scrappey_api_key:
@@ -124,10 +123,12 @@ def fetch_with_scrappey(url, max_retries=3):
 
     payload = {
         "cmd": "request.get",
-        "requestType": "request",
+        #"requestType": "request",
         "url": url,
         "proxyCountry": SCRAPPEY_PROXY_COUNTRY,
         "premiumProxy": True,
+        "retries": 1,
+        "automaticallySolveCaptcha": True,
     }
 
     for attempt in range(max_retries):
@@ -151,9 +152,6 @@ def fetch_with_scrappey(url, max_retries=3):
                 raise RuntimeError(data.get("error", "Unknown Scrappey error"))
 
             html = solution.get("response") or ""
-            # with open("scrappey_debug.html", "w", encoding="utf-8") as f:
-            #     f.write(html)
-            # print(f"  💾 Scrappey response saved to scrappey_debug.html ({len(html)} chars)")
             return html
 
         except (requests.RequestException, RuntimeError) as e:
@@ -165,19 +163,14 @@ def fetch_with_scrappey(url, max_retries=3):
                 return None
 
 
-# ----------------------------------------------------------
-# curl_cffi fetch with proxy (for individual article pages)
-# ----------------------------------------------------------
 def fetch_url(url, max_retries=3):
-    proxy = os.getenv("SCRAPER_PROXY")
-    proxies = {"http": proxy, "https": proxy} if proxy else None
     for attempt in range(max_retries):
         try:
             time.sleep(1)
             resp = cffi_requests.get(
                 url,
                 headers=HEADERS,
-                proxies=proxies,
+                proxies=PROXIES,
                 impersonate="chrome131",
                 timeout=30,
             )
