@@ -7,6 +7,7 @@ import requests
 from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from seleniumbase import SB
 
 from db import get_recent_article_urls, insert_articles, is_subscription_active
 
@@ -14,9 +15,6 @@ load_dotenv()
 
 _proxy = os.getenv("SCRAPER_PROXY")
 PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
-
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
-SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
 
 BASE_URL = "https://www.businesswire.com"
 SOURCE_NAME = "BUSINESS_WIRE"
@@ -116,53 +114,6 @@ HEADERS = {
 }
 
 
-def fetch_with_scrappey(url, max_retries=3):
-    scrappey_api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not scrappey_api_key:
-        raise RuntimeError("SCRAPPEY_API_KEY not set")
-
-    payload = {
-        "cmd": "request.get",
-        #"requestType": "request",
-        "url": url,
-        "proxyCountry": SCRAPPEY_PROXY_COUNTRY,
-        "premiumProxy": True,
-        "retries": 1,
-        "automaticallySolveCaptcha": True,
-    }
-
-    for attempt in range(max_retries):
-        try:
-            time.sleep(2)
-            resp = requests.post(
-                f"{SCRAPPEY_API_URL}?key={scrappey_api_key}",
-                json=payload,
-                timeout=90,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            solution = data.get("solution", {})
-
-            status_code = solution.get("statusCode")
-            if status_code and status_code != 200:
-                print(f"❌ Scrappey returned status {status_code} for {url}")
-                return None
-
-            if data.get("data") == "error" or not solution.get("verified", False):
-                raise RuntimeError(data.get("error", "Unknown Scrappey error"))
-
-            html = solution.get("response") or ""
-            return html
-
-        except (requests.RequestException, RuntimeError) as e:
-            if attempt < max_retries - 1:
-                print(f"⚠️  Retry {attempt + 1}/{max_retries}: {e}")
-                time.sleep(2)
-            else:
-                print(f"❌ Failed after {max_retries} attempts: {e}")
-                return None
-
-
 def fetch_url(url, max_retries=3):
     for attempt in range(max_retries):
         try:
@@ -227,21 +178,43 @@ def parse_listing_html(html):
 # ----------------------------------------------------------
 def fetch_all_listings(newsroom_url):
     all_items = []
+    all_cookies = {}
     print(f"  🌐 Fetching newsroom: {newsroom_url[:80]}...")
-    for page in range(1, MAX_PAGES + 1):
-        url = f"{newsroom_url}&page={page}"
-        print(f"  📄 Fetching listing page {page}: {url}")
-        html = fetch_with_scrappey(url)
-        if not html:
-            print(f"  ⚠️  Empty response for page {page}, stopping.")
-            break
-        items = parse_listing_html(html)
-        print(f"  📋 Page {page}: {len(items)} English article(s) found.")
-        if not items:
-            print(f"  ℹ️  No items on page {page}, stopping pagination.")
-            break
-        all_items.extend(items)
-    return all_items
+
+    sb_kwargs = dict(uc=True, headless=False)
+    if _proxy:
+        sb_kwargs["proxy"] = _proxy.replace("http://", "").replace("https://", "")
+
+    with SB(**sb_kwargs) as sb:
+        print("  🔧 Starting SeleniumBase CDP mode...")
+        sb.activate_cdp_mode("https://www.businesswire.com")
+        sb.sleep(3)
+        print(f"  ✅ Warmup done: {sb.get_title()}")
+
+        for page in range(1, MAX_PAGES + 1):
+            url = f"{newsroom_url}&page={page}"
+            print(f"  📄 Fetching listing page {page}: {url}")
+
+            sb.activate_cdp_mode(url)
+            sb.sleep(3)
+
+            html = sb.get_page_source()
+            if not html:
+                print(f"  ⚠️  Empty response for page {page}, stopping.")
+                break
+
+            items = parse_listing_html(html)
+            print(f"  📋 Page {page}: {len(items)} English article(s) found.")
+            if not items:
+                print(f"  ℹ️  No items on page {page}, stopping pagination.")
+                break
+            all_items.extend(items)
+
+        for cookie in sb.get_cookies():
+            all_cookies[cookie["name"]] = cookie["value"]
+        print(f"  🍪 Extracted {len(all_cookies)} cookies for article requests.")
+
+    return all_items, all_cookies
 
 
 # ----------------------------------------------------------
@@ -330,7 +303,7 @@ def run_for_company(config: dict):
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    all_items = fetch_all_listings(newsroom_url)
+    all_items, _ = fetch_all_listings(newsroom_url)
     print(f"\n🔗 Total articles found across all pages: {len(all_items)}")
 
     deduped = []
