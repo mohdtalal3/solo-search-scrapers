@@ -19,7 +19,7 @@ _proxy = os.getenv("SCRAPER_PROXY")
 BASE_URL = "https://www.businesswire.com"
 SOURCE_NAME = "BUSINESS_WIRE"
 SCRAPER_ID = 31
-MAX_PAGES = 4
+MAX_PAGES = 1
 
 COMPANY_CONFIGS = [
     {
@@ -177,12 +177,25 @@ def fetch_all_listings(page, newsroom_url):
         url = f"{newsroom_url}&page={pg}"
         print(f"  📄 Fetching listing page {pg}: {url}")
 
-        page.goto(url, wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_timeout(3000)
+        for attempt in range(3):
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                page.wait_for_timeout(3000)
+                break
+            except Exception as e:
+                if attempt < 2:
+                    print(f"  ⚠️  Retry {attempt + 1}/3 for page {pg}: {e}")
+                    page.wait_for_timeout(3000)
+                else:
+                    print(f"  ❌ Failed to load page {pg}: {e}")
+                    break
 
         screenshot_path = f"logs/bw_page_{pg}.png"
-        page.screenshot(path=screenshot_path, full_page=True)
-        print(f"  📸 Screenshot saved: {screenshot_path}")
+        try:
+            page.screenshot(path=screenshot_path, full_page=True, timeout=30000)
+            print(f"  📸 Screenshot saved: {screenshot_path}")
+        except Exception as e:
+            print(f"  ⚠️  Screenshot failed for page {pg}: {e}")
 
         html = page.content()
         if not html:
@@ -203,13 +216,37 @@ def fetch_all_listings(page, newsroom_url):
 # Scrape an individual article page
 # ----------------------------------------------------------
 def scrape_article(page, url, fallback_title=""):
-    page.goto(url, wait_until="domcontentloaded", timeout=60000)
-    page.wait_for_timeout(2000)
-
     slug = url_slug(url)
     screenshot_path = f"logs/bw_article_{slug}.png"
-    page.screenshot(path=screenshot_path, full_page=True)
-    print(f"  📸 Screenshot saved: {screenshot_path}")
+
+    for attempt in range(3):
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            page.wait_for_timeout(2000)
+            break
+        except Exception as e:
+            if attempt < 2:
+                print(f"  ⚠️  Retry {attempt + 1}/3 for {url[:60]}: {e}")
+                page.wait_for_timeout(3000)
+            else:
+                print(f"  ❌ Failed to load {url}: {e}")
+                try:
+                    page.screenshot(path=screenshot_path, full_page=True, timeout=15000)
+                except Exception:
+                    pass
+                return None
+
+    for attempt in range(2):
+        try:
+            page.screenshot(path=screenshot_path, full_page=True, timeout=30000)
+            print(f"  📸 Screenshot saved: {screenshot_path}")
+            break
+        except Exception as e:
+            if attempt < 1:
+                print(f"  ⚠️  Screenshot retry for {slug[:40]}: {e}")
+                page.wait_for_timeout(2000)
+            else:
+                print(f"  ⚠️  Screenshot failed for {slug[:40]}, skipping image")
 
     html = page.content()
     if not html:
