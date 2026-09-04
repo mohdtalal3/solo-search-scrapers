@@ -285,8 +285,8 @@ def run_for_company(config: dict):
     seen_slugs = {url_slug(u) for u in known_urls}
 
     sb_kwargs = dict(uc=True, block_images=True, ad_block=True, headless=False)
-    # if _proxy:
-    #     sb_kwargs["proxy"] = _proxy.replace("http://", "").replace("https://", "")
+    if _proxy:
+        sb_kwargs["proxy"] = _proxy.replace("http://", "").replace("https://", "")
 
     with SB(**sb_kwargs) as sb:
         print("  🔧 Starting SeleniumBase CDP mode...")
