@@ -19,7 +19,7 @@ _proxy = os.getenv("SCRAPER_PROXY")
 BASE_URL = "https://www.businesswire.com"
 SOURCE_NAME = "BUSINESS_WIRE"
 SCRAPER_ID = 31
-MAX_PAGES = 1
+MAX_PAGES = 5
 
 COMPANY_CONFIGS = [
     {
