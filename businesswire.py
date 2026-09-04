@@ -175,7 +175,10 @@ def fetch_all_listings(sb, newsroom_url):
         url = f"{newsroom_url}&page={page}"
         print(f"  📄 Fetching listing page {page}: {url}")
 
-        sb.activate_cdp_mode(url)
+        if page == 1:
+            sb.activate_cdp_mode(url)
+        else:
+            sb.cdp.get(url)
         sb.sleep(3)
 
         html = sb.get_page_source()
@@ -197,7 +200,7 @@ def fetch_all_listings(sb, newsroom_url):
 # Scrape an individual article page
 # ----------------------------------------------------------
 def scrape_article(sb, url, fallback_title=""):
-    sb.activate_cdp_mode(url)
+    sb.cdp.get(url)
     sb.sleep(2)
     html = sb.get_page_source()
     if not html:

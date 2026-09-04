@@ -1,4 +1,6 @@
 requests
+seleniumbase
+curl_cffi
 beautifulsoup4
 supabase
 lxml
