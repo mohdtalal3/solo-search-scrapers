@@ -3,7 +3,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
-import requests
 from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
@@ -46,13 +45,27 @@ PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
 MAX_THREADS = 5
 
 HEADERS = {
-    "User-Agent": (
+    "accept": (
+        "text/html,application/xhtml+xml,application/xml;"
+        "q=0.9,image/avif,image/webp,image/apng,*/*;"
+        "q=0.8,application/signed-exchange;v=b3;q=0.7"
+    ),
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "max-age=0",
+    "priority": "u=0, i",
+    "sec-ch-ua": '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "user-agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/124.0.0.0 Safari/537.36"
+        "Chrome/151.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
 }
 
 
@@ -64,9 +77,6 @@ def url_slug(url):
 # curl_cffi fetch (for listing — JS-rendered JetSmartFilters)
 # ----------------------------------------------------------
 def fetch_with_cffi(url, max_retries=3):
-    proxy = os.getenv("SCRAPER_PROXY")
-    proxies = {"http": proxy, "https": proxy} if proxy else None
-
     for attempt in range(max_retries):
         try:
             time.sleep(2)
@@ -74,7 +84,7 @@ def fetch_with_cffi(url, max_retries=3):
                 url,
                 headers=HEADERS,
                 impersonate="chrome131",
-                proxies=proxies,
+                proxies=PROXIES,
                 timeout=30,
             )
             resp.raise_for_status()
@@ -94,7 +104,13 @@ def fetch_url(url, max_retries=3):
     for attempt in range(max_retries):
         try:
             time.sleep(1)
-            resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=30)
+            resp = cffi_requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=30,
+            )
             resp.raise_for_status()
             return resp.text
         except Exception as e:

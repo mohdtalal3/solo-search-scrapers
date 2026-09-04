@@ -3,8 +3,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 
-import requests
 from bs4 import BeautifulSoup
+from curl_cffi import requests
 from dotenv import load_dotenv
 
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
@@ -14,7 +14,7 @@ load_dotenv()
 BASE_URL = "https://www.globenewswire.com"
 SOURCE_NAME = "GLOBENEWSWIRE"
 SCRAPER_ID = 52
-MAX_PAGES = 3
+MAX_PAGES = 5
 MAX_THREADS = 5
 
 PROXY = os.getenv("SCRAPER_PROXY")
@@ -72,13 +72,28 @@ COMPANY_CONFIGS = [
 ]
 
 HEADERS = {
-    "User-Agent": (
+    "accept": (
+        "text/html,application/xhtml+xml,application/xml;"
+        "q=0.9,image/avif,image/webp,image/apng,*/*;"
+        "q=0.8,application/signed-exchange;v=b3;q=0.7"
+    ),
+    "accept-language": "en-US,en;q=0.9,fr;q=0.8,af;q=0.7,ar;q=0.6,be;q=0.5,de;q=0.4",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0, i",
+    "sec-ch-ua": '"Not=A?Brand";v="99", "Google Chrome";v="131", "Chromium";v="131"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "user-agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/131.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-GB,en;q=0.9",
 }
 
 
@@ -88,7 +103,14 @@ HEADERS = {
 def fetch_url(url, max_retries=3):
     for attempt in range(max_retries):
         try:
-            resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=30)
+            time.sleep(1)
+            resp = requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=30,
+            )
             resp.raise_for_status()
             return resp.text
         except Exception as e:

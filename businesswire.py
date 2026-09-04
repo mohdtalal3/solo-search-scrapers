@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from seleniumbase import SB
+from playwright.sync_api import sync_playwright
 
 from db import get_recent_article_urls, insert_articles, is_subscription_active
 
@@ -19,7 +19,7 @@ _proxy = os.getenv("SCRAPER_PROXY")
 BASE_URL = "https://www.businesswire.com"
 SOURCE_NAME = "BUSINESS_WIRE"
 SCRAPER_ID = 31
-MAX_PAGES = 6
+MAX_PAGES = 4
 
 COMPANY_CONFIGS = [
     {
@@ -169,33 +169,30 @@ def parse_listing_html(html):
 # ----------------------------------------------------------
 # Fetch all listing pages (pages 1–MAX_PAGES)
 # ----------------------------------------------------------
-def fetch_all_listings(sb, newsroom_url):
+def fetch_all_listings(page, newsroom_url):
     all_items = []
     print(f"  🌐 Fetching newsroom: {newsroom_url[:80]}...")
 
-    for page in range(1, MAX_PAGES + 1):
-        url = f"{newsroom_url}&page={page}"
-        print(f"  📄 Fetching listing page {page}: {url}")
+    for pg in range(1, MAX_PAGES + 1):
+        url = f"{newsroom_url}&page={pg}"
+        print(f"  📄 Fetching listing page {pg}: {url}")
 
-        if page == 1:
-            sb.activate_cdp_mode(url)
-        else:
-            sb.cdp.get(url)
-        sb.sleep(3)
+        page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(3000)
 
-        screenshot_path = f"logs/bw_page_{page}.png"
-        sb.save_screenshot(screenshot_path)
+        screenshot_path = f"logs/bw_page_{pg}.png"
+        page.screenshot(path=screenshot_path, full_page=True)
         print(f"  📸 Screenshot saved: {screenshot_path}")
 
-        html = sb.get_page_source()
+        html = page.content()
         if not html:
-            print(f"  ⚠️  Empty response for page {page}, stopping.")
+            print(f"  ⚠️  Empty response for page {pg}, stopping.")
             break
 
         items = parse_listing_html(html)
-        print(f"  📋 Page {page}: {len(items)} English article(s) found.")
+        print(f"  📋 Page {pg}: {len(items)} English article(s) found.")
         if not items:
-            print(f"  ℹ️  No items on page {page}, stopping pagination.")
+            print(f"  ℹ️  No items on page {pg}, stopping pagination.")
             break
         all_items.extend(items)
 
@@ -205,16 +202,16 @@ def fetch_all_listings(sb, newsroom_url):
 # ----------------------------------------------------------
 # Scrape an individual article page
 # ----------------------------------------------------------
-def scrape_article(sb, url, fallback_title=""):
-    sb.cdp.get(url)
-    sb.sleep(2)
+def scrape_article(page, url, fallback_title=""):
+    page.goto(url, wait_until="domcontentloaded", timeout=60000)
+    page.wait_for_timeout(2000)
 
     slug = url_slug(url)
     screenshot_path = f"logs/bw_article_{slug}.png"
-    sb.save_screenshot(screenshot_path)
+    page.screenshot(path=screenshot_path, full_page=True)
     print(f"  📸 Screenshot saved: {screenshot_path}")
 
-    html = sb.get_page_source()
+    html = page.content()
     if not html:
         return None
 
@@ -296,17 +293,31 @@ def run_for_company(config: dict):
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    sb_kwargs = dict(uc=True, block_images=True, ad_block=True, headless=False)
-    if _proxy:
-        sb_kwargs["proxy"] = _proxy.replace("http://", "").replace("https://", "")
+    cdp_url = os.getenv("TWOCAPTCHA_CDP_URL")
+    if not cdp_url:
+        print("❌ TWOCAPTCHA_CDP_URL not set in .env")
+        return
 
-    with SB(**sb_kwargs) as sb:
-        print("  🔧 Starting SeleniumBase CDP mode...")
-        sb.activate_cdp_mode("https://www.businesswire.com")
-        sb.sleep(3)
-        print(f"  ✅ Warmup done: {sb.get_title()}")
+    with sync_playwright() as p:
+        print("  🔧 Connecting to 2Captcha Browser API...")
+        browser = p.chromium.connect_over_cdp(cdp_url)
+        context = browser.contexts[0]
+        page = context.new_page()
 
-        all_items = fetch_all_listings(sb, newsroom_url)
+        BLOCKED_TYPES = {"image", "media", "font", "stylesheet"}
+        def _block_resources(route):
+            if route.request.resource_type in BLOCKED_TYPES:
+                route.abort()
+            else:
+                route.continue_()
+        page.route("**/*", _block_resources)
+
+        print("  ✅ Warmup: visiting base URL...")
+        page.goto("https://www.businesswire.com", wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(3000)
+        print(f"  ✅ Warmup done: {page.title()}")
+
+        all_items = fetch_all_listings(page, newsroom_url)
         print(f"\n🔗 Total articles found across all pages: {len(all_items)}")
 
         deduped = []
@@ -331,6 +342,7 @@ def run_for_company(config: dict):
 
         if not new_items:
             print("\n⛔ No new articles found.")
+            browser.close()
             return
 
         print(f"  🆕 {len(new_items)} new article(s) to scrape.")
@@ -338,7 +350,7 @@ def run_for_company(config: dict):
         scraped = []
         for full_url, fallback_title in new_items:
             print(f"  Scraping: {full_url}")
-            article = scrape_article(sb, full_url, fallback_title)
+            article = scrape_article(page, full_url, fallback_title)
             if not article:
                 continue
             scraped.append(article)
@@ -346,6 +358,7 @@ def run_for_company(config: dict):
 
         if not scraped:
             print("\n⛔ No articles scraped successfully.")
+            browser.close()
             return
 
         print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
@@ -353,6 +366,8 @@ def run_for_company(config: dict):
         articles = [{**a, "company_id": company_id} for a in scraped]
         inserted_count = insert_articles(articles)
         print(f"✅ Inserted {inserted_count} articles for {label}")
+
+        browser.close()
 
 
 # ----------------------------------------------------------

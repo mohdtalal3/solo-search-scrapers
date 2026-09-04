@@ -1,5 +1,5 @@
 requests
-seleniumbase
+playwright
 curl_cffi
 beautifulsoup4
 supabase
