@@ -270,8 +270,8 @@ def run_all_scrapers():
     run_scraper("The Drum", thedrum.main, thedrum)
     time.sleep(5)
 
-    run_scraper("Business Wire", businesswire.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Business Wire", businesswire.main)  # multi-company: checked internally
+    # time.sleep(5)
 
     run_scraper("GlobeNewswire", globenewswire.main)  # multi-company: checked internally
     time.sleep(5)
