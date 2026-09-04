@@ -12,6 +12,8 @@ from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
+os.makedirs("logs", exist_ok=True)
+
 _proxy = os.getenv("SCRAPER_PROXY")
 
 BASE_URL = "https://www.businesswire.com"
@@ -181,6 +183,10 @@ def fetch_all_listings(sb, newsroom_url):
             sb.cdp.get(url)
         sb.sleep(3)
 
+        screenshot_path = f"logs/bw_page_{page}.png"
+        sb.save_screenshot(screenshot_path)
+        print(f"  📸 Screenshot saved: {screenshot_path}")
+
         html = sb.get_page_source()
         if not html:
             print(f"  ⚠️  Empty response for page {page}, stopping.")
@@ -202,6 +208,12 @@ def fetch_all_listings(sb, newsroom_url):
 def scrape_article(sb, url, fallback_title=""):
     sb.cdp.get(url)
     sb.sleep(2)
+
+    slug = url_slug(url)
+    screenshot_path = f"logs/bw_article_{slug}.png"
+    sb.save_screenshot(screenshot_path)
+    print(f"  📸 Screenshot saved: {screenshot_path}")
+
     html = sb.get_page_source()
     if not html:
         return None
