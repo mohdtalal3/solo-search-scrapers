@@ -4,7 +4,6 @@ import time
 from datetime import datetime
 
 import requests
-from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from seleniumbase import SB
@@ -14,7 +13,6 @@ from db import get_recent_article_urls, insert_articles, is_subscription_active
 load_dotenv()
 
 _proxy = os.getenv("SCRAPER_PROXY")
-PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
 
 BASE_URL = "https://www.businesswire.com"
 SOURCE_NAME = "BUSINESS_WIRE"
@@ -129,28 +127,6 @@ HEADERS = {
 }
 
 
-def fetch_url(url, max_retries=3):
-    for attempt in range(max_retries):
-        try:
-            time.sleep(1)
-            resp = cffi_requests.get(
-                url,
-                headers=HEADERS,
-                proxies=PROXIES,
-                impersonate="chrome131",
-                timeout=30,
-            )
-            resp.raise_for_status()
-            return resp.text
-        except Exception as e:
-            if attempt < max_retries - 1:
-                print(f"⚠️  Retry {attempt + 1}/{max_retries}: {e}")
-                time.sleep(2)
-            else:
-                print(f"❌ Failed after {max_retries} attempts: {e}")
-                return None
-
-
 # ----------------------------------------------------------
 # Parse listing page → list of (full_url, title, date_str)
 # ----------------------------------------------------------
@@ -191,52 +167,39 @@ def parse_listing_html(html):
 # ----------------------------------------------------------
 # Fetch all listing pages (pages 1–MAX_PAGES)
 # ----------------------------------------------------------
-def fetch_all_listings(newsroom_url):
+def fetch_all_listings(sb, newsroom_url):
     all_items = []
-    all_cookies = {}
     print(f"  🌐 Fetching newsroom: {newsroom_url[:80]}...")
 
-    sb_kwargs = dict(uc=True, headless=False)
-    if _proxy:
-        sb_kwargs["proxy"] = _proxy.replace("http://", "").replace("https://", "")
+    for page in range(1, MAX_PAGES + 1):
+        url = f"{newsroom_url}&page={page}"
+        print(f"  📄 Fetching listing page {page}: {url}")
 
-    with SB(**sb_kwargs) as sb:
-        print("  🔧 Starting SeleniumBase CDP mode...")
-        sb.activate_cdp_mode("https://www.businesswire.com")
+        sb.activate_cdp_mode(url)
         sb.sleep(3)
-        print(f"  ✅ Warmup done: {sb.get_title()}")
 
-        for page in range(1, MAX_PAGES + 1):
-            url = f"{newsroom_url}&page={page}"
-            print(f"  📄 Fetching listing page {page}: {url}")
+        html = sb.get_page_source()
+        if not html:
+            print(f"  ⚠️  Empty response for page {page}, stopping.")
+            break
 
-            sb.activate_cdp_mode(url)
-            sb.sleep(3)
+        items = parse_listing_html(html)
+        print(f"  📋 Page {page}: {len(items)} English article(s) found.")
+        if not items:
+            print(f"  ℹ️  No items on page {page}, stopping pagination.")
+            break
+        all_items.extend(items)
 
-            html = sb.get_page_source()
-            if not html:
-                print(f"  ⚠️  Empty response for page {page}, stopping.")
-                break
-
-            items = parse_listing_html(html)
-            print(f"  📋 Page {page}: {len(items)} English article(s) found.")
-            if not items:
-                print(f"  ℹ️  No items on page {page}, stopping pagination.")
-                break
-            all_items.extend(items)
-
-        for cookie in sb.get_cookies():
-            all_cookies[cookie["name"]] = cookie["value"]
-        print(f"  🍪 Extracted {len(all_cookies)} cookies for article requests.")
-
-    return all_items, all_cookies
+    return all_items
 
 
 # ----------------------------------------------------------
 # Scrape an individual article page
 # ----------------------------------------------------------
-def scrape_article(url, fallback_title=""):
-    html = fetch_url(url)
+def scrape_article(sb, url, fallback_title=""):
+    sb.activate_cdp_mode(url)
+    sb.sleep(2)
+    html = sb.get_page_source()
     if not html:
         return None
 
@@ -318,53 +281,63 @@ def run_for_company(config: dict):
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    all_items, _ = fetch_all_listings(newsroom_url)
-    print(f"\n🔗 Total articles found across all pages: {len(all_items)}")
+    sb_kwargs = dict(uc=True, block_images=True, ad_block=True, headless=False)
+    # if _proxy:
+    #     sb_kwargs["proxy"] = _proxy.replace("http://", "").replace("https://", "")
 
-    deduped = []
-    dedup_seen = set()
-    for full_url, title in all_items:
-        if full_url not in dedup_seen:
-            dedup_seen.add(full_url)
-            deduped.append((full_url, title))
-    print(f"🔗 After deduplication: {len(deduped)} unique article(s).")
+    with SB(**sb_kwargs) as sb:
+        print("  🔧 Starting SeleniumBase CDP mode...")
+        sb.activate_cdp_mode("https://www.businesswire.com")
+        sb.sleep(3)
+        print(f"  ✅ Warmup done: {sb.get_title()}")
 
-    new_items = []
-    for full_url, title in deduped:
-        slug = url_slug(full_url)
-        if full_url in known_urls:
-            print(f"  ⏭️  Skipping (already in DB): {slug}")
-            continue
-        if slug in seen_slugs:
-            print(f"  ⏭️  Skipping (duplicate slug): {slug}")
-            continue
-        new_items.append((full_url, title))
-        seen_slugs.add(slug)
+        all_items = fetch_all_listings(sb, newsroom_url)
+        print(f"\n🔗 Total articles found across all pages: {len(all_items)}")
 
-    if not new_items:
-        print("\n⛔ No new articles found.")
-        return
+        deduped = []
+        dedup_seen = set()
+        for full_url, title in all_items:
+            if full_url not in dedup_seen:
+                dedup_seen.add(full_url)
+                deduped.append((full_url, title))
+        print(f"🔗 After deduplication: {len(deduped)} unique article(s).")
 
-    print(f"  🆕 {len(new_items)} new article(s) to scrape.")
+        new_items = []
+        for full_url, title in deduped:
+            slug = url_slug(full_url)
+            if full_url in known_urls:
+                print(f"  ⏭️  Skipping (already in DB): {slug}")
+                continue
+            if slug in seen_slugs:
+                print(f"  ⏭️  Skipping (duplicate slug): {slug}")
+                continue
+            new_items.append((full_url, title))
+            seen_slugs.add(slug)
 
-    scraped = []
-    for full_url, fallback_title in new_items:
-        print(f"  Scraping: {full_url}")
-        article = scrape_article(full_url, fallback_title)
-        if not article:
-            continue
-        scraped.append(article)
-        print(f"  ✅ {article['title'][:60]}...")
+        if not new_items:
+            print("\n⛔ No new articles found.")
+            return
 
-    if not scraped:
-        print("\n⛔ No articles scraped successfully.")
-        return
+        print(f"  🆕 {len(new_items)} new article(s) to scrape.")
 
-    print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
+        scraped = []
+        for full_url, fallback_title in new_items:
+            print(f"  Scraping: {full_url}")
+            article = scrape_article(sb, full_url, fallback_title)
+            if not article:
+                continue
+            scraped.append(article)
+            print(f"  ✅ {article['title'][:60]}...")
 
-    articles = [{**a, "company_id": company_id} for a in scraped]
-    inserted_count = insert_articles(articles)
-    print(f"✅ Inserted {inserted_count} articles for {label}")
+        if not scraped:
+            print("\n⛔ No articles scraped successfully.")
+            return
+
+        print(f"\n🆕 Found {len(scraped)} new article(s) in total.")
+
+        articles = [{**a, "company_id": company_id} for a in scraped]
+        inserted_count = insert_articles(articles)
+        print(f"✅ Inserted {inserted_count} articles for {label}")
 
 
 # ----------------------------------------------------------
