@@ -83,6 +83,8 @@ import channeldive
 import bgf
 import internetretailing
 import globenewswire
+import newswire_ca
+import google_scraper
 
 
 class TeeStream:
@@ -379,6 +381,12 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Internet Retailing", internetretailing.main)
+    time.sleep(5)
+
+    # run_scraper("Newswire.ca", newswire_ca.main, newswire_ca)
+    # time.sleep(5)
+
+    run_scraper("Google News", google_scraper.main, google_scraper)
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
