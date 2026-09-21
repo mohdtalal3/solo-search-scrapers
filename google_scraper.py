@@ -336,7 +336,6 @@ async def async_main():
     gnews_urls = [a["gnews_url"] for a in unique_items]
     decoded_results = await gnews_decoder_async(
         gnews_urls,
-        proxy=PROXY,
         timeout=DECODE_TIMEOUT,
         concurrency=DECODE_CONCURRENCY,
     )
@@ -349,7 +348,6 @@ async def async_main():
         await asyncio.sleep(2)
         retry_results = await gnews_decoder_async(
             [gnews_urls[i] for i in failed],
-            proxy=PROXY,
             timeout=DECODE_TIMEOUT,
             concurrency=DECODE_CONCURRENCY,
         )
