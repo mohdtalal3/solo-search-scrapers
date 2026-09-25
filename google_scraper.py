@@ -44,12 +44,14 @@ RSS_URL = "https://news.google.com/rss/search?q={query}&hl=hl-{cc}&gl={cc}&ceid=
 RSS_CONCURRENCY = 10
 SCRAPE_CONCURRENCY = 5
 DECODE_CONCURRENCY = 8
-DECODE_TIMEOUT = 15
+DECODE_TIMEOUT = 30
 DECODE_RETRIES = 2
 MIN_TEXT_LENGTH = 100
 
 PROXY = os.getenv("SCRAPER_PROXY")
 PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+# GB/EU exit IPs hit Google's consent wall — use a US exit for decoding
+DECODE_PROXY = PROXY.replace("__cr.gb", "__cr.us") if PROXY else None
 
 HEADERS = {
     "accept": (
@@ -336,6 +338,7 @@ async def async_main():
     gnews_urls = [a["gnews_url"] for a in unique_items]
     decoded_results = await gnews_decoder_async(
         gnews_urls,
+        proxy=DECODE_PROXY,
         timeout=DECODE_TIMEOUT,
         concurrency=DECODE_CONCURRENCY,
     )
@@ -348,6 +351,7 @@ async def async_main():
         await asyncio.sleep(2)
         retry_results = await gnews_decoder_async(
             [gnews_urls[i] for i in failed],
+            proxy=DECODE_PROXY,
             timeout=DECODE_TIMEOUT,
             concurrency=DECODE_CONCURRENCY,
         )
