@@ -49,12 +49,13 @@ Quick reference for which scraper belongs to which company.
 | 18 | `computable_nl.py` | https://computable.nl |
 | 19 | `capgemini.py` | https://www.capgemini.com (UK/IE/BE/LU/NL) |
 | 20 | `oracle.py` | https://www.oracle.com/nl/news/ |
-| 21 | `deloitte.py` | https://www.deloitte.com (UK/NL/BE/IE/LU) |
+| 21 | `deloitte.py` | https://www.deloitte.com (UK/NL/BE/IE/LU; Talent to Hire → CA) |
 | 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
 | 64 | `inoapps.py` | https://www.inoapps.com/sitemap.xml |
 | 65 | `ey.py` | https://www.ey.com/en_uk/sitemap/insights.xml |
 | 66 | `kpmg.py` | https://kpmg.com/xx/en/sitemap.xml |
 | 67 | `pwc.py` | https://www.pwc.co.uk/sitemap.xml |
+| 84 | `google_scraper.py` | https://news.google.com (Oracle/JDE keyword search, UK/NL/BE/IE/LU) |
 ---
 
 ## PLEA (Landscape Architecture)
@@ -116,7 +117,7 @@ Quick reference for which scraper belongs to which company.
 |----|------|--------|
 | 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
 | 31 | `businesswire.py` | https://www.businesswire.com |
-| 39 | `datacenterdynamics.py` | https://www.datacenterdynamics.com/en/news/?term=north-america |
+| 39 | `datacenterdynamics.py` | https://www.datacenterdynamics.com/en/news/?term=north-america (multi-company) |
 | 40 | `heatmap_news.py` | https://heatmap.news (Google News sitemap) |
 | 41 | `utilitydive.py` | https://www.utilitydive.com (monthly archive sitemap) |
 | 42 | `boem.py` | https://www.boem.gov (press releases & renewable energy state activities) |
@@ -174,6 +175,27 @@ Quick reference for which scraper belongs to which company.
 | 52 | `globenewswire.py` | https://www.globenewswire.com |
 | 53 | `fintechfutures.py` | https://www.fintechfutures.com |
 | 54 | `notion_vc.py` | https://www.notion.vc |
+
+---
+
+## Talent to Hire
+
+> Canadian tech ecosystem, startups, payments, fintech, enterprise tech news
+
+| ID | File | Source |
+|----|------|--------|
+| 36 | `finextra.py` | https://www.finextra.com (headlines, payments, startups) |
+| 44 | `sec_gov.py` | https://efts.sec.gov (SEC EDGAR 8-K & D filings, multi-company) |
+| 50 | `techcrunch.py` | https://techcrunch.com |
+| 21 | `deloitte.py` | https://www.deloitte.com/ca/en (Canada press room, multi-company) |
+| 39 | `datacenterdynamics.py` | https://www.datacenterdynamics.com/en/news/?term=north-america (multi-company) |
+| 52 | `globenewswire.py` | https://www.globenewswire.com (Canada: fin/mgc/mna/coa/prs/prt/jvn) |
+| 83 | `newswire_ca.py` | https://www.newswire.ca (tech/fintech/personnel/corporate news lists) |
+| 85 | `betakit.py` | https://betakit.com |
+| 86 | `builtinnyc.py` | https://www.builtinnyc.com/articles (listing + per-article scrape) |
+| 87 | `builtinboston.py` | https://www.builtinboston.com/articles (listing + per-article scrape) |
+| 88 | `builtincharlotte.py` | https://www.builtincharlotte.com/articles (listing + per-article scrape) |
+| 89 | `financialpost.py` | https://financialpost.com (WP API, Finance category, timestamp dedup) |
 
 ---
 
@@ -249,3 +271,4 @@ Quick reference for which scraper belongs to which company.
 | H2 Recruit | `7e8a211e-68cc-4485-ada0-0f9be81de536` |
 | VM Search | *(add UUID here)* |
 | 1492 Search | `edbc2c4f-c333-4fce-8700-82abcf2b4c74` |
+| Talent to Hire | `553caa24-c2b9-4efd-ac39-8c3f31ff4dc8` |

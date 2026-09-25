@@ -12,7 +12,17 @@ load_dotenv()
 
 SOURCE_NAME = "DATACENTERDYNAMICS"
 SCRAPER_ID = 39
-COMPANY_ID = os.getenv("NET_ZERO_SEARCH_COMPANY_ID")
+
+COMPANY_CONFIGS = [
+    {
+        "label": "Net Zero Search",
+        "company_id": os.getenv("NET_ZERO_SEARCH_COMPANY_ID"),
+    },
+    {
+        "label": "Talent to Hire",
+        "company_id": os.getenv("TALENT_TO_HIRE"),
+    },
+]
 
 BASE_URL = "https://www.datacenterdynamics.com"
 LISTING_URL = "https://www.datacenterdynamics.com/en/news/?term=north-america"
@@ -107,15 +117,10 @@ def scrape_article(url: str) -> dict | None:
         "text": body,
         "date": date,
         "scraper_id": SCRAPER_ID,
-        "company_id": COMPANY_ID,
     }
 
 
 def main():
-    if not is_subscription_active(SCRAPER_ID, COMPANY_ID):
-        print("⏭️  Skipping Data Center Dynamics — subscription is inactive")
-        return
-
     print("🔍 Scraping Data Center Dynamics (North America)...")
 
     known_urls = get_recent_article_urls(SCRAPER_ID, limit=500)
@@ -170,8 +175,16 @@ def main():
         print("⛔ No articles scraped successfully.")
         return
 
-    inserted = insert_articles(articles)
-    print(f"✅ Inserted {inserted} articles into database.")
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        label = config["label"]
+
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {label} — subscription is inactive")
+            continue
+
+        inserted = insert_articles(articles, company_id=company_id)
+        print(f"✅ Inserted {inserted} articles for {label}.")
 
 
 if __name__ == "__main__":

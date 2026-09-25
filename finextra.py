@@ -39,6 +39,15 @@ COMPANY_CONFIGS = [
             "https://www.finextra.com/rss/events.aspx",
         ],
     },
+    {
+        "label": "Talent to Hire",
+        "company_id": os.getenv("TALENT_TO_HIRE"),
+        "rss_channels": [
+            "https://www.finextra.com/rss/headlines.aspx",
+            "https://www.finextra.com/rss/channel.aspx?channel=payments",
+            "https://www.finextra.com/rss/channel.aspx?channel=startups",
+        ],
+    },
 ]
 
 SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"

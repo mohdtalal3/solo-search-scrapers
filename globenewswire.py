@@ -69,6 +69,15 @@ COMPANY_CONFIGS = [
             "/load/more?page={page}&pageSize=50"
         ),
     },
+    {
+        "label": "Talent to Hire",
+        "company_id": os.getenv("TALENT_TO_HIRE"),
+        "listing_url": (
+            "https://www.globenewswire.com/en/search/country/ca"
+            "/subject/fin,mgc,mna,coa,prs,prt,jvn"
+            "/load/more?page={page}&pageSize=50"
+        ),
+    },
 ]
 
 HEADERS = {

@@ -85,6 +85,11 @@ import internetretailing
 import globenewswire
 import newswire_ca
 import google_scraper
+import betakit
+import builtinnyc
+import builtinboston
+import builtincharlotte
+import financialpost
 
 
 class TeeStream:
@@ -242,7 +247,7 @@ def run_all_scrapers():
     run_scraper("Oracle", oracle.main, oracle)
     time.sleep(5)
 
-    run_scraper("Deloitte", deloitte.main, deloitte)
+    run_scraper("Deloitte", deloitte.main)  # multi-company: checked internally
     time.sleep(5)
 
     run_scraper("Homes England", homes_england.main, homes_england)
@@ -299,7 +304,7 @@ def run_all_scrapers():
     run_scraper("Law Gazette", lawgazette.main, lawgazette)
     time.sleep(5)
 
-    run_scraper("Data Center Dynamics", datacenterdynamics.main, datacenterdynamics)
+    run_scraper("Data Center Dynamics", datacenterdynamics.main)  # multi-company: checked internally
     time.sleep(5)
 
     run_scraper("Heatmap News", heatmap_news.main, heatmap_news)
@@ -314,7 +319,7 @@ def run_all_scrapers():
     run_scraper("Energy.gov", energy_gov.main, energy_gov)
     time.sleep(5)
 
-    run_scraper("SEC EDGAR", sec_gov.main, sec_gov)
+    run_scraper("SEC EDGAR", sec_gov.main)  # multi-company: checked internally
     time.sleep(5)
 
     run_scraper("University Business", universitybusiness.main)  # multi-company: checked internally
@@ -383,10 +388,25 @@ def run_all_scrapers():
     run_scraper("Internet Retailing", internetretailing.main)
     time.sleep(5)
 
-    # run_scraper("Newswire.ca", newswire_ca.main, newswire_ca)
-    # time.sleep(5)
+    run_scraper("Newswire.ca", newswire_ca.main, newswire_ca)
+    time.sleep(5)
 
     run_scraper("Google News", google_scraper.main, google_scraper)
+    time.sleep(5)
+
+    run_scraper("BetaKit", betakit.main, betakit)
+    time.sleep(5)
+
+    run_scraper("Built In NYC", builtinnyc.main, builtinnyc)
+    time.sleep(5)
+
+    run_scraper("Built In Boston", builtinboston.main, builtinboston)
+    time.sleep(5)
+
+    run_scraper("Built In Charlotte", builtincharlotte.main, builtincharlotte)
+    time.sleep(5)
+
+    run_scraper("Financial Post", financialpost.main, financialpost)
     time.sleep(5)
 
     elapsed_time = time.time() - start_time

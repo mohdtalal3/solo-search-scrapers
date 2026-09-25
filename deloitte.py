@@ -4,25 +4,37 @@ import time
 import requests
 from dotenv import load_dotenv
 
-from db import get_recent_article_urls, insert_articles
+from db import get_recent_article_urls, insert_articles, is_subscription_active
 
 load_dotenv()
 
 SOURCE_NAME = "DELOITTE"
 SCRAPER_ID = 21
-COMPANY_ID = os.getenv("ERP_RECRUIT_COMPANY_ID")
+
+COMPANY_CONFIGS = [
+    {
+        "label": "ERP Recruit",
+        "company_id": os.getenv("ERP_RECRUIT_COMPANY_ID"),
+        "regions": [
+            {"label": "UK", "cc": "uk"},
+            {"label": "NL", "cc": "nl"},
+            {"label": "BE", "cc": "be"},
+            {"label": "IE", "cc": "ie"},
+            {"label": "LU", "cc": "lu"},
+        ],
+    },
+    {
+        "label": "Talent to Hire",
+        "company_id": os.getenv("TALENT_TO_HIRE"),
+        "regions": [
+            {"label": "CA", "cc": "ca"},
+        ],
+    },
+]
 
 API_URL = "https://www.deloitte.com/modern-prod-english/_search"
 BASE_URL = "https://www.deloitte.com"
 PAGE_SIZE = 20
-
-REGIONS = [
-    {"label": "UK", "cc": "uk"},
-    {"label": "NL", "cc": "nl"},
-    {"label": "BE", "cc": "be"},
-    {"label": "IE", "cc": "ie"},
-    {"label": "LU", "cc": "lu"},
-]
 
 HEADERS = {
     "accept": "application/json, text/plain, */*",
@@ -45,7 +57,7 @@ def url_slug(url):
     return slug
 
 
-def fetch_region(label, cc, known_urls, seen_slugs):
+def fetch_region(label, cc, company_id, known_urls, seen_slugs):
     """Fetch press-room articles for a region via the Elasticsearch API."""
     print(f"\n🌍 Region: {label}")
 
@@ -122,7 +134,7 @@ def fetch_region(label, cc, known_urls, seen_slugs):
             "date": date_published,
             "title": title,
             "text": body,
-            "company_id": COMPANY_ID,
+            "company_id": company_id,
             "scraper_id": SCRAPER_ID,
         })
         print(f"  ✅ {title[:60]}...")
@@ -130,8 +142,17 @@ def fetch_region(label, cc, known_urls, seen_slugs):
     return articles
 
 
-def main():
-    print("🔍 Fetching Deloitte press room articles (all regions)...")
+def run_for_company(config):
+    label = config["label"]
+    company_id = config["company_id"]
+
+    if not is_subscription_active(SCRAPER_ID, company_id):
+        print(f"\n⏭️  Skipping {label} — subscription is inactive")
+        return
+
+    print(f"\n{'='*60}")
+    print(f"🏢 Running for: {label}")
+    print(f"{'='*60}")
 
     known_urls = get_recent_article_urls(SCRAPER_ID, limit=200)
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
@@ -140,9 +161,9 @@ def main():
 
     all_articles = []
 
-    for region in REGIONS:
+    for region in config["regions"]:
         region_articles = fetch_region(
-            region["label"], region["cc"], known_urls, seen_slugs
+            region["label"], region["cc"], company_id, known_urls, seen_slugs
         )
         for a in region_articles:
             known_urls.add(a["url"])
@@ -155,6 +176,16 @@ def main():
     print(f"\n🆕 Found {len(all_articles)} new article(s) in total.")
     inserted_count = insert_articles(all_articles)
     print(f"✅ Inserted {inserted_count} articles into database")
+
+
+def main():
+    print("🔍 Fetching Deloitte press room articles...")
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"\n⏭️  Skipping {config['label']} — subscription is inactive")
+            continue
+        run_for_company(config)
 
 
 if __name__ == "__main__":

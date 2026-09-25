@@ -21,6 +21,10 @@ COMPANY_CONFIGS = [
         "label": "Intune Talent",
         "company_id": os.getenv("INTUNE_TALENT_COMPANY_ID"),
     },
+    {
+        "label": "Talent to Hire",
+        "company_id": os.getenv("TALENT_TO_HIRE"),
+    },
 ]
 
 

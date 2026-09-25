@@ -13,7 +13,17 @@ load_dotenv()
 
 SOURCE_NAME = "SEC_GOV"
 SCRAPER_ID = 44
-COMPANY_ID = os.getenv("NET_ZERO_SEARCH_COMPANY_ID")
+
+COMPANY_CONFIGS = [
+    {
+        "label": "Net Zero Search",
+        "company_id": os.getenv("NET_ZERO_SEARCH_COMPANY_ID"),
+    },
+    {
+        "label": "Talent to Hire",
+        "company_id": os.getenv("TALENT_TO_HIRE"),
+    },
+]
 
 BASE_URL = "https://www.sec.gov"
 PAGE_SIZE = 100
@@ -125,10 +135,6 @@ def scrape_body(url: str) -> str:
 
 
 def main():
-    if not is_subscription_active(SCRAPER_ID, COMPANY_ID):
-        print("⏭️  Skipping SEC EDGAR — subscription is inactive")
-        return
-
     filing_date = date.today().isoformat()
     print(f"🔍 Scraping SEC EDGAR (8-K & D filings) for {filing_date}...")
 
@@ -166,7 +172,6 @@ def main():
             "text": body,
             "date": item["date"],
             "scraper_id": SCRAPER_ID,
-            "company_id": COMPANY_ID,
         }
         print(f"  ✅ {result['title'][:70]}")
         return result
@@ -182,8 +187,16 @@ def main():
         print("⛔ No filings scraped successfully.")
         return
 
-    inserted = insert_articles(articles)
-    print(f"✅ Inserted {inserted} filings into database.")
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        label = config["label"]
+
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {label} — subscription is inactive")
+            continue
+
+        inserted = insert_articles(articles, company_id=company_id)
+        print(f"✅ Inserted {inserted} filings for {label}.")
 
 
 if __name__ == "__main__":
