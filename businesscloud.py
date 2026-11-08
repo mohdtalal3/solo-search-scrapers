@@ -1,12 +1,30 @@
 import os
-import requests
-from bs4 import BeautifulSoup
 import time
-from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+
+from curl_cffi import requests
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
+
+load_dotenv()
 
 API_URL = "https://businesscloud.co.uk/wp-json/wp/v2/posts"
 SOURCE_NAME = "BUSINESS_CLOUD"
 SCRAPER_ID = 1
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
 COMPANY_CONFIGS = [
     {
         "label": "Solo Search",
@@ -21,31 +39,45 @@ COMPANY_CONFIGS = [
 def clean_html_content(html_content):
     """Convert HTML content to clean text"""
     soup = BeautifulSoup(html_content, "html.parser")
-    
+
     # Remove unwanted elements
     for tag in soup.select("script, style, iframe"):
         tag.decompose()
-    
+
     # Get text and clean up whitespace
     text = soup.get_text(" ", strip=True)
     text = " ".join(text.split())
     return text
 
 
-def fetch_posts_with_retry(session, params, max_retries=3):
-    """Fetch posts with retry logic"""
+def fetch_posts_with_retry(page_num, max_retries=3):
+    """Fetch posts via curl_cffi (Chrome impersonation + proxy)"""
+    params = {
+        "per_page": 100,
+        "page": page_num,
+        "orderby": "date",
+        "order": "desc",
+    }
+
     for attempt in range(max_retries):
         try:
             time.sleep(2)  # Sleep 2 seconds before request
-            r = session.get(API_URL, params=params, timeout=30)
-            
+            r = requests.get(
+                API_URL,
+                params=params,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=60,
+            )
+
             if r.status_code == 400:
                 return None  # No more pages
-            
+
             r.raise_for_status()
             return r.json()
-            
-        except requests.RequestException as e:
+
+        except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries}: {str(e)}")
                 time.sleep(2)
@@ -55,24 +87,15 @@ def fetch_posts_with_retry(session, params, max_retries=3):
 
 
 def main():
-    session = requests.Session()
+    print("🔍 Fetching articles from BusinessCloud API...")
 
     all_posts = []
     newest_timestamp = None
 
-    print("🔍 Fetching articles from BusinessCloud API...")
-
     # Iterate through 2 pages
     for page_num in range(1, 3):
-        params = {
-            "per_page": 100,
-            "page": page_num,
-            "orderby": "date",
-            "order": "desc"
-        }
-
         print(f"📄 Fetching page {page_num}...")
-        posts = fetch_posts_with_retry(session, params)
+        posts = fetch_posts_with_retry(page_num)
 
         if posts is None or not posts:
             print(f"⛔ No articles found on page {page_num}.")
@@ -98,6 +121,10 @@ def main():
         print(f"\n{'='*60}")
         print(f"🏢 Processing: {label}")
         print(f"{'='*60}")
+
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {label} — subscription is inactive")
+            continue
 
         saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 

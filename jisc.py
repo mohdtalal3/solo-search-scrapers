@@ -2,7 +2,8 @@ import os
 import json
 import time
 from bs4 import BeautifulSoup
-import requests as std_requests
+
+from curl_cffi import requests
 from dotenv import load_dotenv
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
@@ -10,9 +11,24 @@ load_dotenv()
 
 LISTING_URL = "https://www.jisc.ac.uk/intelligence-ideas-insights"
 BASE_URL = "https://www.jisc.ac.uk"
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SOURCE_NAME = "JISC"
 SCRAPER_ID = 46
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+# Rotating proxy — pass it once to the session, every request goes through it
+session = requests.Session(proxies=PROXIES)
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 COMPANY_CONFIGS = [
     {
@@ -22,35 +38,20 @@ COMPANY_CONFIGS = [
 ]
 
 def fetch_next_data(url, max_retries=3):
-    """Fetch a page via Scrappey and extract the __NEXT_DATA__ JSON."""
-    api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not api_key:
-        raise RuntimeError("SCRAPPEY_API_KEY not set")
-
-    payload = {
-        "cmd": "request.get",
-        "requestType": "request",
-        "url": url,
-        "premiumProxy": True,
-        #"proxyCountry": "UnitedKingdom",
-        "retries": 1,
-        #"automaticallySolveCaptcha": True
-    }
-
+    """Fetch a page via curl_cffi (Chrome impersonation + proxy) and extract the __NEXT_DATA__ JSON."""
     for attempt in range(max_retries):
         try:
             time.sleep(2)
-            resp = std_requests.post(
-                f"{SCRAPPEY_API_URL}?key={api_key}",
-                json=payload,
+            resp = session.get(
+                url,
+                headers=HEADERS,
+                impersonate="chrome142",
                 timeout=60,
             )
             resp.raise_for_status()
-            data = resp.json()
-            solution = data.get("solution", {})
-            html = solution.get("response", "")
+            html = resp.text
             if not html:
-                raise RuntimeError("Empty Scrappey response")
+                raise RuntimeError("Empty response")
 
             soup = BeautifulSoup(html, "html.parser")
             script_tag = soup.find("script", {"id": "__NEXT_DATA__"})

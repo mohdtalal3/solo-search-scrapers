@@ -1,17 +1,29 @@
-import json
 import os
 import time
 from bs4 import BeautifulSoup
-import requests as std_requests
+
+from curl_cffi import requests
 from dotenv import load_dotenv
 from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
 load_dotenv()
 
 API_URL = "https://www.privateequitywire.co.uk/wp-json/wp/v2/posts"
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
 SOURCE_NAME = "PRIVATE_EQUITY_WIRE"
 SCRAPER_ID = 70
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 COMPANY_CONFIGS = [
     {
@@ -31,36 +43,23 @@ def clean_html_content(html_content):
 
 
 def fetch_posts_with_retry(page_num, max_retries=3):
-    """Fetch posts via Scrappey request.get (non-browser)."""
+    """Fetch posts via curl_cffi (Chrome impersonation + proxy)"""
     url = f"{API_URL}?per_page=100&page={page_num}&orderby=date&order=desc"
-    api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not api_key:
-        raise RuntimeError("SCRAPPEY_API_KEY not set")
-
-    payload = {
-        "cmd": "request.get",
-        "url": url,
-        "premiumProxy": True,
-        "proxyCountry": "UnitedKingdom",
-        "retries": 1,
-        "automaticallySolveCaptcha": True,
-    }
 
     for attempt in range(max_retries):
         try:
             time.sleep(2)
-            resp = std_requests.post(
-                f"{SCRAPPEY_API_URL}?key={api_key}",
-                json=payload,
+            resp = requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
                 timeout=60,
             )
+            if resp.status_code == 400:
+                return None  # No more pages
             resp.raise_for_status()
-            data = resp.json()
-            html = data.get("solution", {}).get("innerText", "")
-            if not html:
-                raise RuntimeError("Empty Scrappey response")
-            posts = json.loads(html)
-            return posts
+            return resp.json()
         except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries}: {str(e)}")

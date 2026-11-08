@@ -1,9 +1,8 @@
-import json
 import os
 import time
 from urllib.parse import urlencode
 
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
@@ -12,8 +11,19 @@ from db import get_latest_timestamp, update_latest_timestamp, insert_articles, i
 API_URL = "https://siliconcanals.com/wp-json/wp/v2/posts"
 SOURCE_NAME = "SILICON_CANALS"
 SCRAPER_ID = 57
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
-SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 COMPANY_CONFIGS = [
     {
@@ -44,74 +54,28 @@ def build_target_url(params):
     return f"{API_URL}?{urlencode(params)}"
 
 
-def extract_posts_from_scrappey(scrappey_response):
-    """Parse JSON returned through Scrappey's browser response."""
-    solution = scrappey_response.get("solution", {})
-    inner_text = (solution.get("innerText") or "").strip()
-
-    if inner_text:
-        return json.loads(inner_text)
-
-    response_html = solution.get("response") or ""
-    if response_html:
-        soup = BeautifulSoup(response_html, "html.parser")
-        pre_tag = soup.find("pre")
-        if pre_tag and pre_tag.get_text(strip=True):
-            return json.loads(pre_tag.get_text(strip=True))
-
-    raise ValueError("Scrappey returned no parseable JSON payload")
-
-
 def fetch_posts_with_retry(params, max_retries=3):
-    """Fetch posts through Scrappey with premium US proxy and browser anti-bot handling."""
-    scrappey_api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not scrappey_api_key:
-        raise RuntimeError("Please set SCRAPPEY_API_KEY in your environment")
-
+    """Fetch posts via curl_cffi (Chrome impersonation + proxy)."""
     target_url = build_target_url(params)
-    payload = {
-        "cmd": "request.get",
-        "url": target_url,
-        "premiumProxy": True,
-        "proxyCountry": SCRAPPEY_PROXY_COUNTRY,
-        "retries": 1,
-        "browserActions": [
-            {
-                "type": "wait_for_load_state",
-                "waitForLoadState": "networkidle"
-            },
-            {
-                "type": "wait",
-                "wait": 1500,
-                "when": "after_captcha"
-            }
-        ]
-    }
 
     for attempt in range(max_retries):
         try:
             time.sleep(2)  # Sleep 2 seconds before request
-            response = requests.post(
-                f"{SCRAPPEY_API_URL}?key={scrappey_api_key}",
-                json=payload,
-                timeout=90,
+            response = requests.get(
+                target_url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=60,
             )
-            response.raise_for_status()
 
-            scrappey_response = response.json()
-            solution = scrappey_response.get("solution", {})
-            status_code = solution.get("statusCode")
-
-            if status_code == 400:
+            if response.status_code == 400:
                 return None  # No more pages
 
-            if scrappey_response.get("data") == "error" or not solution.get("verified", False):
-                error_message = scrappey_response.get("error", "Unknown Scrappey error")
-                raise RuntimeError(error_message)
+            response.raise_for_status()
+            return response.json()
 
-            return extract_posts_from_scrappey(scrappey_response)
-
-        except (requests.RequestException, ValueError, RuntimeError) as e:
+        except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries}: {str(e)}")
                 time.sleep(2)
