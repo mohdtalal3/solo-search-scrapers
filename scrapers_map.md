@@ -239,6 +239,23 @@ Quick reference for which scraper belongs to which company.
 
 ---
 
+## Solis Recruitment
+
+> UK business, marketing, tech and startup news
+
+| ID | File | Source |
+|----|------|--------|
+| 1 | `businesscloud.py` | https://businesscloud.co.uk |
+| 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 30 | `thedrum.py` | https://www.thedrum.com |
+| 32 | `marketingweek.py` | https://www.marketingweek.com |
+| 34 | `thegrocer.py` | https://www.thegrocer.co.uk |
+| 49 | `balderton.py` | https://www.balderton.com |
+| 50 | `techcrunch.py` | https://techcrunch.com |
+| 62 | `tech_eu.py` | https://tech.eu |
+
+---
+
 ## Both Companies
 
 > Runs for multiple companies with different keywords/stages
@@ -272,3 +289,4 @@ Quick reference for which scraper belongs to which company.
 | VM Search | *(add UUID here)* |
 | 1492 Search | `edbc2c4f-c333-4fce-8700-82abcf2b4c74` |
 | Talent to Hire | `553caa24-c2b9-4efd-ac39-8c3f31ff4dc8` |
+| Solis Recruitment | `8d78bcff-d04c-4161-89e7-efa9fe35a019` |

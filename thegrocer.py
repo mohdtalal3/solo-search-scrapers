@@ -7,13 +7,23 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from db import get_latest_timestamp, update_latest_timestamp, insert_articles
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
 
 load_dotenv()
 
 SOURCE_NAME = "THE_GROCER"
 SCRAPER_ID = 34
-COMPANY_ID = os.getenv("HEADLINERS_COMPANY_ID")
+
+COMPANY_CONFIGS = [
+    {
+        "label": "Headliners",
+        "company_id": os.getenv("HEADLINERS_COMPANY_ID"),
+    },
+    {
+        "label": "Solis Recruitment",
+        "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
+    },
+]
 
 SITEMAP_NS = {"sm": "http://www.google.com/schemas/sitemap/0.84"}
 
@@ -128,14 +138,11 @@ def scrape_article(url, lastmod):
         "title": title,
         "text": text,
         "lastmod": date,
-        "company_id": COMPANY_ID,
         "scraper_id": SCRAPER_ID,
     }
 
 
 def main():
-    saved_timestamp = get_latest_timestamp(SCRAPER_ID, COMPANY_ID)
-
     sitemap_url = get_sitemap_url()
     print(f"🔍 Fetching sitemap: {sitemap_url}")
 
@@ -153,53 +160,68 @@ def main():
 
     newest_timestamp = normalise_ts(entries[0][1]) if entries else None
 
-    # ----------------------------
-    # FIRST RUN — NO SCRAPING
-    # ----------------------------
-    if saved_timestamp is None:
-        print("🟢 First run detected — NOT saving any articles.")
-        if newest_timestamp:
-            print("Saving latest timestamp:", newest_timestamp)
-            update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
-        return
+    # Process for each company
+    for config in COMPANY_CONFIGS:
+        company_id = config["company_id"]
+        label = config["label"]
 
-    # ----------------------------
-    # SUBSEQUENT RUNS — save new
-    # ----------------------------
-    print("Previously saved timestamp:", saved_timestamp)
+        print(f"\n{'='*60}")
+        print(f"🏢 Processing: {label}")
+        print(f"{'='*60}")
 
-    new_entries = [
-        (loc, lastmod)
-        for loc, lastmod in entries
-        if normalise_ts(lastmod) > saved_timestamp
-    ]
-
-    if not new_entries:
-        print("⛔ No new articles found.")
-        return
-
-    print(f"🆕 Found {len(new_entries)} new article(s) to scrape.")
-
-    all_articles = []
-    for loc, lastmod in new_entries:
-        print(f"  Scraping: {loc}")
-        article = scrape_article(loc, lastmod)
-        if not article:
-            print(f"  ⚠️  Failed: {loc}")
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {label} — subscription is inactive")
             continue
-        all_articles.append(article)
-        print(f"  ✅ {article['title'][:60]}...")
 
-    if not all_articles:
-        print("⛔ No articles scraped successfully.")
-        return
+        saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 
-    inserted_count = insert_articles(all_articles)
-    print(f"✅ Inserted {inserted_count} articles into database")
+        # ----------------------------
+        # FIRST RUN — NO SCRAPING
+        # ----------------------------
+        if saved_timestamp is None:
+            print("🟢 First run detected — NOT saving any articles.")
+            if newest_timestamp:
+                print("Saving latest timestamp:", newest_timestamp)
+                update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+            continue
 
-    if newest_timestamp:
-        update_latest_timestamp(SCRAPER_ID, COMPANY_ID, newest_timestamp)
-        print("🕒 New latest timestamp saved:", newest_timestamp)
+        # ----------------------------
+        # SUBSEQUENT RUNS — save new
+        # ----------------------------
+        print("Previously saved timestamp:", saved_timestamp)
+
+        new_entries = [
+            (loc, lastmod)
+            for loc, lastmod in entries
+            if normalise_ts(lastmod) > saved_timestamp
+        ]
+
+        if not new_entries:
+            print("⛔ No new articles found.")
+            continue
+
+        print(f"🆕 Found {len(new_entries)} new article(s) to scrape.")
+
+        all_articles = []
+        for loc, lastmod in new_entries:
+            print(f"  Scraping: {loc}")
+            article = scrape_article(loc, lastmod)
+            if not article:
+                print(f"  ⚠️  Failed: {loc}")
+                continue
+            all_articles.append({**article, "company_id": company_id})
+            print(f"  ✅ {article['title'][:60]}...")
+
+        if not all_articles:
+            print("⛔ No articles scraped successfully.")
+            continue
+
+        inserted_count = insert_articles(all_articles)
+        print(f"✅ Inserted {inserted_count} articles into database")
+
+        if newest_timestamp:
+            update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+            print("🕒 New latest timestamp saved:", newest_timestamp)
 
 
 if __name__ == "__main__":

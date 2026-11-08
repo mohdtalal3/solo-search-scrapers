@@ -208,7 +208,7 @@ def run_all_scrapers():
     run_scraper("EU-Startups", eu_startups.main, eu_startups)
     time.sleep(5)
 
-    run_scraper("BusinessCloud", businesscloud.main, businesscloud)
+    run_scraper("BusinessCloud", businesscloud.main)  # multi-company: checked internally
     time.sleep(5)
 
     run_scraper("HT World", htworld.main, htworld)
@@ -289,7 +289,7 @@ def run_all_scrapers():
     run_scraper("Prolific North", prolificnorth.main, prolificnorth)
     time.sleep(5)
 
-    run_scraper("The Grocer", thegrocer.main, thegrocer)
+    run_scraper("The Grocer", thegrocer.main)  # multi-company: checked internally
     time.sleep(5)
 
     run_scraper("FCA News", fca_news.main, fca_news)

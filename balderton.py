@@ -18,6 +18,10 @@ COMPANY_CONFIGS = [
         "label": "H2 Recruit",
         "company_id": os.getenv("H2_RECRUIT_COMPANY_ID"),
     },
+    {
+        "label": "Solis Recruitment",
+        "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
+    },
 ]
 
 

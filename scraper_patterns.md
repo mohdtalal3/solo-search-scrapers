@@ -444,3 +444,4 @@ if saved_timestamp is None:
 | ERP Recruit | `ERP_RECRUIT_COMPANY_ID` | `81ef7ff7-c548-42d8-8b22-b339b26d08ac` |
 | PLEA | `PLEA_COMPANY_ID` | *(check .env)* |
 | Headliners | `HEADLINERS_COMPANY_ID` | `16adda91-be84-461a-b6e2-dc81e76cc2c6` |
+| Solis Recruitment | `SOLIS_RECRUITMENT_COMPANY_ID` | `8d78bcff-d04c-4161-89e7-efa9fe35a019` |

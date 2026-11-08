@@ -19,6 +19,10 @@ COMPANY_CONFIGS = [
         "label": "VM Search",
         "company_id": os.getenv("VM_SEARCH_COMPANY_ID"),
     },
+    {
+        "label": "Solis Recruitment",
+        "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
+    },
 ]
 
 HEADERS = {

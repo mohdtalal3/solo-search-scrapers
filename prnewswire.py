@@ -79,6 +79,12 @@ COMPANY_CONFIGS = [
         "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
         "pages": 1,
     },
+    {
+        "label": "Solis Recruitment",
+        "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
+        "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
+        "pages": 1,
+    },
 ]
 
 HEADERS = {
