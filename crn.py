@@ -4,9 +4,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from urllib.parse import urljoin
 
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
-from curl_cffi import requests 
 from dotenv import load_dotenv
 
 from db import get_recent_article_urls, insert_articles, is_subscription_active
@@ -28,75 +27,35 @@ COMPANY_CONFIGS = [
 MAX_RETRIES = 3
 MAX_WORKERS = 5
 
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
-SCRAPPEY_PROXY_COUNTRY = "UnitedStates"
-
 HEADERS = {
     "user-agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/142.0.0.0 Safari/537.36"
+        "Chrome/131.0.0.0 Safari/537.36"
     ),
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "accept-language": "en-US,en;q=0.9",
 }
 
-_proxy = os.getenv("SCRAPER_PROXY")
-PROXIES = {"http": _proxy, "https": _proxy} if _proxy else None
-
-
-def fetch_with_scrappey(url, max_retries=MAX_RETRIES):
-    scrappey_api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not scrappey_api_key:
-        raise RuntimeError("Please set SCRAPPEY_API_KEY in your environment")
-
-    payload = {
-        "cmd": "request.get",
-        "url": url,
-        "proxyCountry": SCRAPPEY_PROXY_COUNTRY,
-        "automaticallySolveCaptcha": True,
-    }
-
-    for attempt in range(max_retries):
-        try:
-            time.sleep(2)
-            response = requests.post(
-                f"{SCRAPPEY_API_URL}?key={scrappey_api_key}",
-                json=payload,
-                timeout=90,
-            )
-            response.raise_for_status()
-
-            scrappey_response = response.json()
-            solution = scrappey_response.get("solution", {})
-            status_code = solution.get("statusCode")
-
-            if status_code and status_code != 200:
-                print(f"❌ Scrappey returned status {status_code} for {url}")
-                return None
-
-            if scrappey_response.get("data") == "error" or not solution.get("verified", False):
-                error_message = scrappey_response.get("error", "Unknown Scrappey error")
-                raise RuntimeError(error_message)
-
-            return solution.get("response") or ""
-
-        except (requests.RequestException, RuntimeError) as e:
-            if attempt < max_retries - 1:
-                print(f"⚠️  Retry {attempt + 1}/{max_retries} for {url}: {str(e)}")
-                time.sleep(2)
-            else:
-                print(f"❌ Failed after {max_retries} attempts for {url}: {str(e)}")
-                return None
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
 
 
 def fetch_url(url, max_retries=MAX_RETRIES):
+    """Fetch a URL via curl_cffi (Chrome impersonation + proxy)."""
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, headers=HEADERS, timeout=30, proxies=PROXIES)
+            time.sleep(2)
+            response = requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=60,
+            )
             response.raise_for_status()
             return response.text
-        except requests.RequestException as e:
+        except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries} for {url}: {str(e)}")
                 time.sleep(2)
@@ -235,11 +194,20 @@ def scrape_article(url, fallback_title=""):
 def main():
     print("🔍 Fetching CRN news listing...")
 
+    # Exit before fetching anything if no company has an active subscription
+    active_configs = [
+        c for c in COMPANY_CONFIGS
+        if is_subscription_active(SCRAPER_ID, c["company_id"])
+    ]
+    if not active_configs:
+        print("⏭️  All subscriptions inactive — skipping CRN entirely")
+        return
+
     known_urls = get_recent_article_urls(SCRAPER_ID, limit=200)
     print(f"🗄️  {len(known_urls)} known URLs loaded from DB.")
     seen_slugs = {url_slug(u) for u in known_urls}
 
-    html = fetch_with_scrappey(LISTING_URL)
+    html = fetch_url(LISTING_URL)
     if not html:
         print("⛔ Failed to fetch listing page.")
         return
@@ -296,7 +264,7 @@ def main():
     print(f"\n🆕 Found {len(all_articles)} new article(s) in total.")
 
     # Insert for each active company
-    for config in COMPANY_CONFIGS:
+    for config in active_configs:
         company_id = config["company_id"]
         label = config["label"]
 

@@ -256,6 +256,15 @@ def run_for_company(config: dict):
 
 
 def main():
+    # Exit before fetching anything if no company has an active subscription
+    active_configs = [
+        c for c in COMPANY_CONFIGS
+        if is_subscription_active(SCRAPER_ID, c["company_id"])
+    ]
+    if not active_configs:
+        print("⏭️  All subscriptions inactive — skipping scraper entirely")
+        return
+
     print("🔍 Scraping Finextra RSS channels...")
     for config in COMPANY_CONFIGS:
         run_for_company(config)

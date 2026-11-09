@@ -2,7 +2,7 @@ import os
 import time
 from datetime import datetime
 
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
@@ -23,51 +23,39 @@ COMPANY_CONFIGS = [
         "company_id": os.getenv("1492_SEARCH_COMPANY_ID"),
     },
 ]
-SCRAPPEY_API_URL = "https://publisher.scrappey.com/api/v1"
-SCRAPPEY_PROXY_COUNTRY = "UnitedKingdom"
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 
 # ----------------------------------------------------------
-# Fetch a URL through Scrappey with retry logic
+# Fetch a URL via curl_cffi (Chrome impersonation + proxy) with retry logic
 # ----------------------------------------------------------
-def fetch_with_scrappey(url, max_retries=3):
-    scrappey_api_key = os.getenv("SCRAPPEY_API_KEY")
-    if not scrappey_api_key:
-        raise RuntimeError("Please set SCRAPPEY_API_KEY in your environment")
-
-    payload = {
-        "cmd": "request.get",
-        "requestType": "request",
-        "url": url,
-        "proxyCountry": SCRAPPEY_PROXY_COUNTRY,
-        "premiumProxy": True,
-    }
-
+def fetch_url(url, max_retries=3):
     for attempt in range(max_retries):
         try:
             time.sleep(2)
-            response = requests.post(
-                f"{SCRAPPEY_API_URL}?key={scrappey_api_key}",
-                json=payload,
-                timeout=90,
+            response = requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=60,
             )
             response.raise_for_status()
+            return response.text
 
-            scrappey_response = response.json()
-            solution = scrappey_response.get("solution", {})
-            status_code = solution.get("statusCode")
-
-            if status_code and status_code != 200:
-                print(f"❌ Scrappey returned status {status_code} for {url}")
-                return None
-
-            if scrappey_response.get("data") == "error" or not solution.get("verified", False):
-                error_message = scrappey_response.get("error", "Unknown Scrappey error")
-                raise RuntimeError(error_message)
-
-            return solution.get("response") or ""
-
-        except (requests.RequestException, RuntimeError) as e:
+        except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries}: {str(e)}")
                 time.sleep(2)
@@ -80,7 +68,7 @@ def fetch_with_scrappey(url, max_retries=3):
 # Scrape a single article
 # ----------------------------------------------------------
 def scrape_article(url):
-    html = fetch_with_scrappey(url)
+    html = fetch_url(url)
     if not html:
         print(f"❌ Failed to fetch {url}")
         return None
@@ -140,9 +128,9 @@ def scrape_article(url):
 # Get the latest "articles-sitemap" from the main sitemap
 # ----------------------------------------------------------
 def get_latest_articles_sitemap():
-    html = fetch_with_scrappey(MAIN_SITEMAP)
+    html = fetch_url(MAIN_SITEMAP)
     if not html:
-        raise Exception("Failed to fetch main sitemap via Scrappey.")
+        raise Exception("Failed to fetch main sitemap.")
     soup = BeautifulSoup(html, "xml")
     links = []
     for sitemap in soup.find_all("sitemap"):
@@ -171,9 +159,9 @@ def get_latest_articles_sitemap():
 # Read article URLs + lastmod timestamps from a sitemap
 # ----------------------------------------------------------
 def get_articles_from_sitemap(sitemap_url):
-    html = fetch_with_scrappey(sitemap_url)
+    html = fetch_url(sitemap_url)
     if not html:
-        raise Exception(f"Failed to fetch sitemap via Scrappey: {sitemap_url}")
+        raise Exception(f"Failed to fetch sitemap: {sitemap_url}")
     soup = BeautifulSoup(html, "xml")
 
     articles = []
@@ -190,6 +178,15 @@ def get_articles_from_sitemap(sitemap_url):
 # MAIN LOGIC
 # ----------------------------------------------------------
 def main():
+    # Exit before fetching anything if no company has an active subscription
+    active_configs = [
+        c for c in COMPANY_CONFIGS
+        if is_subscription_active(SCRAPER_ID, c["company_id"])
+    ]
+    if not active_configs:
+        print("⏭️  All subscriptions inactive — skipping scraper entirely")
+        return
+
     print("🔍 Fetching main sitemap...")
     latest_sitemap = get_latest_articles_sitemap()
     print("Using sitemap:", latest_sitemap)

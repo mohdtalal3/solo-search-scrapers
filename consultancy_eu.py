@@ -137,6 +137,15 @@ def scrape_article(url):
 # MAIN LOGIC
 # ----------------------------------------------------------
 def main():
+    # Exit before fetching anything if no company has an active subscription
+    active_configs = [
+        c for c in COMPANY_CONFIGS
+        if is_subscription_active(SCRAPER_ID, c["company_id"])
+    ]
+    if not active_configs:
+        print("⏭️  All subscriptions inactive — skipping scraper entirely")
+        return
+
     print("🔍 Fetching consultancy.eu news page...")
     article_links = get_article_links()
     #article_links = article_links[:10]

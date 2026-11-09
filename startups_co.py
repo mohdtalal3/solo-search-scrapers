@@ -1,6 +1,5 @@
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
-import json
 import os
 import time
 from datetime import datetime
@@ -11,29 +10,52 @@ SOURCE_NAME = "STARTUPS_CO"
 SCRAPER_ID = 8
 COMPANY_ID = os.getenv("SOLO_SEARCH_COMPANY_ID")
 
-headers = {"User-Agent": "Mozilla/5.0"}
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 
-# ----------------------------------------------------------
-# Scrape a single article
-# ----------------------------------------------------------
-def scrape_article(url):
-    max_retries = 3
+def fetch_url(url, max_retries=3):
+    """Fetch a URL via curl_cffi (Chrome impersonation + proxy)."""
     for attempt in range(max_retries):
         try:
             time.sleep(2)  # Sleep 2 seconds before request
-            resp = requests.get(url, headers=headers, timeout=30)
+            resp = requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=60,
+            )
             resp.raise_for_status()
-            break
-        except requests.RequestException as e:
+            return resp.text
+        except Exception as e:
             if attempt < max_retries - 1:
                 print(f"⚠️  Retry {attempt + 1}/{max_retries} for {url}: {str(e)}")
                 time.sleep(2)
             else:
                 print(f"❌ Failed to fetch {url} after {max_retries} attempts")
                 return None
-    
-    soup = BeautifulSoup(resp.text, "html.parser")
+
+
+# ----------------------------------------------------------
+# Scrape a single article
+# ----------------------------------------------------------
+def scrape_article(url):
+    resp_text = fetch_url(url)
+    if not resp_text:
+        return None
+
+    soup = BeautifulSoup(resp_text, "html.parser")
 
     # Get the article tag
     article_tag = soup.select_one("article")
@@ -90,21 +112,11 @@ def scrape_article(url):
 # Get the latest "post" sitemap
 # ----------------------------------------------------------
 def get_latest_post_sitemap():
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            time.sleep(2)  # Sleep 2 seconds before request
-            resp = requests.get(MAIN_SITEMAP, headers=headers, timeout=30)
-            resp.raise_for_status()
-            break
-        except requests.RequestException as e:
-            if attempt < max_retries - 1:
-                print(f"⚠️  Retry {attempt + 1}/{max_retries} for sitemap: {str(e)}")
-                time.sleep(2)
-            else:
-                raise Exception(f"Failed to fetch sitemap after {max_retries} attempts: {str(e)}")
-    
-    soup = BeautifulSoup(resp.text, "xml")
+    resp_text = fetch_url(MAIN_SITEMAP)
+    if not resp_text:
+        raise Exception(f"Failed to fetch sitemap after retries")
+
+    soup = BeautifulSoup(resp_text, "xml")
 
     links = []
     for sitemap in soup.find_all("sitemap"):
@@ -136,21 +148,11 @@ def get_latest_post_sitemap():
 # Read article URLs + lastmod timestamps
 # ----------------------------------------------------------
 def get_articles_from_sitemap(sitemap_url):
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            time.sleep(2)  # Sleep 2 seconds before request
-            resp = requests.get(sitemap_url, headers=headers, timeout=30)
-            resp.raise_for_status()
-            break
-        except requests.RequestException as e:
-            if attempt < max_retries - 1:
-                print(f"⚠️  Retry {attempt + 1}/{max_retries} for sitemap URL: {str(e)}")
-                time.sleep(2)
-            else:
-                raise Exception(f"Failed to fetch sitemap URL after {max_retries} attempts: {str(e)}")
-    
-    soup = BeautifulSoup(resp.text, "xml")
+    resp_text = fetch_url(sitemap_url)
+    if not resp_text:
+        raise Exception(f"Failed to fetch sitemap URL after retries")
+
+    soup = BeautifulSoup(resp_text, "xml")
 
     articles = []
     for url_tag in soup.find_all("url"):

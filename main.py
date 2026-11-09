@@ -325,8 +325,8 @@ def run_all_scrapers():
     run_scraper("University Business", universitybusiness.main)  # multi-company: checked internally
     time.sleep(5)
 
-    run_scraper("Jisc", jisc.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Jisc", jisc.main)  # multi-company: checked internally
+    # time.sleep(5)
 
     run_scraper("UCISA", ucisa.main)  # multi-company: checked internally
     time.sleep(5)
@@ -376,8 +376,8 @@ def run_all_scrapers():
     run_scraper("TechCrunch", techcrunch.main)  # multi-company: checked internally
     time.sleep(5)
 
-    run_scraper("CRN", crn.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("CRN", crn.main)  # multi-company: checked internally
+    # time.sleep(5)
 
     run_scraper("Channel Dive", channeldive.main)  # multi-company: checked internally
     time.sleep(5)
