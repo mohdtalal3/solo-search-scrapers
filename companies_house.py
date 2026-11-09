@@ -34,6 +34,10 @@ COMPANY_CONFIGS = [
         "label": "Time to Hire",
         "company_id": os.getenv("TIME_TO_HIRE_RECRUITMENT_LTD_COMPANY_ID"),
     },
+    {
+        "label": "Solis Recruitment",
+        "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
+    },
 ]
 
 BASE_URL = "https://www.gov.uk"
