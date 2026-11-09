@@ -55,6 +55,9 @@ def get_latest_timestamp(scraper_ref, company_id):
     scraper_ref can be either scraper_id (int) or source_name (str).
     Returns None if this is the first run.
     """
+    if not company_id:
+        print("⚠️  company_id is missing (check .env) — treating as first run")
+        return None
     try:
         scraper_id = _resolve_scraper_id(scraper_ref)
 
@@ -82,6 +85,9 @@ def update_latest_timestamp(scraper_ref, company_id, timestamp):
     scraper_ref can be either scraper_id (int) or source_name (str).
     Creates a new record if it doesn't exist.
     """
+    if not company_id:
+        print("⚠️  company_id is missing (check .env) — cannot save timestamp")
+        return
     try:
         scraper_id = _resolve_scraper_id(scraper_ref)
         now_iso = _utc_now_iso()
@@ -338,6 +344,10 @@ def is_subscription_active(scraper_id: int, company_id: str) -> bool:
     Falls back to True when the cache is empty or the pair is not yet registered,
     so first-run scrapers are never blocked.
     """
+    if not company_id:
+        # Env var for this company is missing — treat as inactive so the
+        # scraper skips it instead of crashing on a None UUID.
+        return False
     if not _active_subscriptions:
         return True
     return _active_subscriptions.get((company_id, scraper_id), True)
