@@ -92,6 +92,7 @@ import builtincharlotte
 import financialpost
 import logisticsmanager
 import retailgazette
+import exchangewire
 
 
 class TeeStream:
@@ -415,6 +416,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Retail Gazette", retailgazette.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("ExchangeWire", exchangewire.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
