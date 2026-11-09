@@ -132,19 +132,48 @@ def main():
 
     print(f"Found {len(article_entries)} news-and-blogs URLs in sitemap.")
 
+    # Collect saved timestamps for every active company
+    company_timestamps = {}
     for config in COMPANY_CONFIGS:
         company_id = config["company_id"]
-        label = config["label"]
+        if not is_subscription_active(SCRAPER_ID, company_id):
+            print(f"⏭️  Skipping {config['label']} — subscription is inactive")
+            continue
+        company_timestamps[company_id] = {
+            "label": config["label"],
+            "saved_timestamp": get_latest_timestamp(SCRAPER_ID, company_id),
+        }
+
+    # Determine which URLs need scraping across all active companies
+    urls_to_scrape = set()
+    for company_id, info in company_timestamps.items():
+        ts = info["saved_timestamp"]
+        if ts is not None:
+            for entry in article_entries:
+                if entry["lastmod"] > ts:
+                    urls_to_scrape.add(entry["url"])
+
+    # Scrape each unique article once
+    scraped_cache = {}
+    if urls_to_scrape:
+        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s)...")
+        for entry in article_entries:
+            if entry["url"] not in urls_to_scrape:
+                continue
+            print("Scraping:", entry["url"])
+            article = scrape_article(entry["url"])
+            if article:
+                article["lastmod"] = entry["lastmod"]
+                scraped_cache[entry["url"]] = article
+
+    # Insert scraped articles for each active company
+    for company_id, info in company_timestamps.items():
+        label = info["label"]
+        saved_timestamp = info["saved_timestamp"]
 
         print(f"\n{'='*60}")
         print(f"🏢 Processing: {label}")
         print(f"{'='*60}")
-
-        if not is_subscription_active(SCRAPER_ID, company_id):
-            print(f"⏭️  Skipping {label} — subscription is inactive")
-            continue
-
-        saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 
         # ----------------------------
         # FIRST RUN — NO SCRAPING
@@ -156,7 +185,7 @@ def main():
             continue
 
         # ----------------------------
-        # SUBSEQUENT RUNS — scrape new
+        # SUBSEQUENT RUNS — save new
         # ----------------------------
         print("Previously saved timestamp:", saved_timestamp)
 
@@ -168,16 +197,13 @@ def main():
 
         print(f"🆕 Found {len(new_entries)} new articles.")
 
-        scraped_articles = []
-        for entry in new_entries:
-            print("Scraping:", entry["url"])
-            article = scrape_article(entry["url"])
-            if article:
-                article["lastmod"] = entry["lastmod"]
-                scraped_articles.append(article)
+        company_articles = [
+            dict(cached, company_id=company_id)
+            for e in new_entries
+            if (cached := scraped_cache.get(e["url"]))
+        ]
 
-        if scraped_articles:
-            company_articles = [dict(a, company_id=company_id) for a in scraped_articles]
+        if company_articles:
             inserted_count = insert_articles(company_articles)
             print(f"✅ Inserted {inserted_count} articles for {label}")
 

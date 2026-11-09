@@ -169,20 +169,46 @@ def main():
 
     newest_timestamp = normalise_ts(entries[0][1]) if entries else None
 
-    # Process for each company
-    for config in COMPANY_CONFIGS:
+    # Collect saved timestamps for every active company
+    company_timestamps = {}
+    for config in active_configs:
         company_id = config["company_id"]
-        label = config["label"]
+        company_timestamps[company_id] = {
+            "label": config["label"],
+            "saved_timestamp": get_latest_timestamp(SCRAPER_ID, company_id),
+        }
+
+    # Determine which URLs need scraping across all active companies
+    urls_to_scrape = set()
+    for company_id, info in company_timestamps.items():
+        ts = info["saved_timestamp"]
+        if ts is not None:
+            for loc, lastmod in entries:
+                if normalise_ts(lastmod) > ts:
+                    urls_to_scrape.add(loc)
+
+    # Scrape each unique article once
+    scraped_cache = {}
+    if urls_to_scrape:
+        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s)...")
+        for loc, lastmod in entries:
+            if loc not in urls_to_scrape:
+                continue
+            print(f"  Scraping: {loc}")
+            article = scrape_article(loc, lastmod)
+            if article:
+                scraped_cache[loc] = article
+            else:
+                print(f"  ⚠️  Failed: {loc}")
+
+    # Insert scraped articles for each active company
+    for company_id, info in company_timestamps.items():
+        label = info["label"]
+        saved_timestamp = info["saved_timestamp"]
 
         print(f"\n{'='*60}")
         print(f"🏢 Processing: {label}")
         print(f"{'='*60}")
-
-        if not is_subscription_active(SCRAPER_ID, company_id):
-            print(f"⏭️  Skipping {label} — subscription is inactive")
-            continue
-
-        saved_timestamp = get_latest_timestamp(SCRAPER_ID, company_id)
 
         # ----------------------------
         # FIRST RUN — NO SCRAPING
@@ -209,17 +235,13 @@ def main():
             print("⛔ No new articles found.")
             continue
 
-        print(f"🆕 Found {len(new_entries)} new article(s) to scrape.")
+        print(f"🆕 Found {len(new_entries)} new article(s).")
 
         all_articles = []
         for loc, lastmod in new_entries:
-            print(f"  Scraping: {loc}")
-            article = scrape_article(loc, lastmod)
-            if not article:
-                print(f"  ⚠️  Failed: {loc}")
-                continue
-            all_articles.append({**article, "company_id": company_id})
-            print(f"  ✅ {article['title'][:60]}...")
+            cached = scraped_cache.get(loc)
+            if cached:
+                all_articles.append({**cached, "company_id": company_id})
 
         if not all_articles:
             print("⛔ No articles scraped successfully.")
