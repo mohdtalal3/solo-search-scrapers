@@ -247,12 +247,14 @@ Quick reference for which scraper belongs to which company.
 |----|------|--------|
 | 1 | `businesscloud.py` | https://businesscloud.co.uk |
 | 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
+| 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
 | 30 | `thedrum.py` | https://www.thedrum.com |
 | 32 | `marketingweek.py` | https://www.marketingweek.com |
 | 34 | `thegrocer.py` | https://www.thegrocer.co.uk |
 | 49 | `balderton.py` | https://www.balderton.com |
 | 50 | `techcrunch.py` | https://techcrunch.com |
 | 62 | `tech_eu.py` | https://tech.eu |
+| 90 | `logisticsmanager.py` | https://www.logisticsmanager.com |
 
 ---
 
