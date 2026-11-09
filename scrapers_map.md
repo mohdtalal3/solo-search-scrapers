@@ -255,6 +255,7 @@ Quick reference for which scraper belongs to which company.
 | 50 | `techcrunch.py` | https://techcrunch.com |
 | 62 | `tech_eu.py` | https://tech.eu |
 | 90 | `logisticsmanager.py` | https://www.logisticsmanager.com |
+| 91 | `retailgazette.py` | https://www.retailgazette.co.uk |
 
 ---
 

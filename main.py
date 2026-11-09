@@ -91,6 +91,7 @@ import builtinboston
 import builtincharlotte
 import financialpost
 import logisticsmanager
+import retailgazette
 
 
 class TeeStream:
@@ -411,6 +412,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("Logistics Manager", logisticsmanager.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Retail Gazette", retailgazette.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
