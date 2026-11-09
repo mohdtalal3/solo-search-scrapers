@@ -257,6 +257,7 @@ Quick reference for which scraper belongs to which company.
 | 90 | `logisticsmanager.py` | https://www.logisticsmanager.com |
 | 91 | `retailgazette.py` | https://www.retailgazette.co.uk |
 | 92 | `exchangewire.py` | https://www.exchangewire.com |
+| 93 | `martech.py` | https://martech.org |
 
 ---
 
