@@ -258,6 +258,7 @@ Quick reference for which scraper belongs to which company.
 | 91 | `retailgazette.py` | https://www.retailgazette.co.uk |
 | 92 | `exchangewire.py` | https://www.exchangewire.com |
 | 93 | `martech.py` | https://martech.org |
+| 52 | `globenewswire.py` | https://www.globenewswire.com (EU search: software/tech/retail/real estate/media) |
 
 ---
 

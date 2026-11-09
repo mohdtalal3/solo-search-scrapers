@@ -78,6 +78,19 @@ COMPANY_CONFIGS = [
             "/load/more?page={page}&pageSize=50"
         ),
     },
+    {
+        "label": "Solis Recruitment",
+        "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
+        "listing_url": (
+            "https://www.globenewswire.com/en/search/continent/eu"
+            "/subject/prs,mgc,mgt,mna,prt,jvn,pdt,bfc,fin,coa,rcn"
+            "/industry/software,software%2520&%2520computer%2520services,technology,"
+            "internet,computer%2520services,technology%2520hardware%2520&%2520equipment,"
+            "computer%2520hardware,retail,general%2520retailers,consumer%2520goods,"
+            "real%2520estate,real%2520estate%2520services,industrial%2520transportation,media"
+            "/load/more?page={page}&pageSize=50"
+        ),
+    },
 ]
 
 HEADERS = {
