@@ -223,19 +223,28 @@ def insert_articles(articles, company_id=None, scraper_id=None):
             if not this_company_id or not this_scraper_id:
                 raise ValueError("Each article requires company_id and scraper_id")
 
+            title = (article.get("title") or "").strip()
+            if not title:
+                # articles.chk_articles_title rejects empty titles — skip instead of failing the batch
+                print(f"⚠️  Skipping article with empty title: {article.get('url')}")
+                continue
+
             normalized.append(
                 {
                     "company_id": this_company_id,
                     "scraper_id": int(this_scraper_id),
                     "url": article["url"],
                     "date": article.get("date"),
-                    "title": article.get("title") or "",
+                    "title": title,
                     "text": article.get("text"),
                     "categories": article.get("categories"),
                     "tags": article.get("tags"),
                     "lastmod": article.get("lastmod"),
                 }
             )
+
+        if not normalized:
+            return 0
 
         total_inserted = 0
         for i in range(0, len(normalized), BATCH_SIZE):

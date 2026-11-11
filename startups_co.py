@@ -62,9 +62,18 @@ def scrape_article(url):
     if not article_tag:
         return None
 
-    # Extract title
+    # Extract title — primary selector, then fallbacks (og:title, any h1)
     title_tag = article_tag.select_one(".entry-header h1.entry-header-title")
     title = title_tag.get_text(strip=True) if title_tag else ""
+    if not title:
+        og = soup.find("meta", property="og:title")
+        title = og["content"].strip() if og and og.get("content") else ""
+    if not title:
+        h1 = soup.find("h1")
+        title = h1.get_text(strip=True) if h1 else ""
+    if not title:
+        print(f"⚠️  No title found, skipping: {url}")
+        return None
 
     # Extract date
     date_tag = article_tag.select_one(".article-date-info .meta-value")
