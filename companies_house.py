@@ -38,6 +38,10 @@ COMPANY_CONFIGS = [
         "label": "Solis Recruitment",
         "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
     },
+    {
+        "label": "Inglis Legal Recruitment",
+        "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
+    },
 ]
 
 BASE_URL = "https://www.gov.uk"

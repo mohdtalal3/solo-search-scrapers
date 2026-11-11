@@ -85,6 +85,12 @@ COMPANY_CONFIGS = [
         "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
         "pages": 1,
     },
+    {
+        "label": "Inglis Legal Recruitment",
+        "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
+        "sitemap_url": "https://www.prnewswire.co.uk/sitemap-news.xml",
+        "pages": 1,
+    },
 ]
 
 HEADERS = {
