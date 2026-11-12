@@ -94,6 +94,7 @@ import logisticsmanager
 import retailgazette
 import exchangewire
 import martech
+import harpermacleod
 
 
 class TeeStream:
@@ -423,6 +424,9 @@ def run_all_scrapers():
     time.sleep(5)
 
     run_scraper("MarTech", martech.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Harper Macleod", harpermacleod.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time

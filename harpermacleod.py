@@ -1,0 +1,250 @@
+import os
+import time
+import xml.etree.ElementTree as ET
+
+from curl_cffi import requests
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from db import get_latest_timestamp, update_latest_timestamp, insert_articles, is_subscription_active
+
+load_dotenv()
+
+BASE_URL = "https://www.harpermacleod.co.uk"
+SOURCE_NAME = "HARPER_MACLEOD"
+SCRAPER_ID = 94
+
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+COMPANY_CONFIGS = [
+    {
+        "label": "Inglis Legal Recruitment",
+        "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
+    },
+]
+
+# News and insights are published as WordPress pages, so the article URLs
+# come from the page sitemaps filtered to these paths.
+SITEMAP_URLS = [
+    f"{BASE_URL}/page-sitemap.xml",
+    f"{BASE_URL}/page-sitemap2.xml",
+    f"{BASE_URL}/page-sitemap3.xml",
+]
+NEWS_PATHS = ("/news/", "/insights/")
+LISTING_PATHS = ("/news/", "/insights/")
+
+
+def fetch_url(url, max_retries=3):
+    """Fetch a URL via curl_cffi (Chrome impersonation + proxy)."""
+    for attempt in range(max_retries):
+        try:
+            time.sleep(2)
+            resp = requests.get(
+                url,
+                headers=HEADERS,
+                proxies=PROXIES,
+                impersonate="chrome131",
+                timeout=60,
+            )
+            resp.raise_for_status()
+            return resp.text
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"⚠️  Retry {attempt + 1}/{max_retries} for {url}: {e}")
+                time.sleep(2)
+            else:
+                print(f"❌ Failed to fetch {url}: {e}")
+                return None
+
+
+def is_article_url(url):
+    """News/insights article pages, excluding the listing pages themselves."""
+    path = url.replace(BASE_URL, "")
+    if not path.startswith(NEWS_PATHS):
+        return False
+    return path not in LISTING_PATHS
+
+
+def get_articles_from_sitemaps():
+    """Fetch all page sitemaps and return news/insights entries with url + lastmod."""
+    entries = []
+    for sitemap_url in SITEMAP_URLS:
+        xml_content = fetch_url(sitemap_url)
+        if not xml_content:
+            print(f"⚠️  Could not fetch sitemap: {sitemap_url}")
+            continue
+
+        try:
+            root = ET.fromstring(xml_content)
+        except ET.ParseError as e:
+            print(f"❌ XML parse error for {sitemap_url}: {e}")
+            continue
+
+        for url_el in root.findall("url"):
+            loc_el = url_el.find("loc")
+            lastmod_el = url_el.find("lastmod")
+            if loc_el is None:
+                continue
+            url = loc_el.text.strip()
+            if not is_article_url(url):
+                continue
+            lastmod = lastmod_el.text.strip() if lastmod_el is not None else ""
+            entries.append({"url": url, "lastmod": lastmod})
+
+    return entries
+
+
+def scrape_article(url, lastmod):
+    html = fetch_url(url)
+    if not html:
+        return None
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Title — og:title (strip site suffix), then h1
+    title = ""
+    og = soup.find("meta", property="og:title")
+    if og and og.get("content"):
+        title = og["content"].strip()
+        for suffix in (" - Harper Macleod", " | Harper Macleod"):
+            if title.endswith(suffix):
+                title = title[: -len(suffix)].strip()
+    if not title:
+        h1 = soup.find("h1")
+        title = h1.get_text(strip=True) if h1 else ""
+    if not title:
+        print(f"⚠️  No title found, skipping: {url}")
+        return None
+
+    # Body — entry-content only
+    content = soup.select_one(".entry-content")
+    if not content:
+        return None
+
+    for tag in content.select("script, style, iframe, form, .sharedaddy, .wp-block-jetpack"):
+        tag.decompose()
+
+    text = content.get_text(" ", strip=True)
+    text = " ".join(text.split())
+    if not text:
+        return None
+
+    return {
+        "url": url,
+        "date": lastmod,
+        "title": title,
+        "text": text,
+        "lastmod": lastmod,
+        "scraper_id": SCRAPER_ID,
+    }
+
+
+def main():
+    # Exit before fetching anything if no company has an active subscription
+    active_configs = [
+        c for c in COMPANY_CONFIGS
+        if is_subscription_active(SCRAPER_ID, c["company_id"])
+    ]
+    if not active_configs:
+        print("⏭️  All subscriptions inactive — skipping scraper entirely")
+        return
+
+    print("🔍 Fetching Harper Macleod page sitemaps...")
+    article_entries = get_articles_from_sitemaps()
+
+    if not article_entries:
+        print("⛔ No news/insights entries found in sitemaps.")
+        return
+
+    # Sort newest first by lastmod
+    article_entries.sort(key=lambda x: x["lastmod"], reverse=True)
+    newest_timestamp = article_entries[0]["lastmod"]
+    print(f"📋 Found {len(article_entries)} news/insights URLs in sitemaps.")
+
+    # Collect saved timestamps for every active company
+    company_timestamps = {}
+    for config in active_configs:
+        company_id = config["company_id"]
+        company_timestamps[company_id] = {
+            "label": config["label"],
+            "saved_timestamp": get_latest_timestamp(SCRAPER_ID, company_id),
+        }
+
+    # Determine which URLs need scraping across all active companies
+    urls_to_scrape = set()
+    for company_id, info in company_timestamps.items():
+        ts = info["saved_timestamp"]
+        if ts is not None:
+            for entry in article_entries:
+                if entry["lastmod"] > ts:
+                    urls_to_scrape.add(entry["url"])
+
+    # Scrape each unique article once
+    scraped_cache = {}
+    if urls_to_scrape:
+        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s)...")
+        for entry in article_entries:
+            if entry["url"] not in urls_to_scrape:
+                continue
+            print("Scraping:", entry["url"])
+            article = scrape_article(entry["url"], entry["lastmod"])
+            if article:
+                scraped_cache[entry["url"]] = article
+
+    # Insert scraped articles for each active company
+    for company_id, info in company_timestamps.items():
+        label = info["label"]
+        saved_timestamp = info["saved_timestamp"]
+
+        print(f"\n{'='*60}")
+        print(f"🏢 Processing: {label}")
+        print(f"{'='*60}")
+
+        # ----------------------------
+        # FIRST RUN — NO SCRAPING
+        # ----------------------------
+        if saved_timestamp is None:
+            print("🟢 First run detected — NOT scraping any articles.")
+            print("Saving latest timestamp:", newest_timestamp)
+            update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+            continue
+
+        # ----------------------------
+        # SUBSEQUENT RUNS — save new
+        # ----------------------------
+        print("Previously saved timestamp:", saved_timestamp)
+
+        new_entries = [e for e in article_entries if e["lastmod"] > saved_timestamp]
+
+        if not new_entries:
+            print("⛔ No new articles found.")
+            continue
+
+        print(f"🆕 Found {len(new_entries)} new articles.")
+
+        company_articles = [
+            dict(cached, company_id=company_id)
+            for e in new_entries
+            if (cached := scraped_cache.get(e["url"]))
+        ]
+
+        if company_articles:
+            inserted_count = insert_articles(company_articles)
+            print(f"✅ Inserted {inserted_count} articles for {label}")
+
+        update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
+        print("🕒 New latest timestamp saved:", newest_timestamp)
+
+
+if __name__ == "__main__":
+    main()

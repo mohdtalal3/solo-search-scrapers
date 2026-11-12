@@ -270,6 +270,7 @@ Quick reference for which scraper belongs to which company.
 |----|------|--------|
 | 14 | `prnewswire.py` | https://www.prnewswire.co.uk |
 | 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
+| 94 | `harpermacleod.py` | https://www.harpermacleod.co.uk (news + insights via page sitemap) |
 
 ---
 
