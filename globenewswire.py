@@ -91,6 +91,15 @@ COMPANY_CONFIGS = [
             "/load/more?page={page}&pageSize=50"
         ),
     },
+    # Inglis Legal Recruitment — subscription active in Supabase (scraper 52).
+    # TODO: paste the Inglis search link here as listing_url when provided.
+    # {
+    #     "label": "Inglis Legal Recruitment",
+    #     "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
+    #     "listing_url": (
+    #         "https://www.globenewswire.com/en/search/.../load/more?page={page}&pageSize=50"
+    #     ),
+    # },
 ]
 
 HEADERS = {
