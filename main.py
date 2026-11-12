@@ -97,6 +97,7 @@ import martech
 import harpermacleod
 import scottishlegal
 import brodies
+import shepwedd
 
 
 class TeeStream:
@@ -436,6 +437,9 @@ def run_all_scrapers():
 
     # run_scraper("Brodies", brodies.main)  # multi-company: checked internally
     # time.sleep(5)
+
+    run_scraper("Shepherd and Wedderburn", shepwedd.main)  # multi-company: checked internally
+    time.sleep(5)
 
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
