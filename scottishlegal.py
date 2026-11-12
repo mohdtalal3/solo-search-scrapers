@@ -188,6 +188,9 @@ def main():
                     continue
                 if article:
                     scraped_cache[url] = article
+                    print(f"  ✅ {url}")
+                else:
+                    print(f"  ⛔ Failed to scrape: {url}")
 
     # Insert scraped articles for each active company
     for company_id, info in company_timestamps.items():
