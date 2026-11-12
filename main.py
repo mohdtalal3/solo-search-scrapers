@@ -196,8 +196,8 @@ def run_all_scrapers():
     print()
 
     # Run each scraper
-    run_scraper("Digital Health", digital_health.main, digital_health)
-    time.sleep(5)  # Small delay between scrapers
+    # run_scraper("Digital Health", digital_health.main, digital_health)
+    # time.sleep(5)  # Small delay between scrapers
     
     run_scraper("Contract Finder", contract_finder.main)  # multi-company: checked internally
     time.sleep(5)

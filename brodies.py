@@ -66,7 +66,7 @@ def init_session():
         resp = session.get(
             f"{BASE_URL}/",
             headers=HEADERS,
-            impersonate="chrome131",
+            impersonate="chrome",
             timeout=60,
         )
         print(f"🍪 Session warm-up ({BASE_URL}): HTTP {resp.status_code}")

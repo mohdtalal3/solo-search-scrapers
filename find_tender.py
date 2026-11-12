@@ -93,8 +93,7 @@ COMPANY_CONFIGS = [
         "cpv_codes": [
             "79100000",
         ],
-        "nuts_codes": ["UKM"],
-        "post_filter": "filter_inglis_notice",
+        "nuts_codes": ["UKM"]
     },
 ]
 
