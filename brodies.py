@@ -16,31 +16,40 @@ SOURCE_NAME = "BRODIES"
 SCRAPER_ID = 96
 MAX_THREADS = 5
 
-# NOTE: brodies.com returns 403 for the SCRAPER_PROXY (DataImpulse) exit IPs
-# but allows direct requests, so this scraper fetches without the proxy.
-PROXY = os.getenv("SCRAPER_PROXY")
-PROXIES = None
-
 HEADERS = {
-    "User-Agent": (
+    "accept": (
+        "text/html,application/xhtml+xml,application/xml;"
+        "q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;"
+        "q=0.8,application/signed-exchange;v=b3;q=0.7"
+    ),
+    "accept-language": "en-US,en;q=0.9,fr;q=0.8,af;q=0.7,ar;q=0.6,be;q=0.5,de;q=0.4",
+    "cache-control": "max-age=0",
+    "sec-ch-ua": '"Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "user-agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/131.0.0.0 Safari/537.36"
+        "Chrome/156.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
 }
 
-COMPANY_CONFIGS = [
-    {
-        "label": "Inglis Legal Recruitment",
-        "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
-    },
-]
+PROXY = os.getenv("SCRAPER_PROXY")
+PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
 
 
 def fetch_url(url, max_retries=3):
-    """Fetch a URL via curl_cffi (Chrome impersonation + proxy)."""
+    """Fetch a URL via curl_cffi (Chrome impersonation + proxy).
+
+    brodies.com sits behind a Security Check WAF that 403-blocks the
+    SCRAPER_PROXY (DataImpulse) exit IPs, so on a 403 the request is
+    retried directly without the proxy.
+    """
     for attempt in range(max_retries):
         try:
             time.sleep(2)
@@ -51,6 +60,14 @@ def fetch_url(url, max_retries=3):
                 impersonate="chrome131",
                 timeout=60,
             )
+            if resp.status_code == 403 and PROXIES:
+                print(f"⚠️  403 via proxy, retrying direct: {url}")
+                resp = requests.get(
+                    url,
+                    headers=HEADERS,
+                    impersonate="chrome131",
+                    timeout=60,
+                )
             resp.raise_for_status()
             return resp.text
         except Exception as e:
