@@ -34,12 +34,9 @@ COMPANY_CONFIGS = [
 ]
 
 # News and insights are published as WordPress pages, so the article URLs
-# come from the page sitemaps filtered to these paths.
-SITEMAP_URLS = [
-    f"{BASE_URL}/page-sitemap.xml",
-    f"{BASE_URL}/page-sitemap2.xml",
-    f"{BASE_URL}/page-sitemap3.xml",
-]
+# come from the newest page sitemap (auto-discovered from the sitemap index,
+# so future page-sitemap4.xml, page-sitemap5.xml, ... are picked up automatically).
+SITEMAP_INDEX_URL = f"{BASE_URL}/sitemap_index.xml"
 NEWS_PATHS = ("/news/", "/insights/")
 LISTING_PATHS = ("/news/", "/insights/")
 
@@ -75,31 +72,58 @@ def is_article_url(url):
     return path not in LISTING_PATHS
 
 
-def get_articles_from_sitemaps():
-    """Fetch all page sitemaps and return news/insights entries with url + lastmod."""
-    entries = []
-    for sitemap_url in SITEMAP_URLS:
-        xml_content = fetch_url(sitemap_url)
-        if not xml_content:
-            print(f"⚠️  Could not fetch sitemap: {sitemap_url}")
-            continue
+def get_latest_page_sitemap():
+    """Fetch the sitemap index and return the highest-numbered page-sitemap URL."""
+    xml_content = fetch_url(SITEMAP_INDEX_URL)
+    if not xml_content:
+        raise RuntimeError("Failed to fetch sitemap index")
 
+    root = ET.fromstring(xml_content)
+    links = []
+    for sitemap in root.findall("{*}sitemap"):
+        loc = sitemap.find("{*}loc")
+        if loc is not None and "page-sitemap" in loc.text:
+            links.append(loc.text.strip())
+
+    if not links:
+        raise RuntimeError("No page-sitemap links found in sitemap index")
+
+    # Extract trailing number from URLs like "page-sitemap3.xml" (no number = 1)
+    def get_sitemap_number(url):
         try:
-            root = ET.fromstring(xml_content)
-        except ET.ParseError as e:
-            print(f"❌ XML parse error for {sitemap_url}: {e}")
-            continue
+            num = url.split("page-sitemap")[1].split(".xml")[0]
+            return int(num) if num else 1
+        except Exception:
+            return 0
 
-        for url_el in root.findall("url"):
-            loc_el = url_el.find("loc")
-            lastmod_el = url_el.find("lastmod")
-            if loc_el is None:
-                continue
-            url = loc_el.text.strip()
-            if not is_article_url(url):
-                continue
-            lastmod = lastmod_el.text.strip() if lastmod_el is not None else ""
-            entries.append({"url": url, "lastmod": lastmod})
+    links.sort(key=get_sitemap_number)
+    return links[-1]  # The one with the highest number holds the newest pages
+
+
+def get_articles_from_sitemap(sitemap_url):
+    """Fetch a page sitemap and return news/insights entries with url + lastmod."""
+    xml_content = fetch_url(sitemap_url)
+    if not xml_content:
+        print(f"⚠️  Could not fetch sitemap: {sitemap_url}")
+        return []
+
+    try:
+        root = ET.fromstring(xml_content)
+    except ET.ParseError as e:
+        print(f"❌ XML parse error for {sitemap_url}: {e}")
+        return []
+
+    entries = []
+    for url_el in root.findall("{*}url"):
+        loc_el = url_el.find("{*}loc")
+        lastmod_el = url_el.find("{*}lastmod")
+        if loc_el is None:
+            continue
+        url = loc_el.text.strip()
+        if not is_article_url(url):
+            continue
+        lastmod = lastmod_el.text.strip() if lastmod_el is not None else ""
+        entries.append({"url": url, "lastmod": lastmod})
 
     return entries
 
@@ -159,8 +183,11 @@ def main():
         print("⏭️  All subscriptions inactive — skipping scraper entirely")
         return
 
-    print("🔍 Fetching Harper Macleod page sitemaps...")
-    article_entries = get_articles_from_sitemaps()
+    print("🔍 Fetching Harper Macleod sitemap index...")
+    latest_sitemap = get_latest_page_sitemap()
+    print("Using sitemap:", latest_sitemap)
+
+    article_entries = get_articles_from_sitemap(latest_sitemap)
 
     if not article_entries:
         print("⛔ No news/insights entries found in sitemaps.")
