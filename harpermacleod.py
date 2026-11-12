@@ -144,12 +144,8 @@ def scrape_article(url, lastmod):
         print(f"⚠️  No title found, skipping: {url}")
         return None
 
-    # Body — the article contentWrap. Templates vary: some nest it under
-    # blockContent > mainContent, and a second contentWrap holds only the
-    # header/breadcrumb block. Prefer candidates containing <p> tags and
-    # take the one with the most text.
-    candidates = [el for el in soup.select("div.contentWrap") if el.find("p")]
-    content = max(candidates, key=lambda el: len(el.get_text(strip=True))) if candidates else None
+    # Body — article body is always blockContent > mainContent > contentWrap
+    content = soup.select_one("div.blockContent div.mainContent div.contentWrap")
     if not content:
         return None
 
