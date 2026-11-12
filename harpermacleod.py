@@ -1,6 +1,7 @@
 import os
 import time
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from curl_cffi import requests
 from bs4 import BeautifulSoup
@@ -12,6 +13,7 @@ load_dotenv()
 BASE_URL = "https://www.harpermacleod.co.uk"
 SOURCE_NAME = "HARPER_MACLEOD"
 SCRAPER_ID = 94
+MAX_THREADS = 5
 
 PROXY = os.getenv("SCRAPER_PROXY")
 PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
@@ -142,9 +144,8 @@ def scrape_article(url, lastmod):
         print(f"⚠️  No title found, skipping: {url}")
         return None
 
-    # Body — the article contentWrap inside mainContent (the page has a
-    # second contentWrap holding only the header/breadcrumb block)
-    content = soup.select_one("div.mainContent div.contentWrap")
+    # Body — div.contentWrap
+    content = soup.select_one("div.contentWrap")
     if not content:
         return None
 
@@ -209,17 +210,26 @@ def main():
                 if entry["lastmod"] > ts:
                     urls_to_scrape.add(entry["url"])
 
-    # Scrape each unique article once
+    # Scrape each unique article once (threaded, max 5 workers)
     scraped_cache = {}
     if urls_to_scrape:
-        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s)...")
-        for entry in article_entries:
-            if entry["url"] not in urls_to_scrape:
-                continue
-            print("Scraping:", entry["url"])
-            article = scrape_article(entry["url"], entry["lastmod"])
-            if article:
-                scraped_cache[entry["url"]] = article
+        lastmod_by_url = {e["url"]: e["lastmod"] for e in article_entries}
+        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s) with {MAX_THREADS} threads...")
+
+        with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+            future_to_url = {
+                executor.submit(scrape_article, url, lastmod_by_url[url]): url
+                for url in urls_to_scrape
+            }
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    article = future.result()
+                except Exception as e:
+                    print(f"  ⚠️  Exception scraping {url}: {e}")
+                    continue
+                if article:
+                    scraped_cache[url] = article
 
     # Insert scraped articles for each active company
     for company_id, info in company_timestamps.items():

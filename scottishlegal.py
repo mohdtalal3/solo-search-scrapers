@@ -1,6 +1,7 @@
 import os
 import time
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from curl_cffi import requests
 from bs4 import BeautifulSoup
@@ -12,6 +13,7 @@ load_dotenv()
 SITEMAP_URL = "https://www.scottishlegal.com/sitemap.xml"
 SOURCE_NAME = "SCOTTISH_LEGAL"
 SCRAPER_ID = 95
+MAX_THREADS = 5
 
 PROXY = os.getenv("SCRAPER_PROXY")
 PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
@@ -166,17 +168,26 @@ def main():
                 if pub_date > ts:
                     urls_to_scrape.add(loc)
 
-    # Scrape each unique article once
+    # Scrape each unique article once (threaded, max 5 workers)
     scraped_cache = {}
     if urls_to_scrape:
-        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s)...")
-        for loc, pub_date, sitemap_title in entries:
-            if loc not in urls_to_scrape:
-                continue
-            print("Scraping:", loc)
-            article = scrape_article(loc, pub_date, sitemap_title)
-            if article:
-                scraped_cache[loc] = article
+        meta_by_url = {loc: (pub_date, sitemap_title) for loc, pub_date, sitemap_title in entries}
+        print(f"🔎 Scraping {len(urls_to_scrape)} unique article(s) with {MAX_THREADS} threads...")
+
+        with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+            future_to_url = {
+                executor.submit(scrape_article, url, *meta_by_url[url]): url
+                for url in urls_to_scrape
+            }
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    article = future.result()
+                except Exception as e:
+                    print(f"  ⚠️  Exception scraping {url}: {e}")
+                    continue
+                if article:
+                    scraped_cache[url] = article
 
     # Insert scraped articles for each active company
     for company_id, info in company_timestamps.items():
