@@ -272,6 +272,7 @@ Quick reference for which scraper belongs to which company.
 | 29 | `companies_house.py` | https://www.gov.uk/search/all (Companies House news) |
 | 94 | `harpermacleod.py` | https://www.harpermacleod.co.uk (news + insights via page sitemap) |
 | 95 | `scottishlegal.py` | https://www.scottishlegal.com (news sitemap) |
+| 96 | `brodies.py` | https://brodies.com (insights sitemap) |
 
 ---
 
