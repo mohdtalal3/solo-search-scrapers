@@ -274,6 +274,7 @@ Quick reference for which scraper belongs to which company.
 | 95 | `scottishlegal.py` | https://www.scottishlegal.com (news sitemap) |
 | 96 | `brodies.py` | https://brodies.com (insights sitemap) |
 | 97 | `shepwedd.py` | https://shepwedd.com (WP API, via proxy — Incapsula protected) |
+| 98 | `burnesspaull.py` | https://www.burnesspaull.com (sitemap, legal-insights URLs, JSON-LD) |
 
 ---
 

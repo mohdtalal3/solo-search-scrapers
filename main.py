@@ -98,6 +98,7 @@ import harpermacleod
 import scottishlegal
 import brodies
 import shepwedd
+import burnesspaull
 
 
 class TeeStream:
@@ -439,6 +440,9 @@ def run_all_scrapers():
     # time.sleep(5)
 
     run_scraper("Shepherd and Wedderburn", shepwedd.main)  # multi-company: checked internally
+    time.sleep(5)
+
+    run_scraper("Burness Paull", burnesspaull.main)  # multi-company: checked internally
     time.sleep(5)
 
     elapsed_time = time.time() - start_time
