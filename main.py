@@ -434,8 +434,8 @@ def run_all_scrapers():
     run_scraper("Scottish Legal", scottishlegal.main)  # multi-company: checked internally
     time.sleep(5)
 
-    run_scraper("Brodies", brodies.main)  # multi-company: checked internally
-    time.sleep(5)
+    # run_scraper("Brodies", brodies.main)  # multi-company: checked internally
+    # time.sleep(5)
 
     elapsed_time = time.time() - start_time
     minutes = int(elapsed_time // 60)
