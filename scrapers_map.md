@@ -275,6 +275,7 @@ Quick reference for which scraper belongs to which company.
 | 96 | `brodies.py` | https://brodies.com (insights sitemap) |
 | 97 | `shepwedd.py` | https://shepwedd.com (WP API, via proxy — Incapsula protected) |
 | 98 | `burnesspaull.py` | https://www.burnesspaull.com (sitemap, legal-insights URLs, JSON-LD) |
+| 5 | `find_tender.py` | https://www.find-tender.service.gov.uk (legal services CPV 79100000, Scotland filter) |
 
 ---
 

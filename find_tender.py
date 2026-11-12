@@ -83,7 +83,41 @@ COMPANY_CONFIGS = [
         ],
         "nuts_codes": ["UK"],
     },
+    {
+        "label": "Inglis Legal Recruitment (Legal Services / Scotland)",
+        "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
+        "keywords": '"legal services" "legal advice" framework panel award appointed Scotland',
+        "value_low": "",
+        "stages": ["3", "5"],
+        "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+        "cpv_codes": [
+            "79100000",
+        ],
+        "nuts_codes": ["UKM"],
+        "post_filter": "filter_inglis_notice",
+    },
 ]
+
+# ----------------------------------------------------------
+# Client-side filter for Inglis Legal Recruitment:
+# - Exclude cancelled / withdrawn notices and pre-award stages
+# - Require Scottish buyer or supplier evidence in the notice text
+# ----------------------------------------------------------
+SCOTLAND_RE = re.compile(
+    r"\b(Scotland|Scottish|Edinburgh|Glasgow|Aberdeen|Dundee|Inverness|Stirling|Perth|"
+    r"Paisley|Falkirk|Ayr|Dumfries|Elgin|Motherwell|Livingston|Kilmarnock|Dunfermline|"
+    r"(?:EH|G\d|AB|DD|IV|PH|KW|KA|ML|PA|FK|TD|DG|KY|HS|ZE)\s?\d[A-Z0-9]?)\b",
+    re.IGNORECASE,
+)
+NEGATIVE_RE = re.compile(r"\b(cancelled|withdrawn)\b", re.IGNORECASE)
+
+
+def filter_inglis_notice(contract: dict) -> bool:
+    """True if the notice is a live legal-services award with a Scottish link."""
+    haystack = f"{contract.get('title', '')} {contract.get('text', '')}"
+    if NEGATIVE_RE.search(haystack):
+        return False
+    return bool(SCOTLAND_RE.search(haystack))
 
 HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -428,7 +462,19 @@ def run_for_company(config: dict):
             except Exception as e:
                 print(f"  ⛔ [{i}/{len(new_notices)}] Error scraping {notice['title'][:60]}: {e}")
 
-    inserted_count = insert_articles(contracts)
+    inserted = contracts
+    post_filter_name = config.get("post_filter")
+    if post_filter_name:
+        post_filter = globals()[post_filter_name]
+        before = len(contracts)
+        inserted = [c for c in contracts if post_filter(c)]
+        print(f"🔎 Client-side filter: {before} → {len(inserted)} notices")
+
+    if not inserted:
+        print("⛔ No notices passed filtering.")
+        return
+
+    inserted_count = insert_articles(inserted)
     print(f"✅ Inserted {inserted_count} notices into database")
 
     update_latest_timestamp(SCRAPER_ID, company_id, newest_timestamp)
