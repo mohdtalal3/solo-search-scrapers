@@ -42,32 +42,44 @@ HEADERS = {
 PROXY = os.getenv("SCRAPER_PROXY")
 PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
 
+BASE_URL = "https://brodies.com"
+
+# Session with the rotating proxy — a warm-up request to the homepage
+# establishes the WAF cookies (waf_token etc.) reused by all later requests.
+session = requests.Session(proxies=PROXIES)
+_session_ready = False
+
+
+def init_session():
+    """Send one request to the homepage to create the session / WAF cookies."""
+    global _session_ready
+    if _session_ready:
+        return
+    try:
+        resp = session.get(
+            f"{BASE_URL}/",
+            headers=HEADERS,
+            impersonate="chrome131",
+            timeout=60,
+        )
+        print(f"🍪 Session warm-up ({BASE_URL}): HTTP {resp.status_code}")
+    except Exception as e:
+        print(f"⚠️  Session warm-up failed: {e}")
+    _session_ready = True
+
 
 def fetch_url(url, max_retries=3):
-    """Fetch a URL via curl_cffi (Chrome impersonation + proxy).
-
-    brodies.com sits behind a Security Check WAF that 403-blocks the
-    SCRAPER_PROXY (DataImpulse) exit IPs, so on a 403 the request is
-    retried directly without the proxy.
-    """
+    """Fetch a URL via the session (Chrome impersonation + proxy)."""
+    init_session()
     for attempt in range(max_retries):
         try:
             time.sleep(2)
-            resp = requests.get(
+            resp = session.get(
                 url,
                 headers=HEADERS,
-                proxies=PROXIES,
                 impersonate="chrome131",
                 timeout=60,
             )
-            if resp.status_code == 403 and PROXIES:
-                print(f"⚠️  403 via proxy, retrying direct: {url}")
-                resp = requests.get(
-                    url,
-                    headers=HEADERS,
-                    impersonate="chrome131",
-                    timeout=60,
-                )
             resp.raise_for_status()
             return resp.text
         except Exception as e:
