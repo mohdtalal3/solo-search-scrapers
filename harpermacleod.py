@@ -135,23 +135,16 @@ def scrape_article(url, lastmod):
 
     soup = BeautifulSoup(html, "html.parser")
 
-    # Title — og:title (strip site suffix), then h1
-    title = ""
-    og = soup.find("meta", property="og:title")
-    if og and og.get("content"):
-        title = og["content"].strip()
-        for suffix in (" - Harper Macleod", " | Harper Macleod"):
-            if title.endswith(suffix):
-                title = title[: -len(suffix)].strip()
-    if not title:
-        h1 = soup.find("h1")
-        title = h1.get_text(strip=True) if h1 else ""
+    # Title — h1.pageTitle
+    title_tag = soup.select_one("h1.pageTitle")
+    title = title_tag.get_text(strip=True) if title_tag else ""
     if not title:
         print(f"⚠️  No title found, skipping: {url}")
         return None
 
-    # Body — entry-content only
-    content = soup.select_one(".entry-content")
+    # Body — the article contentWrap inside mainContent (the page has a
+    # second contentWrap holding only the header/breadcrumb block)
+    content = soup.select_one("div.mainContent div.contentWrap")
     if not content:
         return None
 
