@@ -42,6 +42,13 @@ HEADERS = {
 PROXY = os.getenv("SCRAPER_PROXY")
 PROXIES = {"http": PROXY, "https": PROXY} if PROXY else None
 
+COMPANY_CONFIGS = [
+    {
+        "label": "Inglis Legal Recruitment",
+        "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
+    },
+]
+
 BASE_URL = "https://brodies.com"
 
 # Session with the rotating proxy — a warm-up request to the homepage
