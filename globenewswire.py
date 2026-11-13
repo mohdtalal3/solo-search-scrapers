@@ -82,7 +82,7 @@ COMPANY_CONFIGS = [
         "label": "Solis Recruitment",
         "company_id": os.getenv("SOLIS_RECRUITMENT_COMPANY_ID"),
         "listing_url": (
-            "https://www.globenewswire.com/en/search/continent/eu"
+            "https://www.globenewswire.com/en/search/country/gb"
             "/subject/prs,mgc,mgt,mna,prt,jvn,pdt,bfc,fin,coa,rcn"
             "/industry/software,software%2520&%2520computer%2520services,technology,"
             "internet,computer%2520services,technology%2520hardware%2520&%2520equipment,"
