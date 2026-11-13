@@ -86,14 +86,13 @@ COMPANY_CONFIGS = [
     {
         "label": "Inglis Legal Recruitment (Legal Services / Scotland)",
         "company_id": os.getenv("INGLIS_LEGAL_RECRUITMENT_COMPANY_ID"),
-        "keywords": '"legal services" "legal advice" framework panel award appointed Scotland',
+        "keywords": "",
         "value_low": "",
-        "stages": ["3", "5"],
+        "stages": ["5", "3"],
         "form_type_ids": [28,30,31,29,32,33,34,36,37,38,39,35,41,42,43,44,1,2,3,4,5,6,7,8,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
         "cpv_codes": [
             "79100000",
         ],
-        "nuts_codes": ["UKM"]
     },
 ]
 
